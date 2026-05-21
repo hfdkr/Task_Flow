@@ -1,11 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task_Flow</title>
+    <title>Task Flow</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Syne:wght@400..800&display=swap"
+        rel="stylesheet">
+    <style type="text/tailwindcss">
+        @theme{
+            /* colors */
+            --color-black:#0B0C10;
+            --color-blue:#5B8DF8;
+            --color-dark:#6B7280;
+            --color-white:#F0F0F2;
+
+            /* fonts */
+            --font-syne: "syne", sans-serif;
+            --font-dm-sans:"DM Sans",sans-serif;
+        }
+    </style>
 </head>
-<body>
-    
+
+<body class="bg-black text-white">
+    <main class="py-[24px]">
+        <div class="mx-[24px] md:flex items-end justify-between">
+            <div>
+                <h1
+                    class="font-syne font-extrabold text-white text-[44.8px] leading-[44.8px] tracking-[-1.5px] text-nowrap">
+                    Task<span class="text-[#4f46e5]">Flow</span> </h1>
+                <h5
+                    class="pt-[3px] font-dm-sans text-gray-500 text-[13px] leading-[20.8px] tracking-[1.04px] uppercase">
+                    TEAM TASK MANAGEMENT
+                </h5>
+            </div>
+            <div class="mt-[16px] flex gap-[24px]">
+                <div>
+                    <span class="ml-[25px] font-bold">0</span>
+                    <p
+                        class="uppercase text-gray font-dm-sans text-[11px] leading-[17.6px] tracking-[0.66px] text-dark">
+                        Total</p>
+                </div>
+                <div>
+                    <span class="ml-[25px] font-bold">0</span>
+                    <p
+                        class="uppercase text-gray font-dm-sans text-[11px] leading-[17.6px] tracking-[0.66px] text-dark">
+                        Done</p>
+                </div>
+            </div>
+        </div>
+
+        <!---task board--->
+        <div
+            class="mx-[24px] mt-[40px] max-w-full lg:max-w-[1200px] bg-[#121318] border border-[#20212b] rounded-[16px] p-[24px]">
+
+            <h2 class="font-dm-sans font-bold text-[#6B7280] tracking-[1.5px] text-[12px] uppercase mb-[20px]">
+                New Task
+            </h2>
+
+            <div class="flex flex-col md:flex-row md:items-center gap-[16px]">
+
+                <input type="text" placeholder="Task title..."
+                    class="w-full md:flex-1 bg-[#1a1b23] border border-[#2a2b36] rounded-[12px] px-[16px] py-[12px] text-white font-dm-sans text-[14px] outline-none focus:border-blue placeholder-[#6B7280] transition-colors">
+
+                <input type="text" placeholder="Assigned to..."
+                    class="w-full md:flex-1 bg-[#1a1b23] border border-[#2a2b36] rounded-[12px] px-[16px] py-[12px] text-white font-dm-sans text-[14px] outline-none focus:border-blue placeholder-[#6B7280] transition-colors">
+
+                <div class="relative w-full md:w-[150px] lg:w-[180px]">
+                    <select
+                        class="w-full bg-[#1a1b23] border border-[#2a2b36] rounded-[12px] px-[16px] py-[12px] text-white font-dm-sans text-[14px] outline-none appearance-none focus:border-blue transition-colors cursor-pointer">
+                        <option>To Do</option>
+                        <option>In Progress</option>
+                        <option>Done</option>
+                    </select>
+                    <div
+                        class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-[16px] text-[#6B7280]">
+                        <svg class="fill-current h-[18px] w-[18px]" xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20">
+                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="relative w-full md:w-[130px] lg:w-[150px]">
+                    <select
+                        class="w-full bg-[#1a1b23] border border-[#2a2b36] rounded-[12px] px-[16px] py-[12px] text-white font-dm-sans text-[14px] outline-none appearance-none focus:border-blue transition-colors cursor-pointer">
+                        <option>Low</option>
+                        <option>Medium</option>
+                        <option>High</option>
+                    </select>
+                    <div
+                        class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-[16px] text-[#6B7280]">
+                        <svg class="fill-current h-[18px] w-[18px]" xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20">
+                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                        </svg>
+                    </div>
+                </div>
+
+                <button
+                    class="w-full md:w-auto md:px-[32px] bg-blue text-white font-dm-sans font-medium text-[15px] rounded-[12px] py-[12px] hover:opacity-90 transition-opacity cursor-pointer whitespace-nowrap">
+                    + Add
+                </button>
+
+            </div>
+        </div>
+    </main>
 </body>
-</html>
