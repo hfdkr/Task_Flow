@@ -8,9 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Syne:wght@400..800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Syne:wght@400..800&display=swap" rel="stylesheet">
     <style type="text/tailwindcss">
         @theme{
             /* colors */
@@ -30,190 +28,95 @@
     <main class="py-[48px] lg:px-[90px]">
         <div class="mx-[24px] md:flex items-end justify-between">
             <div>
-                <h1
-                    class="font-syne font-extrabold text-white text-[44.8px] leading-[44.8px] tracking-[-1.5px] text-nowrap">
-                    Task<span class="text-[#4f46e5]">Flow</span> </h1>
-                <h5
-                    class="pt-[3px] font-dm-sans text-gray-500 text-[13px] leading-[20.8px] tracking-[1.04px] uppercase">
+                <h1 class="font-syne font-extrabold text-white text-[44.8px] leading-[44.8px] tracking-[-1.5px] text-nowrap">
+                    Task<span class="text-[#4f46e5]">Flow</span> 
+                </h1>
+                <h5 class="pt-[3px] font-dm-sans text-gray-500 text-[13px] leading-[20.8px] tracking-[1.04px] uppercase">
                     TEAM TASK MANAGEMENT
                 </h5>
             </div>
             <div class="mt-[16px] flex gap-[24px]">
                 <div>
-                    <span class="ml-[25px] font-bold">0</span>
-                    <p
-                        class="uppercase text-gray font-dm-sans text-[11px] leading-[17.6px] tracking-[0.66px] text-dark">
-                        Total</p>
+                    <span id="header-total-count" class="ml-[25px] font-bold">0</span>
+                    <p class="uppercase text-gray font-dm-sans text-[11px] leading-[17.6px] tracking-[0.66px] text-dark">
+                        Total
+                    </p>
                 </div>
                 <div>
-                    <span class="ml-[25px] font-bold">0</span>
-                    <p
-                        class="uppercase text-gray font-dm-sans text-[11px] leading-[17.6px] tracking-[0.66px] text-dark">
-                        Done</p>
+                    <span id="header-done-count" class="ml-[25px] font-bold">0</span>
+                    <p class="uppercase text-gray font-dm-sans text-[11px] leading-[17.6px] tracking-[0.66px] text-dark">
+                        Done
+                    </p>
                 </div>
             </div>
         </div>
 
-        <!---task board--->
-
-        <div
-            class="mx-[24px] mt-[40px] max-w-full lg:max-w-[1200px] bg-[#121318] border border-[#20212b] rounded-[16px] p-[24px]">
-
+        <div class="mx-[24px] mt-[40px] max-w-full lg:max-w-[1200px] bg-[#121318] border border-[#20212b] rounded-[16px] p-[24px]">
             <h2 class="font-dm-sans font-bold text-[#6B7280] tracking-[1.5px] text-[12px] uppercase mb-[20px]">
                 New Task
             </h2>
 
             <div class="grid grid-cols-2 md:flex md:items-center gap-[16px]">
+                <input id="task-title" type="text" placeholder="Task title..." class="w-full bg-[#1a1b23] border border-[#2a2b36] rounded-[12px] px-[16px] py-[12px] text-white font-dm-sans text-[14px] outline-none focus:border-blue placeholder-[#6B7280] transition-colors md:flex-1">
 
-                <input type="text" placeholder="Task title..."
-                    class="w-full bg-[#1a1b23] border border-[#2a2b36] rounded-[12px] px-[16px] py-[12px] text-white font-dm-sans text-[14px] outline-none focus:border-blue placeholder-[#6B7280] transition-colors md:flex-1">
-
-                <input type="text" placeholder="Assigned to..."
-                    class="w-full bg-[#1a1b23] border border-[#2a2b36] rounded-[12px] px-[16px] py-[12px] text-white font-dm-sans text-[14px] outline-none focus:border-blue placeholder-[#6B7280] transition-colors md:flex-1">
+                <input id="task-assignee" type="text" placeholder="Assigned to..." class="w-full bg-[#1a1b23] border border-[#2a2b36] rounded-[12px] px-[16px] py-[12px] text-white font-dm-sans text-[14px] outline-none focus:border-blue placeholder-[#6B7280] transition-colors md:flex-1">
 
                 <div class="relative w-full md:w-[150px] lg:flex-1">
-                    <select
-                        class="w-full bg-[#1a1b23] border border-[#2a2b36] rounded-[12px] px-[16px] py-[12px] text-white font-dm-sans text-[14px] outline-none appearance-none focus:border-blue transition-colors cursor-pointer pr-[40px]">
-                        <option>To Do</option>
-                        <option>In Progress</option>
-                        <option>Done</option>
+                    <select id="task-status" class="w-full bg-[#1a1b23] border border-[#2a2b36] rounded-[12px] px-[16px] py-[12px] text-white font-dm-sans text-[14px] outline-none appearance-none focus:border-blue transition-colors cursor-pointer pr-[40px]">
+                        <option value="To Do">To Do</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Done">Done</option>
                     </select>
                     <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-[16px]">
-                        <img src="/assets/Vector.png" alt="">
+                        <img src="/assets/Vector.png" alt="arrow" class="w-3 h-3">
                     </div>
                 </div>
 
                 <div class="relative w-full md:w-[130px] lg:flex-1">
-                    <select
-                        class="w-full bg-[#1a1b23] border border-[#2a2b36] rounded-[12px] px-[16px] py-[12px] text-white font-dm-sans text-[14px] outline-none appearance-none focus:border-blue transition-colors cursor-pointer pr-[40px]">
-                        <option>Low</option>
-                        <option>Medium</option>
-                        <option>High</option>
+                    <select id="task-priority" class="w-full bg-[#1a1b23] border border-[#2a2b36] rounded-[12px] px-[16px] py-[12px] text-white font-dm-sans text-[14px] outline-none appearance-none focus:border-blue transition-colors cursor-pointer pr-[40px]">
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
                     </select>
                     <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-[16px]">
-                        <img src="/assets/Vector.png" alt="">
+                        <img src="/assets/Vector.png" alt="arrow" class="w-3 h-3">
                     </div>
                 </div>
 
-                <button
-                    class="col-span-2 w-full md:w-auto md:px-[32px] bg-blue text-white font-dm-sans font-medium text-[15px] rounded-[12px] py-[12px] hover:opacity-90 transition-opacity cursor-pointer whitespace-nowrap">
+                <button id="add-task-btn" class="col-span-2 w-full md:w-auto md:px-[32px] bg-blue text-white font-dm-sans font-medium text-[15px] rounded-[12px] py-[12px] hover:opacity-90 transition-opacity cursor-pointer whitespace-nowrap">
                     + Add
                 </button>
-
             </div>
         </div>
-
-        <!---Todo-progress-done---->
 
         <div class="mx-[24px] mt-[32px] grid grid-cols-1 lg:grid-cols-3 gap-[24px] items-start">
-
-            <div
-                class="w-full bg-[#121318] border border-[#20212b] rounded-[16px] p-[24px] flex flex-col min-h-[400px]">
+            <div class="w-full bg-[#121318] border border-[#20212b] rounded-[16px] p-[24px] flex flex-col min-h-[400px]">
                 <div class="flex items-center justify-between mb-[24px]">
                     <h3 class="font-dm-sans font-bold text-[#3b82f6] text-[16px] tracking-[1px] uppercase">To Do</h3>
-                    <span
-                        class="w-[24px] h-[24px] bg-[#1a1b23] border border-[#2a2b36] rounded-full flex items-center justify-center font-dm-sans text-[12px] font-bold text-[#3b82f6]">0</span>
+                    <span id="todo-count" class="w-[24px] h-[24px] bg-[#1a1b23] border border-[#2a2b36] rounded-full flex items-center justify-center font-dm-sans text-[12px] font-bold text-[#3b82f6]">0</span>
                 </div>
                 <hr class="border-[#20212b] mb-[24px]">
-
-                <div class="flex-1 flex flex-col items-center justify-center py-[40px] text-gray-600">
-                    <div
-                        class="w-[48px] h-[48px] border-2 border-dashed border-[#2a2b36] rounded-[12px] flex items-center justify-center mb-[12px]">
-                        <svg class="w-6 h-6 text-[#2a2b36]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 002-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                    </div>
-                    <p class="font-dm-sans text-[14px] text-[#6B7280]">Empty</p>
-                </div>
+                <div id="todo-container" class="flex-1 flex flex-col gap-[16px]"></div>
             </div>
 
-
-            <div
-                class="w-full bg-[#121318] border border-[#20212b] rounded-[16px] p-[24px] flex flex-col min-h-[400px]">
+            <div class="w-full bg-[#121318] border border-[#20212b] rounded-[16px] p-[24px] flex flex-col min-h-[400px]">
                 <div class="flex items-center justify-between mb-[24px]">
-                    <h3 class="font-dm-sans font-bold text-[#fbbf24] text-[16px] tracking-[1px] uppercase">In Progress
-                    </h3>
-                    <span
-                        class="w-[24px] h-[24px] bg-[#1a1b23] border border-[#2a2b36] rounded-full flex items-center justify-center font-dm-sans text-[12px] font-bold text-[#fbbf24]">1</span>
+                    <h3 class="font-dm-sans font-bold text-[#fbbf24] text-[16px] tracking-[1px] uppercase">In Progress</h3>
+                    <span id="inprogress-count" class="w-[24px] h-[24px] bg-[#1a1b23] border border-[#2a2b36] rounded-full flex items-center justify-center font-dm-sans text-[12px] font-bold text-[#fbbf24]">0</span>
                 </div>
                 <hr class="border-[#20212b] mb-[24px]">
-
-                <div class="flex flex-col gap-[16px]">
-                    <div class="bg-[#1a1b23] border border-[#2a2b36] rounded-[14px] p-[16px] flex flex-col gap-[16px]">
-                        <h4 class="font-dm-sans font-medium text-white text-[16px]">Refine Design System</h4>
-
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-[8px]">
-                                <span
-                                    class="w-[24px] h-[24px] bg-[#2a2b36] rounded-full flex items-center justify-center text-[11px] font-bold text-gray-300">A</span>
-                                <span class="font-dm-sans text-[13px] text-[#6B7280]">Alex</span>
-                            </div>
-                            <span
-                                class="bg-[#fbbf24]/10 border border-[#fbbf24]/20 text-[#fbbf24] font-dm-sans font-bold text-[11px] tracking-[0.5px] uppercase px-[10px] py-[4px] rounded-full">Medium</span>
-                        </div>
-
-                        <hr class="border-[#2a2b36]">
-
-                        <div class="flex items-center gap-[12px]">
-                            <div class="relative flex-1">
-                                <select
-                                    class="w-full bg-[#121318] border border-[#2a2b36] rounded-[8px] px-[12px] py-[8px] text-white font-dm-sans text-[13px] outline-none appearance-none cursor-pointer pr-[32px]">
-                                    <option>To Do</option>
-                                    <option selected>In Progress</option>
-                                    <option>Done</option>
-                                </select>
-                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-[10px]">
-                                    <svg class="w-3 h-3 text-gray-500" fill="none" viewBox="0 0 24 24"
-                                        stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </div>
-                            </div>
-
-                            <button
-                                class="p-[8px] border border-[#2a2b36] rounded-[8px] hover:bg-[#20212b] text-gray-400 transition-colors cursor-pointer">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                                </svg>
-                            </button>
-                            <button
-                                class="p-[8px] border border-[#2a2b36] rounded-[8px] hover:bg-red-900/20 text-red-500 transition-colors cursor-pointer">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <div id="inprogress-container" class="flex-1 flex flex-col gap-[16px]"></div>
             </div>
 
-            <!----done---->
-            <div
-                class="w-full bg-[#121318] border border-[#20212b] rounded-[16px] p-[24px] flex flex-col min-h-[400px]">
+            <div class="w-full bg-[#121318] border border-[#20212b] rounded-[16px] p-[24px] flex flex-col min-h-[400px]">
                 <div class="flex items-center justify-between mb-[24px]">
                     <h3 class="font-dm-sans font-bold text-[#10b981] text-[16px] tracking-[1px] uppercase">Done</h3>
-                    <span
-                        class="w-[24px] h-[24px] bg-[#1a1b23] border border-[#2a2b36] rounded-full flex items-center justify-center font-dm-sans text-[12px] font-bold text-[#10b981]">0</span>
+                    <span id="done-count" class="w-[24px] h-[24px] bg-[#1a1b23] border border-[#2a2b36] rounded-full flex items-center justify-center font-dm-sans text-[12px] font-bold text-[#10b981]">0</span>
                 </div>
                 <hr class="border-[#20212b] mb-[24px]">
-
-                <div class="flex-1 flex flex-col items-center justify-center py-[40px] text-gray-600">
-                    <div
-                        class="w-[48px] h-[48px] border-2 border-dashed border-[#2a2b36] rounded-[12px] flex items-center justify-center mb-[12px]">
-                        <svg class="w-6 h-6 text-[#2a2b36]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 002-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                    </div>
-                    <p class="font-dm-sans text-[14px] text-[#6B7280]">Empty</p>
-                </div>
+                <div id="done-container" class="flex-1 flex flex-col gap-[16px]"></div>
             </div>
-
         </div>
-
     </main>
 </body>
+</html>
