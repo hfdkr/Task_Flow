@@ -52,6 +52,7 @@
 <!---Task Flow----------------------------------------------------------------->
         <div class="mx-[24px] md:flex items-end justify-between">
             <div>
+
                 <h1
                     class="font-syne font-extrabold text-text-main text-[44.8px] leading-[44.8px] tracking-[-1.5px] text-nowrap">
                     Task<span class="text-brand-dark">Flow</span> </h1>
@@ -59,8 +60,10 @@
                     class="pt-[3px] font-dm-sans text-text-muted text-[13px] leading-[20.8px] tracking-[1.04px] uppercase">
                     TEAM TASK MANAGEMENT
                 </h5>
+
             </div>
             <div class="mt-[16px] flex gap-[24px]">
+
                 <div>
                     <span id="header-total-count" class="ml-[25px] font-syne font-bold text-[32px] text-text-main ">0</span>
                     <p
@@ -73,6 +76,7 @@
                         class="uppercase font-dm-sans text-[11px] leading-[17.6px] tracking-[0.66px] text-text-muted">
                         Done</p>
                 </div>
+
             </div>
         </div>
 
@@ -92,7 +96,6 @@
 
                 <input type="text" placeholder="Task title..."
                     class="w-full bg-bg-element border border-border-strong rounded-[12px] px-[16px] py-[12px] text-text-main font-dm-sans text-[14px] outline-none focus:border-brand placeholder-text-muted transition-colors md:flex-1">
-
                 <input type="text" placeholder="Assigned to..."
                     class="w-full bg-bg-element border border-border-strong rounded-[12px] px-[16px] py-[12px] text-text-main font-dm-sans text-[14px] outline-none focus:border-brand placeholder-text-muted transition-colors md:flex-1">
 
@@ -132,13 +135,14 @@
 
 
 <!---To Do----------------------------------------------------------------->
-            <div
-                class="w-full bg-bg-surface border border-border-subtle rounded-[16px] p-[24px] flex flex-col min-h-[400px]">
+            <div class="w-full bg-bg-surface border border-border-subtle rounded-[16px] p-[24px] flex flex-col min-h-[400px]">
+
                 <div class="flex items-center justify-between mb-[24px]">
                     <h3 class="font-dm-sans font-bold text-status-todo text-[16px] tracking-[1px] uppercase">To Do</h3>
                     <span id="todo-count"
                         class="w-[24px] h-[24px] bg-bg-element border border-border-strong rounded-full flex items-center justify-center font-dm-sans text-[12px] font-bold text-status-todo">0</span>
                 </div>
+
                 <hr class="border-border-subtle mb-[24px]">
 
                 <div id="todo-container" class="flex-1 flex flex-col gap-[16px]">
@@ -154,12 +158,14 @@
 
 <!---In Progress----------------------------------------------------------------->
             <div class="w-full bg-bg-surface border border-border-subtle rounded-[16px] p-[24px] flex flex-col min-h-[400px]">
+
                 <div class="flex items-center justify-between mb-[24px]">
                     <h3 class="font-dm-sans font-bold text-status-progress text-[16px] tracking-[1px] uppercase">In Progress
                     </h3>
                     <span id="inprogress-count"
                         class="w-[24px] h-[24px] bg-bg-element border border-border-strong rounded-full flex items-center justify-center font-dm-sans text-[12px] font-bold text-status-progress">1</span>
                 </div>
+
                 <hr class="border-border-subtle mb-[24px]">
 
                 <div id="inprogress-container" class="flex-1 flex flex-col gap-[16px]">
@@ -167,6 +173,7 @@
 
 <!-----in progress card--------------------------------------------------------------->
                     <div class="bg-bg-element border border-border-strong rounded-[14px] p-[16px] flex flex-col gap-[16px]">
+
                         <h4 class="font-dm-sans font-medium text-text-main text-[16px]">Refine Design System</h4>
 
                         <div class="flex items-center justify-between">
@@ -182,6 +189,7 @@
                         <hr class="border-border-strong">
 
                         <div class="flex items-center gap-[12px]">
+
                             <div class="relative flex-1">
                                 <select
                                     class="w-full bg-bg-surface border border-border-strong rounded-[8px] px-[12px] py-[8px] text-text-main font-dm-sans text-[13px] outline-none appearance-none cursor-pointer pr-[32px]">
@@ -202,6 +210,7 @@
                                     transition-colors cursor-pointer flex items-center justify-center">
                                 <img src="/assets/icon.png" alt="">
                             </button>
+
                         </div>
                     </div>
 
@@ -209,13 +218,14 @@
             </div>
 
 <!---Done----------------------------------------------------------------->
-            <div
-                class="w-full bg-bg-surface border border-border-subtle rounded-[16px] p-[24px] flex flex-col min-h-[400px]">
+            <div class="w-full bg-bg-surface border border-border-subtle rounded-[16px] p-[24px] flex flex-col min-h-[400px]">
+
                 <div class="flex items-center justify-between mb-[24px]">
                     <h3 class="font-dm-sans font-bold text-status-done text-[16px] tracking-[1px] uppercase">Done</h3>
                     <span id="done-count"
                         class="w-[24px] h-[24px] bg-bg-element border border-border-strong rounded-full flex items-center justify-center font-dm-sans text-[12px] font-bold text-status-done">0</span>
                 </div>
+
                 <hr class="border-border-subtle mb-[24px]">
 
                 <div id="done-container" class="flex-1 flex flex-col gap-[16px]">
@@ -227,6 +237,7 @@
                         <p class="font-dm-sans text-[14px] text-text-muted">Empty</p>
                     </div>
                 </div>
+                
             </div>
 
         </div>
