@@ -1,12 +1,3 @@
-async function fetchTasks() {
-
-    const response = await fetch("http://localhost:3000/api/tasks");
-
-    tasks = await response.json();
-
-    renderTasks();
-}
-
 const titleInput = document.querySelectorAll("input")[0];
 const memberInput = document.querySelectorAll("input")[1];
 
@@ -27,15 +18,17 @@ const headerTotalCount = document.getElementById("header-total-count");
 
 const headerDoneCount = document.getElementById("header-done-count");
 
-let tasks = [];
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
 let editingTaskId = null;
 
-
+function saveToLocalStorage() {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
 
 addButton.addEventListener('click', addTask);
 
-async function addTask() {
+function addTask() {
 
     const title = titleInput.value.trim();
     const member = memberInput.value.trim();
@@ -51,33 +44,45 @@ async function addTask() {
     }
 
     if (editingTaskId) {
-await fetch(`http://localhost:3000/api/tasks/${editingTaskId}`, {
-    method: "PUT",
-    headers: {
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-        title,
-        member,
-        status,
-        priority
-    })
-});
 
-editingTaskId = null;
+        tasks = tasks.map(task => {
 
-addButton.innerHTML = "+ Add";
+            if (task.id === editingTaskId) {
 
-clearInputs();
+                return {
+                    ...task,
+                    title,
+                    member,
+                    status,
+                    priority
+                };
+            }
 
-fetchTasks();
+            return task;
+        });
 
-return;
-};
+        editingTaskId = null;
 
-clearInputs();
+        addButton.innerHTML = '+ Add';
 
-fetchTasks();
+    } else {
+
+        const task = {
+            id: Date.now(),
+            title,
+            member,
+            status,
+            priority
+        };
+
+        tasks.push(task);
+    }
+
+    saveToLocalStorage();
+
+    clearInputs();
+
+    renderTasks();
 }
 
 function clearInputs() {
@@ -89,13 +94,13 @@ function clearInputs() {
     prioritySelect.value = 'Low';
 }
 
-async function deleteTask(id) {
+function deleteTask(id) {
 
-    await fetch(`http://localhost:3000/api/tasks/${id}`, {
-        method: "DELETE"
-    });
+    tasks = tasks.filter(task => task.id !== id);
 
-    fetchTasks();
+    saveToLocalStorage();
+
+    renderTasks();
 }
 
 function editTask(id) {
@@ -346,4 +351,4 @@ function emptyState() {
     `;
 }
 
-fetchTasks();
+renderTasks();
