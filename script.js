@@ -85,6 +85,15 @@ function addTask() {
     renderTasks();
 }
 
+function deleteTask(id) {
+
+    tasks = tasks.filter(task => task.id !== id);
+
+    saveToLocalStorage();
+
+    renderTasks();
+}
+
 function clearInputs() {
 
     titleInput.value = '';
