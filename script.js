@@ -84,3 +84,12 @@ function addTask() {
 
     renderTasks();
 }
+
+function clearInputs() {
+
+    titleInput.value = '';
+    memberInput.value = '';
+
+    statusSelect.value = 'To Do';
+    prioritySelect.value = 'Low';
+}
