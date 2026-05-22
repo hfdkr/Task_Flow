@@ -300,3 +300,55 @@ function createTaskCard(task) {
         </div>
     `;
 }
+
+function priorityClass(priority) {
+
+    if (priority === 'High') {
+
+        return `
+            bg-status-danger/10
+            border-status-danger/20
+            text-status-danger
+        `;
+    }
+
+    if (priority === 'Medium') {
+
+        return `
+            bg-status-progress/10
+            border-status-progress/20
+            text-status-progress
+        `;
+    }
+
+    return `
+        bg-status-done/10
+        border-status-done/20
+        text-status-done
+    `;
+}
+
+function emptyState() {
+
+    return `
+    
+        <div class="flex-1 flex flex-col items-center justify-center py-[40px] text-text-muted h-full">
+
+            <div
+                class="w-[48px] h-[48px] border-2 border-dashed border-border-strong rounded-[12px] flex items-center justify-center mb-[12px]">
+
+                📋
+
+            </div>
+
+            <p class="font-dm-sans text-[14px] text-text-muted">
+
+                Empty
+
+            </p>
+
+        </div>
+    `;
+}
+
+renderTasks();
