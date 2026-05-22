@@ -283,7 +283,7 @@ function createTaskCard(task) {
                     onclick="editTask(${task.id})"
                     class="p-[8px] border border-border-strong rounded-[8px] hover:bg-border-subtle transition-colors cursor-pointer">
 
-                    ✏️
+                    <img src="assets/icon (1).png" alt="Edit" class="w-[14px] h-[14px]">
 
                 </button>
 
@@ -291,7 +291,7 @@ function createTaskCard(task) {
                     onclick="deleteTask(${task.id})"
                     class="p-[8px] border border-border-strong rounded-[8px] hover:bg-status-danger/20 transition-colors cursor-pointer">
 
-                    🗑️
+                    <img src="assets/icon.png" alt="Delete" class="w-[14px] h-[14px]">
 
                 </button>
 
@@ -337,7 +337,7 @@ function emptyState() {
             <div
                 class="w-[48px] h-[48px] border-2 border-dashed border-border-strong rounded-[12px] flex items-center justify-center mb-[12px]">
 
-                📋
+                <img src="assets/union-1.png" alt="Empty" class="w-[20px] h-[20px]">
 
             </div>
 
