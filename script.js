@@ -94,6 +94,28 @@ function deleteTask(id) {
     renderTasks();
 }
 
+function editTask(id) {
+
+    const task = tasks.find(task => task.id === id);
+
+    if (!task) return;
+
+    titleInput.value = task.title;
+    memberInput.value = task.member;
+
+    statusSelect.value = task.status;
+    prioritySelect.value = task.priority;
+
+    editingTaskId = id;
+
+    addButton.innerHTML = 'Update Task';
+
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
+
 function clearInputs() {
 
     titleInput.value = '';
