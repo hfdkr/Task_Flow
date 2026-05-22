@@ -85,6 +85,15 @@ function addTask() {
     renderTasks();
 }
 
+function clearInputs() {
+
+    titleInput.value = '';
+    memberInput.value = '';
+
+    statusSelect.value = 'To Do';
+    prioritySelect.value = 'Low';
+}
+
 function deleteTask(id) {
 
     tasks = tasks.filter(task => task.id !== id);
@@ -116,13 +125,24 @@ function editTask(id) {
     });
 }
 
-function clearInputs() {
+function changeStatus(id, newStatus) {
 
-    titleInput.value = '';
-    memberInput.value = '';
+    tasks = tasks.map(task => {
 
-    statusSelect.value = 'To Do';
-    prioritySelect.value = 'Low';
+        if (task.id === id) {
+
+            return {
+                ...task,
+                status: newStatus
+            };
+        }
+
+        return task;
+    });
+
+    saveToLocalStorage();
+
+    renderTasks();
 }
 
 function renderTasks() {
