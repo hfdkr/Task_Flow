@@ -93,3 +93,62 @@ function clearInputs() {
     statusSelect.value = 'To Do';
     prioritySelect.value = 'Low';
 }
+
+function renderTasks() {
+
+    todoContainer.innerHTML = '';
+    progressContainer.innerHTML = '';
+    doneContainer.innerHTML = '';
+
+    let todo = 0;
+    let progress = 0;
+    let done = 0;
+
+    tasks.forEach(task => {
+
+        const card = createTaskCard(task);
+
+        if (task.status === 'To Do') {
+
+            todoContainer.innerHTML += card;
+
+            todo++;
+        }
+
+        if (task.status === 'In Progress') {
+
+            progressContainer.innerHTML += card;
+
+            progress++;
+        }
+
+        if (task.status === 'Done') {
+
+            doneContainer.innerHTML += card;
+
+            done++;
+        }
+    });
+
+    if (todo === 0) {
+
+        todoContainer.innerHTML = emptyState();
+    }
+
+    if (progress === 0) {
+
+        progressContainer.innerHTML = emptyState();
+    }
+
+    if (done === 0) {
+
+        doneContainer.innerHTML = emptyState();
+    }
+
+    todoCount.textContent = todo;
+    progressCount.textContent = progress;
+    doneCount.textContent = done;
+
+    headerTotalCount.textContent = tasks.length;
+    headerDoneCount.textContent = done;
+}
