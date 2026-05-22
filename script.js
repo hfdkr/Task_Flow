@@ -25,3 +25,62 @@ let editingTaskId = null;
 function saveToLocalStorage() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
+
+addButton.addEventListener('click', addTask);
+
+function addTask() {
+
+    const title = titleInput.value.trim();
+    const member = memberInput.value.trim();
+
+    const status = statusSelect.value;
+    const priority = prioritySelect.value;
+
+    if (!title || !member) {
+
+        alert('Please fill all fields');
+
+        return;
+    }
+
+    if (editingTaskId) {
+
+        tasks = tasks.map(task => {
+
+            if (task.id === editingTaskId) {
+
+                return {
+                    ...task,
+                    title,
+                    member,
+                    status,
+                    priority
+                };
+            }
+
+            return task;
+        });
+
+        editingTaskId = null;
+
+        addButton.innerHTML = '+ Add';
+
+    } else {
+
+        const task = {
+            id: Date.now(),
+            title,
+            member,
+            status,
+            priority
+        };
+
+        tasks.push(task);
+    }
+
+    saveToLocalStorage();
+
+    clearInputs();
+
+    renderTasks();
+}
