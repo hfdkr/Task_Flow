@@ -226,3 +226,18 @@ function priorityClass(priority) {
     if (priority === 'Medium') return 'bg-status-progress/10 border-status-progress/20 text-status-progress';
     return 'bg-status-done/10 border-status-done/20 text-status-done';
 }
+
+
+function emptyState() {
+    return `
+        <div class="flex-1 flex flex-col items-center justify-center py-[40px] text-text-muted h-full">
+            <div class="w-[48px] h-[48px] border-2 border-dashed border-border-strong rounded-[12px] flex items-center justify-center mb-[12px]">
+                <img src="assets/union-1.png" alt="Empty" class="w-[20px] h-[20px]">
+            </div>
+            <p class="font-dm-sans text-[14px] text-text-muted">Empty</p>
+        </div>
+    `;
+}
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+renderTasks();
