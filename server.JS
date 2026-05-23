@@ -97,3 +97,22 @@ app.put('/api/tasks/:id', (req, res) => {
         res.status(500).json({ success: false });
     }
 });
+
+app.delete('/api/tasks/:id', (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        let tasks = readTasks();
+
+        const exists = tasks.some(t => t.id === id);
+        if (!exists) {
+            return res.status(404).json({ message: 'Task not found' });
+        }
+
+        tasks = tasks.filter(t => t.id !== id);
+        writeTasks(tasks);
+
+        res.json({ success: true, message: 'Task deleted' });
+    } catch (err) {
+        res.status(500).json({ success: false });
+    }
+});
