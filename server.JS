@@ -39,3 +39,31 @@ app.get('/api/tasks', (req, res) => {
         res.status(500).json({ success: false });
     }
 });
+
+app.post('/api/tasks', (req, res) => {
+    try {
+        const { title, member, status, priority } = req.body;
+
+        if (!title || !member) {
+            return res.status(400).json({ message: 'Title and member required' });
+        }
+
+        const tasks = readTasks();
+
+        const newTask = {
+            id: Date.now(),
+            title,
+            member,
+            status,
+            priority,
+            createdAt: new Date().toISOString()
+        };
+
+        tasks.push(newTask);
+        writeTasks(tasks);
+
+        res.status(201).json({ success: true, task: newTask });
+    } catch (err) {
+        res.status(500).json({ success: false });
+    }
+});
