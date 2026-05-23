@@ -57,3 +57,45 @@ async function removeTask(id) {
     const res = await fetch(`${API}/tasks/${id}`, { method: 'DELETE' });
     return res.json();
 }
+
+
+// ─── Actions ──────────────────────────────────────────────────────────────────
+
+addButton.addEventListener('click', handleAdd);
+
+async function handleAdd() {
+    const title    = titleInput.value.trim();
+    const member   = memberInput.value.trim();
+    const status   = statusSelect.value;
+    const priority = prioritySelect.value;
+
+    if (!title || !member) {
+        alert('Please fill all fields');
+        return;
+    }
+
+    if (editingTaskId) {
+        // Update existing task
+        const result = await updateTask(editingTaskId, { title, member, status, priority });
+
+        if (!result.success) {
+            alert('Failed to update task');
+            return;
+        }
+
+        editingTaskId = null;
+        addButton.innerHTML = '+ Add';
+
+    } else {
+        // Create new task
+        const result = await createTask({ title, member, status, priority });
+
+        if (!result.success) {
+            alert('Failed to add task');
+            return;
+        }
+    }
+
+    clearInputs();
+    await renderTasks();
+}
