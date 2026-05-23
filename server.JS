@@ -30,3 +30,12 @@ function readTasks() {
 function writeTasks(tasks) {
     fs.writeFileSync(DATA_FILE, JSON.stringify({ tasks }, null, 2));
 }
+
+app.get('/api/tasks', (req, res) => {
+    try {
+        const tasks = readTasks();
+        res.json({ success: true, tasks });
+    } catch (err) {
+        res.status(500).json({ success: false });
+    }
+});
