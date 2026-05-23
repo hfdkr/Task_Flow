@@ -168,3 +168,61 @@ async function renderTasks() {
     headerTotalCount.textContent = tasks.length;
     headerDoneCount.textContent  = done;
 }
+
+
+function createTaskCard(task) {
+    return `
+        <div class="bg-bg-element border border-border-strong rounded-[14px] p-[16px] flex flex-col gap-[16px] hover:border-brand transition-all duration-300 hover:-translate-y-1">
+
+            <h4 class="font-dm-sans font-medium text-text-main text-[16px]">
+                ${task.title}
+            </h4>
+
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-[8px]">
+                    <span class="w-[24px] h-[24px] bg-border-strong rounded-full flex items-center justify-center text-[11px] font-bold text-text-light uppercase">
+                        ${task.member.charAt(0)}
+                    </span>
+                    <span class="font-dm-sans text-[13px] text-text-muted">
+                        ${task.member}
+                    </span>
+                </div>
+                <span class="${priorityClass(task.priority)} border font-dm-sans font-bold text-[11px] tracking-[0.5px] uppercase px-[10px] py-[4px] rounded-full">
+                    ${task.priority}
+                </span>
+            </div>
+
+            <hr class="border-border-strong">
+
+            <div class="flex items-center gap-[12px]">
+                <div class="relative flex-1">
+                    <select
+                        onchange="changeStatus(${task.id}, this.value)"
+                        class="w-full bg-bg-surface border border-border-strong rounded-[8px] px-[12px] py-[8px] text-text-main font-dm-sans text-[13px] outline-none appearance-none cursor-pointer pr-[40px] transition-all duration-300">
+                        <option ${task.status === 'To Do'       ? 'selected' : ''}>To Do</option>
+                        <option ${task.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                        <option ${task.status === 'Done'        ? 'selected' : ''}>Done</option>
+                    </select>
+                    <div class="absolute right-[12px] top-1/2 -translate-y-1/2 pointer-events-none text-text-muted transition-transform duration-300">▼</div>
+                </div>
+
+                <button onclick="editTask(${task.id})"
+                    class="p-[8px] border border-border-strong rounded-[8px] hover:bg-border-subtle transition-colors cursor-pointer">
+                    <img src="assets/icon (1).png" alt="Edit" class="w-[14px] h-[14px]">
+                </button>
+
+                <button onclick="deleteTask(${task.id})"
+                    class="p-[8px] border border-border-strong rounded-[8px] hover:bg-status-danger/20 transition-colors cursor-pointer">
+                    <img src="assets/icon.png" alt="Delete" class="w-[14px] h-[14px]">
+                </button>
+            </div>
+
+        </div>
+    `;
+}
+
+function priorityClass(priority) {
+    if (priority === 'High')   return 'bg-status-danger/10 border-status-danger/20 text-status-danger';
+    if (priority === 'Medium') return 'bg-status-progress/10 border-status-progress/20 text-status-progress';
+    return 'bg-status-done/10 border-status-done/20 text-status-done';
+}
