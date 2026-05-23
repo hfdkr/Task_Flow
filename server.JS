@@ -67,3 +67,33 @@ app.post('/api/tasks', (req, res) => {
         res.status(500).json({ success: false });
     }
 });
+
+app.put('/api/tasks/:id', (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        const { title, member, status, priority } = req.body;
+
+        const tasks = readTasks();
+        const index = tasks.findIndex(t => t.id === id);
+
+        if (index === -1) {
+            return res.status(404).json({ message: 'Task not found' });
+        }
+
+        const updated = {
+            ...tasks[index],
+            ...(title && { title }),
+            ...(member && { member }),
+            ...(status && { status }),
+            ...(priority && { priority }),
+            updatedAt: new Date().toISOString()
+        };
+
+        tasks[index] = updated;
+        writeTasks(tasks);
+
+        res.json({ success: true, task: updated });
+    } catch (err) {
+        res.status(500).json({ success: false });
+    }
+});
