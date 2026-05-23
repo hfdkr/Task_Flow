@@ -99,3 +99,34 @@ async function handleAdd() {
     clearInputs();
     await renderTasks();
 }
+
+async function deleteTask(id) {
+    const result = await removeTask(id);
+    if (!result.success) {
+        alert('Failed to delete task');
+        return;
+    }
+    await renderTasks();
+}
+
+async function editTask(id) {
+    const tasks = await fetchTasks();
+    const task  = tasks.find(t => t.id === id);
+
+    if (!task) return;
+
+    titleInput.value    = task.title;
+    memberInput.value   = task.member;
+    statusSelect.value  = task.status;
+    prioritySelect.value = task.priority;
+
+    editingTaskId = id;
+    addButton.innerHTML = 'Update Task';
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+async function changeStatus(id, newStatus) {
+    await updateTask(id, { status: newStatus });
+    await renderTasks();
+}
