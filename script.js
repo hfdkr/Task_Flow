@@ -1,3 +1,8 @@
+// ─── API Base URL ─────────────────────────────────────────────────────────────
+const API = 'http://localhost:3000/api';
+
+
+// ─── DOM References ─────────────────
 const titleInput = document.querySelectorAll("input")[0];
 const memberInput = document.querySelectorAll("input")[1];
 
