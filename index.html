@@ -43,6 +43,20 @@
             --font-syne: "syne", sans-serif;
             --font-dm-sans: "DM Sans", sans-serif;
         }
+        .filter-btn {
+            background: transparent;
+            border-color: theme('colors.border-strong');
+            color: theme('colors.text-muted');
+        }
+        .filter-btn:hover {
+            border-color: theme('colors.brand');
+            color: theme('colors.brand');
+        }
+        .active-filter {
+            border-color: theme('colors.brand') !important;
+            background-color: color-mix(in srgb, theme('colors.brand') 15%, transparent) !important;
+            color: theme('colors.brand') !important;
+        }
     </style>
 </head>
 
@@ -97,6 +111,8 @@
                     class="w-full bg-bg-element border border-border-strong rounded-[12px] px-[16px] py-[12px] text-text-main font-dm-sans text-[14px] outline-none focus:border-brand placeholder-text-muted transition-colors md:flex-1">
                 <input type="text" placeholder="Assigned to..."
                     class="w-full bg-bg-element border border-border-strong rounded-[12px] px-[16px] py-[12px] text-text-main font-dm-sans text-[14px] outline-none focus:border-brand placeholder-text-muted transition-colors md:flex-1">
+                <input type="text" placeholder="Project name..."
+                    class="w-full bg-bg-element border border-border-strong rounded-[12px] px-[16px] py-[12px] text-text-main font-dm-sans text-[14px] outline-none focus:border-brand placeholder-text-muted transition-colors md:flex-1">
 
                 <div class="relative w-full md:w-[150px] lg:flex-1">
                     <select
@@ -127,6 +143,19 @@
                     + Add
                 </button>
 
+            </div>
+        </div>
+
+        <!-- Project Filter Bar -->
+        <div class="mx-[24px] mt-[24px] flex items-center gap-[12px] flex-wrap">
+            <span class="font-dm-sans text-[12px] text-text-muted uppercase tracking-[1px] mr-[4px]">Filter:</span>
+            <div id="project-filters" class="flex items-center gap-[8px] flex-wrap">
+                <button
+                    data-project="all"
+                    onclick="setFilter('all')"
+                    class="filter-btn active-filter font-dm-sans text-[12px] font-medium px-[14px] py-[6px] rounded-full border border-brand bg-brand/10 text-brand transition-all duration-200 cursor-pointer">
+                    All Projects
+                </button>
             </div>
         </div>
 

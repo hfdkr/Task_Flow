@@ -57,7 +57,7 @@ app.get('/api/tasks', (req, res) => {
 app.post('/api/tasks', (req, res) => {
     try {
         // extract the fields sent by the frontend
-        const { title, member, status, priority } = req.body;
+        const { title, member, project, status, priority } = req.body;
 
         // validate: title and member are required
         if (!title || !member) {
@@ -70,6 +70,7 @@ app.post('/api/tasks', (req, res) => {
             id: Date.now(),
             title,
             member,
+            project: project || '',
             status,
             priority,
             createdAt: new Date().toISOString()
@@ -89,7 +90,7 @@ app.post('/api/tasks', (req, res) => {
 app.put('/api/tasks/:id', (req, res) => {
     try {
         const id = parseInt(req.params.id); // get the task ID from the URL
-        const { title, member, status, priority } = req.body; // get updated fields
+        const { title, member, project, status, priority } = req.body; // get updated fields
 
         const tasks = readTasks(); // load all tasks
         const index = tasks.findIndex(t => t.id === id); // find the task position
@@ -102,10 +103,11 @@ app.put('/api/tasks/:id', (req, res) => {
         // merge the old task with the new values (only update fields that were sent)
         const updated = {
             ...tasks[index], // keep all existing fields
-            ...(title && { title }),
-            ...(member && { member }),
-            ...(status && { status }),
-            ...(priority && { priority }),
+            ...(title    !== undefined && { title }),
+            ...(member   !== undefined && { member }),
+            ...(project  !== undefined && { project }),
+            ...(status   !== undefined && { status }),
+            ...(priority !== undefined && { priority }),
             updatedAt: new Date().toISOString()
         };
 

@@ -3,52 +3,53 @@ const API = 'http://localhost:3000/api';
 
 
 // ─── DOM References ─────────────────
-const titleInput = document.querySelectorAll("input")[0];
-const memberInput = document.querySelectorAll("input")[1];
+const titleInput    = document.querySelectorAll("input")[0];
+const memberInput   = document.querySelectorAll("input")[1];
+const projectInput  = document.querySelectorAll("input")[2];
 
-const statusSelect = document.querySelectorAll("select")[0];
+const statusSelect   = document.querySelectorAll("select")[0];
 const prioritySelect = document.querySelectorAll("select")[1];
 
 const addButton = document.querySelector("button");
 
-const todoContainer = document.getElementById("todo-container");
+const todoContainer     = document.getElementById("todo-container");
 const progressContainer = document.getElementById("inprogress-container");
-const doneContainer = document.getElementById("done-container");
+const doneContainer     = document.getElementById("done-container");
 
-const todoCount = document.getElementById("todo-count");
+const todoCount     = document.getElementById("todo-count");
 const progressCount = document.getElementById("inprogress-count");
-const doneCount = document.getElementById("done-count");
+const doneCount     = document.getElementById("done-count");
 
 const headerTotalCount = document.getElementById("header-total-count");
+const headerDoneCount  = document.getElementById("header-done-count");
 
-const headerDoneCount = document.getElementById("header-done-count");
+const projectFiltersEl = document.getElementById("project-filters");
 
-let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-
-let editingTaskId = null;
+let editingTaskId    = null;
+let activeFilter     = 'all';
 
 // ─── API Helpers ──────────────────────────────────────────────────────────────
 
 async function fetchTasks() {
-    const res = await fetch(`${API}/tasks`);
+    const res  = await fetch(`${API}/tasks`);
     const data = await res.json();
     return data.tasks;
 }
 
 async function createTask(task) {
     const res = await fetch(`${API}/tasks`, {
-        method: 'POST',
+        method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(task)
+        body:    JSON.stringify(task)
     });
     return res.json();
 }
 
 async function updateTask(id, changes) {
     const res = await fetch(`${API}/tasks/${id}`, {
-        method: 'PUT',
+        method:  'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(changes)
+        body:    JSON.stringify(changes)
     });
     return res.json();
 }
@@ -59,6 +60,49 @@ async function removeTask(id) {
 }
 
 
+// ─── Filter ───────────────────────────────────────────────────────────────────
+
+function setFilter(project) {
+    activeFilter = project;
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        if (btn.dataset.project === project) {
+            btn.classList.add('active-filter');
+        } else {
+            btn.classList.remove('active-filter');
+        }
+    });
+
+    renderTasks();
+}
+
+function buildFilterButtons(tasks) {
+    // Collect unique, non-empty project names
+    const projects = [...new Set(
+        tasks.map(t => t.project).filter(p => p && p.trim())
+    )].sort();
+
+    // Keep "All Projects" button, rebuild the rest
+    projectFiltersEl.innerHTML = `
+        <button
+            data-project="all"
+            onclick="setFilter('all')"
+            class="filter-btn ${activeFilter === 'all' ? 'active-filter' : ''} font-dm-sans text-[12px] font-medium px-[14px] py-[6px] rounded-full border border-border-strong text-text-muted transition-all duration-200 cursor-pointer">
+            All Projects
+        </button>
+    `;
+
+    projects.forEach(project => {
+        const btn = document.createElement('button');
+        btn.dataset.project = project;
+        btn.onclick = () => setFilter(project);
+        btn.className = `filter-btn ${activeFilter === project ? 'active-filter' : ''} font-dm-sans text-[12px] font-medium px-[14px] py-[6px] rounded-full border border-border-strong text-text-muted transition-all duration-200 cursor-pointer`;
+        btn.textContent = project;
+        projectFiltersEl.appendChild(btn);
+    });
+}
+
+
 // ─── Actions ──────────────────────────────────────────────────────────────────
 
 addButton.addEventListener('click', handleAdd);
@@ -66,17 +110,17 @@ addButton.addEventListener('click', handleAdd);
 async function handleAdd() {
     const title    = titleInput.value.trim();
     const member   = memberInput.value.trim();
+    const project  = projectInput.value.trim();
     const status   = statusSelect.value;
     const priority = prioritySelect.value;
 
     if (!title || !member) {
-        alert('Please fill all fields');
+        alert('Please fill in title and assigned member');
         return;
     }
 
     if (editingTaskId) {
-        // Update existing task
-        const result = await updateTask(editingTaskId, { title, member, status, priority });
+        const result = await updateTask(editingTaskId, { title, member, project, status, priority });
 
         if (!result.success) {
             alert('Failed to update task');
@@ -87,8 +131,7 @@ async function handleAdd() {
         addButton.innerHTML = '+ Add';
 
     } else {
-        // Create new task
-        const result = await createTask({ title, member, status, priority });
+        const result = await createTask({ title, member, project, status, priority });
 
         if (!result.success) {
             alert('Failed to add task');
@@ -115,9 +158,10 @@ async function editTask(id) {
 
     if (!task) return;
 
-    titleInput.value    = task.title;
-    memberInput.value   = task.member;
-    statusSelect.value  = task.status;
+    titleInput.value     = task.title;
+    memberInput.value    = task.member;
+    projectInput.value   = task.project || '';
+    statusSelect.value   = task.status;
     prioritySelect.value = task.priority;
 
     editingTaskId = id;
@@ -135,14 +179,23 @@ async function changeStatus(id, newStatus) {
 // ─── Render ───────────────────────────────────────────────────────────────────
 
 function clearInputs() {
-    titleInput.value    = '';
-    memberInput.value   = '';
-    statusSelect.value  = 'To Do';
+    titleInput.value     = '';
+    memberInput.value    = '';
+    projectInput.value   = '';
+    statusSelect.value   = 'To Do';
     prioritySelect.value = 'Low';
 }
 
 async function renderTasks() {
-    const tasks = await fetchTasks();
+    const allTasks = await fetchTasks();
+
+    // Rebuild filter buttons from full task list
+    buildFilterButtons(allTasks);
+
+    // Apply active filter
+    const tasks = activeFilter === 'all'
+        ? allTasks
+        : allTasks.filter(t => t.project === activeFilter);
 
     todoContainer.innerHTML     = '';
     progressContainer.innerHTML = '';
@@ -162,21 +215,30 @@ async function renderTasks() {
     if (progress === 0) progressContainer.innerHTML = emptyState();
     if (done === 0)     doneContainer.innerHTML     = emptyState();
 
-    todoCount.textContent       = todo;
-    progressCount.textContent   = progress;
-    doneCount.textContent       = done;
-    headerTotalCount.textContent = tasks.length;
-    headerDoneCount.textContent  = done;
+    todoCount.textContent        = todo;
+    progressCount.textContent    = progress;
+    doneCount.textContent        = done;
+    headerTotalCount.textContent = allTasks.length;
+    headerDoneCount.textContent  = allTasks.filter(t => t.status === 'Done').length;
 }
 
 
 function createTaskCard(task) {
+    const projectBadge = task.project
+        ? `<span class="font-dm-sans text-[10px] font-semibold uppercase tracking-[0.6px] px-[8px] py-[3px] rounded-full bg-brand/10 border border-brand/20 text-brand cursor-pointer hover:bg-brand/20 transition-colors" onclick="setFilter('${escapeAttr(task.project)}')" title="Filter by ${escapeAttr(task.project)}">
+               ⬡ ${task.project}
+           </span>`
+        : '';
+
     return `
         <div class="bg-bg-element border border-border-strong rounded-[14px] p-[16px] flex flex-col gap-[16px] hover:border-brand transition-all duration-300 hover:-translate-y-1">
 
-            <h4 class="font-dm-sans font-medium text-text-main text-[16px]">
-                ${task.title}
-            </h4>
+            <div class="flex items-start justify-between gap-[8px]">
+                <h4 class="font-dm-sans font-medium text-text-main text-[16px]">
+                    ${task.title}
+                </h4>
+                ${projectBadge}
+            </div>
 
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-[8px]">
@@ -221,12 +283,15 @@ function createTaskCard(task) {
     `;
 }
 
+function escapeAttr(str) {
+    return str.replace(/'/g, "\\'");
+}
+
 function priorityClass(priority) {
     if (priority === 'High')   return 'bg-status-danger/10 border-status-danger/20 text-status-danger';
     if (priority === 'Medium') return 'bg-status-progress/10 border-status-progress/20 text-status-progress';
     return 'bg-status-done/10 border-status-done/20 text-status-done';
 }
-
 
 function emptyState() {
     return `
