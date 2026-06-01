@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,214 +7,251 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Syne:wght@400..800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Syne:wght@400..800&display=swap" rel="stylesheet">
     <style type="text/tailwindcss">
-        @theme{
-            /* Design System Colors */
-            
-            /* Backgrounds */
-            --color-bg-base: #0B0C10;
-            --color-bg-surface: #121318;
-            --color-bg-element: #1a1b23;
-            
-            /* Borders */
-            --color-border-subtle: #20212b;
-            --color-border-strong: #2a2b36;
-            
-            /* Text */
-            --color-text-main: #F0F0F2;
-            --color-text-muted: #6B7280;
-            --color-text-light: #9CA3AF;
-            
-            /* Brand */
-            --color-brand: #5B8DF8;
-            --color-brand-dark: #4f46e5;
-            
-            /* Status */
-            --color-status-todo: #3b82f6;
+        @theme {
+            --color-bg-base:         #0B0C10;
+            --color-bg-surface:      #121318;
+            --color-bg-element:      #1a1b23;
+            --color-border-subtle:   #20212b;
+            --color-border-strong:   #2a2b36;
+            --color-text-main:       #F0F0F2;
+            --color-text-muted:      #6B7280;
+            --color-text-light:      #9CA3AF;
+            --color-brand:           #5B8DF8;
+            --color-brand-dark:      #4f46e5;
+            --color-status-todo:     #3b82f6;
             --color-status-progress: #fbbf24;
-            --color-status-done: #10b981;
-            --color-status-danger: #ef4444;
+            --color-status-done:     #10b981;
+            --color-status-danger:   #ef4444;
+            --font-syne:             "Syne", sans-serif;
+            --font-dm-sans:          "DM Sans", sans-serif;
+        }
 
-            /* Fonts */
-            --font-syne: "syne", sans-serif;
-            --font-dm-sans: "DM Sans", sans-serif;
-        }
-        .filter-btn {
-            background: transparent;
-            border-color: theme('colors.border-strong');
-            color: theme('colors.text-muted');
-        }
-        .filter-btn:hover {
-            border-color: theme('colors.brand');
-            color: theme('colors.brand');
-        }
-        .active-filter {
-            border-color: theme('colors.brand') !important;
-            background-color: color-mix(in srgb, theme('colors.brand') 15%, transparent) !important;
-            color: theme('colors.brand') !important;
-        }
+        .filter-btn        { background: transparent; border-color: #2a2b36; color: #6B7280; }
+        .filter-btn:hover  { border-color: #5B8DF8; color: #5B8DF8; }
+        .active-filter     { border-color: #5B8DF8 !important; background-color: rgba(91,141,248,0.12) !important; color: #5B8DF8 !important; }
+
+        /* Drag and drop */
+        .task-card.dragging         { opacity: 0.4; transform: scale(0.97); }
+        .drop-zone.drag-over        { outline: 2px dashed #5B8DF8; outline-offset: 4px; background: rgba(91,141,248,0.04); }
+
+        /* Loading skeleton pulse */
+        .skeleton { background: linear-gradient(90deg, #1a1b23 25%, #20212b 50%, #1a1b23 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 14px; }
+        @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+        /* Overdue glow */
+        .overdue-card { border-color: rgba(239,68,68,0.5) !important; }
+
+        /* Modal */
+        .modal-bg { backdrop-filter: blur(4px); }
+
+        /* Tooltip for member avatar */
+        .avatar-wrap { position: relative; }
+        .avatar-wrap:hover .avatar-tooltip { opacity: 1; pointer-events: auto; transform: translateY(-4px); }
+        .avatar-tooltip { opacity: 0; pointer-events: none; transform: translateY(0); transition: all 0.15s; position: absolute; bottom: calc(100% + 6px); left: 50%; translate: -50% 0; background: #2a2b36; color: #F0F0F2; font-size: 11px; white-space: nowrap; padding: 4px 8px; border-radius: 6px; font-family: "DM Sans", sans-serif; z-index: 50; }
     </style>
 </head>
-
 <body class="bg-bg-base text-text-main">
-    <main class="py-[48px] lg:px-[90px]">
 
-<!---Task Flow----------------------------------------------------------------->
-        <div class="mx-[24px] md:flex items-end justify-between">
+<!-- ─── Login Screen ─────────────────────────────────────────────────────── -->
+<div id="login-screen" class="fixed inset-0 bg-bg-base flex items-center justify-center z-50 hidden">
+    <div class="bg-bg-surface border border-border-subtle rounded-[20px] p-[40px] w-full max-w-[400px] mx-[24px]">
+        <h1 class="font-syne font-extrabold text-[32px] tracking-[-1px] mb-[4px]">Task<span class="text-brand-dark">Flow</span></h1>
+        <p class="font-dm-sans text-text-muted text-[13px] mb-[32px]">Enter your password to continue</p>
+        <input id="login-password" type="password" placeholder="Password..."
+            class="w-full bg-bg-element border border-border-strong rounded-[12px] px-[16px] py-[12px] text-text-main font-dm-sans text-[14px] outline-none focus:border-brand placeholder-text-muted transition-colors mb-[12px]">
+        <p id="login-error" class="text-status-danger font-dm-sans text-[12px] mb-[12px] hidden">Wrong password. Try again.</p>
+        <button id="login-btn"
+            class="w-full bg-brand text-white font-dm-sans font-medium text-[15px] rounded-[12px] py-[12px] hover:opacity-90 transition-opacity cursor-pointer">
+            Sign In
+        </button>
+    </div>
+</div>
+
+<!-- ─── Delete Confirmation Modal ────────────────────────────────────────── -->
+<div id="confirm-modal" class="fixed inset-0 bg-black/60 modal-bg flex items-center justify-center z-50 hidden">
+    <div class="bg-bg-surface border border-border-subtle rounded-[20px] p-[32px] w-full max-w-[380px] mx-[24px]">
+        <h3 class="font-syne font-bold text-[20px] mb-[8px]">Delete Task?</h3>
+        <p class="font-dm-sans text-text-muted text-[14px] mb-[28px]">This action cannot be undone.</p>
+        <div class="flex gap-[12px]">
+            <button id="confirm-cancel"
+                class="flex-1 bg-bg-element border border-border-strong text-text-main font-dm-sans font-medium text-[14px] rounded-[12px] py-[10px] hover:bg-border-subtle transition-colors cursor-pointer">
+                Cancel
+            </button>
+            <button id="confirm-delete"
+                class="flex-1 bg-status-danger/10 border border-status-danger/30 text-status-danger font-dm-sans font-medium text-[14px] rounded-[12px] py-[10px] hover:bg-status-danger/20 transition-colors cursor-pointer">
+                Delete
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ─── Members Panel ─────────────────────────────────────────────────────── -->
+<div id="members-panel" class="fixed inset-0 bg-black/60 modal-bg flex items-center justify-end z-50 hidden">
+    <div class="bg-bg-surface border-l border-border-subtle h-full w-full max-w-[340px] p-[32px] flex flex-col gap-[24px] overflow-y-auto">
+        <div class="flex items-center justify-between">
+            <h3 class="font-syne font-bold text-[20px]">Team Members</h3>
+            <button onclick="closeMembersPanel()" class="text-text-muted hover:text-text-main transition-colors cursor-pointer text-[20px]">✕</button>
+        </div>
+        <div class="flex gap-[8px]">
+            <input id="new-member-input" type="text" placeholder="Member name..."
+                class="flex-1 bg-bg-element border border-border-strong rounded-[10px] px-[12px] py-[10px] text-text-main font-dm-sans text-[13px] outline-none focus:border-brand placeholder-text-muted transition-colors">
+            <button onclick="addMember()"
+                class="bg-brand text-white font-dm-sans font-medium text-[13px] rounded-[10px] px-[16px] py-[10px] hover:opacity-90 transition-opacity cursor-pointer whitespace-nowrap">
+                Add
+            </button>
+        </div>
+        <div id="members-list" class="flex flex-col gap-[8px]"></div>
+    </div>
+</div>
+
+<!-- ─── Main App ──────────────────────────────────────────────────────────── -->
+<main id="app" class="py-[48px] lg:px-[90px] hidden">
+
+    <!-- Header -->
+    <div class="mx-[24px] md:flex items-end justify-between">
+        <div>
+            <h1 class="font-syne font-extrabold text-text-main text-[44.8px] leading-[44.8px] tracking-[-1.5px] text-nowrap">
+                Task<span class="text-brand-dark">Flow</span>
+            </h1>
+            <h5 class="pt-[3px] font-dm-sans text-text-muted text-[13px] leading-[20.8px] tracking-[1.04px] uppercase">
+                Team Task Management
+            </h5>
+        </div>
+        <div class="mt-[16px] flex items-center gap-[24px]">
             <div>
-
-                <h1
-                    class="font-syne font-extrabold text-text-main text-[44.8px] leading-[44.8px] tracking-[-1.5px] text-nowrap">
-                    Task<span class="text-brand-dark">Flow</span> </h1>
-                <h5
-                    class="pt-[3px] font-dm-sans text-text-muted text-[13px] leading-[20.8px] tracking-[1.04px] uppercase">
-                    TEAM TASK MANAGEMENT
-                </h5>
-
+                <span id="header-total-count" class="ml-[25px] font-syne font-bold text-[32px] text-text-main">0</span>
+                <p class="uppercase font-dm-sans text-[11px] leading-[17.6px] tracking-[0.66px] text-text-muted">Total</p>
             </div>
-            <div class="mt-[16px] flex gap-[24px]">
-
-                <div>
-                    <span id="header-total-count" class="ml-[25px] font-syne font-bold text-[32px] text-text-main ">0</span>
-                    <p
-                        class="uppercase font-dm-sans text-[11px] leading-[17.6px] tracking-[0.66px] text-text-muted">
-                        Total</p>
-                </div>
-                <div>
-                    <span id="header-done-count" class="ml-[25px] font-syne font-bold text-[32px] text-text-main ">0</span>
-                    <p
-                        class="uppercase font-dm-sans text-[11px] leading-[17.6px] tracking-[0.66px] text-text-muted">
-                        Done</p>
-                </div>
-
+            <div>
+                <span id="header-done-count" class="ml-[25px] font-syne font-bold text-[32px] text-text-main">0</span>
+                <p class="uppercase font-dm-sans text-[11px] leading-[17.6px] tracking-[0.66px] text-text-muted">Done</p>
             </div>
-        </div>
-
-
-
-<!---Task Board------------------------------------------------------------------>
-
-
-        <div class="mx-[24px] mt-[40px] bg-bg-surface border border-border-subtle rounded-[16px] p-[24px]">
-
-            <h2 class="font-dm-sans font-bold text-text-muted tracking-[1.5px] text-[12px] uppercase mb-[20px]">
-                New Task
-            </h2>
-
-            <div class="grid grid-cols-2 md:flex md:items-center gap-[16px]">
-
-                <input type="text" placeholder="Task title..."
-                    class="w-full bg-bg-element border border-border-strong rounded-[12px] px-[16px] py-[12px] text-text-main font-dm-sans text-[14px] outline-none focus:border-brand placeholder-text-muted transition-colors md:flex-1">
-                <input type="text" placeholder="Assigned to..."
-                    class="w-full bg-bg-element border border-border-strong rounded-[12px] px-[16px] py-[12px] text-text-main font-dm-sans text-[14px] outline-none focus:border-brand placeholder-text-muted transition-colors md:flex-1">
-                <input type="text" placeholder="Project name..."
-                    class="w-full bg-bg-element border border-border-strong rounded-[12px] px-[16px] py-[12px] text-text-main font-dm-sans text-[14px] outline-none focus:border-brand placeholder-text-muted transition-colors md:flex-1">
-
-                <div class="relative w-full md:w-[150px] lg:flex-1">
-                    <select
-                        class="w-full bg-bg-element border border-border-strong rounded-[12px] px-[16px] py-[12px] text-text-main font-dm-sans text-[14px] outline-none appearance-none focus:border-brand transition-colors cursor-pointer pr-[40px]">
-                        <option>To Do</option>
-                        <option>In Progress</option>
-                        <option>Done</option>
-                    </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-[16px]">
-                        <img src="assets/Vector.png" alt="">
-                    </div>
-                </div>
-
-                <div class="relative w-full md:w-[130px] lg:flex-1">
-                    <select
-                        class="w-full bg-bg-element border border-border-strong rounded-[12px] px-[16px] py-[12px] text-text-main font-dm-sans text-[14px] outline-none appearance-none focus:border-brand transition-colors cursor-pointer pr-[40px]">
-                        <option>Low</option>
-                        <option>Medium</option>
-                        <option>High</option>
-                    </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-[16px]">
-                        <img src="assets/Vector.png" alt="">
-                    </div>
-                </div>
-
-                <button
-                    class="col-span-2 w-full md:w-auto md:px-[32px] bg-brand text-text-main font-dm-sans font-medium text-[15px] rounded-[12px] py-[12px] hover:opacity-90 transition-opacity cursor-pointer whitespace-nowrap">
-                    + Add
+            <div class="flex gap-[8px] ml-[8px]">
+                <button onclick="openMembersPanel()"
+                    class="px-[14px] py-[8px] border border-border-strong rounded-[10px] font-dm-sans text-[12px] text-text-muted hover:border-brand hover:text-brand transition-colors cursor-pointer">
+                    👥 Team
                 </button>
-
-            </div>
-        </div>
-
-        <!-- Project Filter Bar -->
-        <div class="mx-[24px] mt-[24px] flex items-center gap-[12px] flex-wrap">
-            <span class="font-dm-sans text-[12px] text-text-muted uppercase tracking-[1px] mr-[4px]">Filter:</span>
-            <div id="project-filters" class="flex items-center gap-[8px] flex-wrap">
-                <button
-                    data-project="all"
-                    onclick="setFilter('all')"
-                    class="filter-btn active-filter font-dm-sans text-[12px] font-medium px-[14px] py-[6px] rounded-full border border-brand bg-brand/10 text-brand transition-all duration-200 cursor-pointer">
-                    All Projects
+                <button onclick="logout()"
+                    class="px-[14px] py-[8px] border border-border-strong rounded-[10px] font-dm-sans text-[12px] text-text-muted hover:border-status-danger hover:text-status-danger transition-colors cursor-pointer">
+                    Sign Out
                 </button>
             </div>
         </div>
+    </div>
 
-        <div class="mx-[24px] mt-[32px] grid grid-cols-1 lg:grid-cols-3 gap-[24px] items-start">
+    <!-- Error Banner -->
+    <div id="error-banner" class="mx-[24px] mt-[16px] bg-status-danger/10 border border-status-danger/30 rounded-[12px] px-[16px] py-[12px] font-dm-sans text-[13px] text-status-danger hidden">
+        ⚠ <span id="error-text"></span>
+    </div>
 
+    <!-- New Task Form -->
+    <div class="mx-[24px] mt-[40px] bg-bg-surface border border-border-subtle rounded-[16px] p-[24px]">
+        <h2 class="font-dm-sans font-bold text-text-muted tracking-[1.5px] text-[12px] uppercase mb-[20px]">New Task</h2>
 
-<!---To Do----------------------------------------------------------------->
-            <div class="w-full bg-bg-surface border border-border-subtle rounded-[16px] p-[24px] flex flex-col min-h-[400px]">
+        <div class="grid grid-cols-2 md:flex md:items-start gap-[16px]">
 
-                <div class="flex items-center justify-between mb-[24px]">
-                    <h3 class="font-dm-sans font-bold text-status-todo text-[16px] tracking-[1px] uppercase">To Do</h3>
-                    <span id="todo-count"
-                        class="w-[24px] h-[24px] bg-bg-element border border-border-strong rounded-full flex items-center justify-center font-dm-sans text-[12px] font-bold text-status-todo">0</span>
-                </div>
+            <input id="title-input" type="text" placeholder="Task title..."
+                class="w-full bg-bg-element border border-border-strong rounded-[12px] px-[16px] py-[12px] text-text-main font-dm-sans text-[14px] outline-none focus:border-brand placeholder-text-muted transition-colors md:flex-1">
 
-                <hr class="border-border-subtle mb-[24px]">
-
-                <div id="todo-container" class="flex-1 flex flex-col gap-[16px]">
-                    
-                </div>
+            <!-- Member dropdown (populated from members list) -->
+            <div class="relative w-full md:flex-1">
+                <select id="member-select"
+                    class="w-full bg-bg-element border border-border-strong rounded-[12px] px-[16px] py-[12px] text-text-main font-dm-sans text-[14px] outline-none appearance-none focus:border-brand transition-colors cursor-pointer pr-[40px]">
+                    <option value="">Assign to...</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-[16px] text-text-muted">▼</div>
             </div>
 
-<!---In Progress----------------------------------------------------------------->
-            <div class="w-full bg-bg-surface border border-border-subtle rounded-[16px] p-[24px] flex flex-col min-h-[400px]">
+            <input id="project-input" type="text" placeholder="Project name..."
+                class="w-full bg-bg-element border border-border-strong rounded-[12px] px-[16px] py-[12px] text-text-main font-dm-sans text-[14px] outline-none focus:border-brand placeholder-text-muted transition-colors md:flex-1">
 
-                <div class="flex items-center justify-between mb-[24px]">
-                    <h3 class="font-dm-sans font-bold text-status-progress text-[16px] tracking-[1px] uppercase">In Progress
-                    </h3>
-                    <span id="inprogress-count"
-                        class="w-[24px] h-[24px] bg-bg-element border border-border-strong rounded-full flex items-center justify-center font-dm-sans text-[12px] font-bold text-status-progress">1</span>
-                </div>
+            <input id="due-date-input" type="date"
+                class="w-full bg-bg-element border border-border-strong rounded-[12px] px-[16px] py-[12px] text-text-muted font-dm-sans text-[14px] outline-none focus:border-brand transition-colors md:w-[160px] [color-scheme:dark]">
 
-                <hr class="border-border-subtle mb-[24px]">
-
-                <div id="inprogress-container" class="flex-1 flex flex-col gap-[16px]">
-
-                </div>
-
+            <div class="relative w-full md:w-[150px]">
+                <select id="status-select"
+                    class="w-full bg-bg-element border border-border-strong rounded-[12px] px-[16px] py-[12px] text-text-main font-dm-sans text-[14px] outline-none appearance-none focus:border-brand transition-colors cursor-pointer pr-[40px]">
+                    <option>To Do</option>
+                    <option>In Progress</option>
+                    <option>Done</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-[16px] text-text-muted">▼</div>
             </div>
 
-<!---Done----------------------------------------------------------------->
-            <div class="w-full bg-bg-surface border border-border-subtle rounded-[16px] p-[24px] flex flex-col min-h-[400px]">
-
-                <div class="flex items-center justify-between mb-[24px]">
-                    <h3 class="font-dm-sans font-bold text-status-done text-[16px] tracking-[1px] uppercase">Done</h3>
-                    <span id="done-count"
-                        class="w-[24px] h-[24px] bg-bg-element border border-border-strong rounded-full flex items-center justify-center font-dm-sans text-[12px] font-bold text-status-done">0</span>
-                </div>
-
-                <hr class="border-border-subtle mb-[24px]">
-
-                <div id="done-container" class="flex-1 flex flex-col gap-[16px]">
-                    
-                </div>
-                
+            <div class="relative w-full md:w-[130px]">
+                <select id="priority-select"
+                    class="w-full bg-bg-element border border-border-strong rounded-[12px] px-[16px] py-[12px] text-text-main font-dm-sans text-[14px] outline-none appearance-none focus:border-brand transition-colors cursor-pointer pr-[40px]">
+                    <option>Low</option>
+                    <option>Medium</option>
+                    <option>High</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-[16px] text-text-muted">▼</div>
             </div>
 
+            <button id="add-btn"
+                class="col-span-2 w-full md:w-auto md:px-[32px] bg-brand text-text-main font-dm-sans font-medium text-[15px] rounded-[12px] py-[12px] hover:opacity-90 transition-opacity cursor-pointer whitespace-nowrap">
+                + Add
+            </button>
         </div>
-    </main>
 
-    <script src="script.js"></script>
+        <!-- Description row -->
+        <textarea id="desc-input" placeholder="Task description (optional)..."
+            class="mt-[16px] w-full bg-bg-element border border-border-strong rounded-[12px] px-[16px] py-[12px] text-text-main font-dm-sans text-[14px] outline-none focus:border-brand placeholder-text-muted transition-colors resize-none h-[72px]"></textarea>
+    </div>
+
+    <!-- Search + Filter Bar -->
+    <div class="mx-[24px] mt-[24px] flex flex-col gap-[12px]">
+        <!-- Search -->
+        <div class="relative">
+            <span class="absolute left-[14px] top-1/2 -translate-y-1/2 text-text-muted text-[14px] pointer-events-none">🔍</span>
+            <input id="search-input" type="text" placeholder="Search tasks..."
+                class="w-full bg-bg-surface border border-border-subtle rounded-[12px] pl-[40px] pr-[16px] py-[10px] text-text-main font-dm-sans text-[14px] outline-none focus:border-brand placeholder-text-muted transition-colors">
+        </div>
+        <!-- Project filters -->
+        <div class="flex items-center gap-[12px] flex-wrap">
+            <span class="font-dm-sans text-[12px] text-text-muted uppercase tracking-[1px]">Filter:</span>
+            <div id="project-filters" class="flex items-center gap-[8px] flex-wrap"></div>
+        </div>
+    </div>
+
+    <!-- Kanban Board -->
+    <div class="mx-[24px] mt-[32px] grid grid-cols-1 lg:grid-cols-3 gap-[24px] items-start">
+
+        <!-- To Do -->
+        <div class="w-full bg-bg-surface border border-border-subtle rounded-[16px] p-[24px] flex flex-col min-h-[400px]">
+            <div class="flex items-center justify-between mb-[24px]">
+                <h3 class="font-dm-sans font-bold text-status-todo text-[16px] tracking-[1px] uppercase">To Do</h3>
+                <span id="todo-count" class="w-[24px] h-[24px] bg-bg-element border border-border-strong rounded-full flex items-center justify-center font-dm-sans text-[12px] font-bold text-status-todo">0</span>
+            </div>
+            <hr class="border-border-subtle mb-[24px]">
+            <div id="todo-container" data-status="To Do" class="drop-zone flex-1 flex flex-col gap-[16px] min-h-[80px]"></div>
+        </div>
+
+        <!-- In Progress -->
+        <div class="w-full bg-bg-surface border border-border-subtle rounded-[16px] p-[24px] flex flex-col min-h-[400px]">
+            <div class="flex items-center justify-between mb-[24px]">
+                <h3 class="font-dm-sans font-bold text-status-progress text-[16px] tracking-[1px] uppercase">In Progress</h3>
+                <span id="inprogress-count" class="w-[24px] h-[24px] bg-bg-element border border-border-strong rounded-full flex items-center justify-center font-dm-sans text-[12px] font-bold text-status-progress">0</span>
+            </div>
+            <hr class="border-border-subtle mb-[24px]">
+            <div id="inprogress-container" data-status="In Progress" class="drop-zone flex-1 flex flex-col gap-[16px] min-h-[80px]"></div>
+        </div>
+
+        <!-- Done -->
+        <div class="w-full bg-bg-surface border border-border-subtle rounded-[16px] p-[24px] flex flex-col min-h-[400px]">
+            <div class="flex items-center justify-between mb-[24px]">
+                <h3 class="font-dm-sans font-bold text-status-done text-[16px] tracking-[1px] uppercase">Done</h3>
+                <span id="done-count" class="w-[24px] h-[24px] bg-bg-element border border-border-strong rounded-full flex items-center justify-center font-dm-sans text-[12px] font-bold text-status-done">0</span>
+            </div>
+            <hr class="border-border-subtle mb-[24px]">
+            <div id="done-container" data-status="Done" class="drop-zone flex-1 flex flex-col gap-[16px] min-h-[80px]"></div>
+        </div>
+
+    </div>
+</main>
+
+<script src="script.js"></script>
 </body>
 </html>
