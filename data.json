@@ -25,38 +25,16 @@
       "updatedAt": "2026-06-01T22:39:16.848Z"
     },
     {
-      "id": 1780348192045,
-      "title": "add delete",
-      "member": "ilyass",
-      "project": "task flow",
-      "description": "bla bla bla bla",
-      "dueDate": "2026-06-21",
-      "status": "Done",
-      "priority": "High",
-      "createdAt": "2026-06-01T21:09:52.045Z",
-      "updatedAt": "2026-06-01T22:39:08.894Z"
-    },
-    {
       "id": 1780353224799,
       "title": "hello",
       "member": "hafid",
       "project": "hiii",
       "description": "hafid hhads",
       "dueDate": "",
-      "status": "In Progress",
+      "status": "Done",
       "priority": "Low",
-      "createdAt": "2026-06-01T22:33:44.800Z"
-    },
-    {
-      "id": 1780353462574,
-      "title": "hhhhhkkl",
-      "member": "hamza",
-      "project": "ahjsdkjsdjkc",
-      "description": ";lakjsfm,sxcv",
-      "dueDate": "2026-06-02",
-      "status": "To Do",
-      "priority": "Low",
-      "createdAt": "2026-06-01T22:37:42.574Z"
+      "createdAt": "2026-06-01T22:33:44.800Z",
+      "updatedAt": "2026-06-02T13:00:39.885Z"
     }
   ],
   "members": [

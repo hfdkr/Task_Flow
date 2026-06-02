@@ -74,11 +74,61 @@
         body { font-family: "DM Sans", sans-serif; background: var(--bg-base); color: var(--text-main); }
 
         /* ── Sidebar ─────────────────────────────────────────────── */
-        #sidebar { width: var(--sidebar-w); background: var(--bg-surface); border-right: 1px solid var(--border-subtle); }
-        .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-radius: 10px; font-size: 14px; font-weight: 500; color: var(--text-muted); cursor: pointer; transition: all 0.18s; margin-bottom: 4px; }
+        #sidebar {
+            width: var(--sidebar-w);
+            background: var(--bg-surface);
+            border-right: 1px solid var(--border-subtle);
+            position: relative;
+            transition: width 0.28s cubic-bezier(.4,0,.2,1);
+            overflow: visible;
+            flex-shrink: 0;
+        }
+        #sidebar.collapsed { width: 68px; }
+
+        /* inner scroll wrapper clips overflow */
+        #sidebar-inner { overflow: hidden; width: 100%; height: 100%; display: flex; flex-direction: column; }
+
+        /* sidebar labels fade out when collapsed */
+        .sidebar-label { transition: opacity 0.18s 0.05s, max-width 0.22s; opacity: 1; max-width: 160px; white-space: nowrap; overflow: hidden; }
+        #sidebar.collapsed .sidebar-label { opacity: 0; max-width: 0; transition: opacity 0.1s, max-width 0.22s; }
+
+        /* section headings */
+        .sidebar-section-label { transition: opacity 0.15s, max-height 0.22s; max-height: 28px; overflow: hidden; }
+        #sidebar.collapsed .sidebar-section-label { opacity: 0; max-height: 0; }
+
+        /* bottom area */
+        .sidebar-bottom-full { transition: opacity 0.18s; }
+        #sidebar.collapsed .sidebar-bottom-full { opacity: 0; pointer-events: none; max-height: 0; overflow: hidden; }
+        .sidebar-bottom-mini { display: none; flex-direction: column; align-items: center; gap: 12px; padding-bottom: 8px; }
+        #sidebar.collapsed .sidebar-bottom-mini { display: flex; }
+
+        /* nav-item */
+        .nav-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 14px; border-radius: 10px;
+            font-size: 14px; font-weight: 500;
+            color: var(--text-muted); cursor: pointer;
+            transition: background 0.18s, color 0.18s, padding 0.22s, justify-content 0.22s;
+            margin-bottom: 4px; white-space: nowrap;
+        }
+        #sidebar.collapsed .nav-item { padding: 10px; justify-content: center; gap: 0; }
         .nav-item:hover { background: var(--bg-element); color: var(--text-main); }
         .nav-item.active { background: var(--brand-dim); color: var(--brand); }
-        .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+        .nav-icon { font-size: 17px; width: 22px; text-align: center; flex-shrink: 0; }
+
+        /* Toggle button — sits on the sidebar's right edge */
+        #sidebar-toggle {
+            position: absolute; top: 28px; right: -13px;
+            width: 26px; height: 26px; border-radius: 50%;
+            background: var(--bg-surface); border: 1px solid var(--border-subtle);
+            color: var(--text-muted); font-size: 12px;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            z-index: 20; transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+        }
+        #sidebar-toggle:hover { background: var(--brand-dim); color: var(--brand); border-color: var(--brand); }
+        .toggle-arrow { display: inline-block; transition: transform 0.28s cubic-bezier(.4,0,.2,1); }
+        #sidebar.collapsed .toggle-arrow { transform: rotate(180deg); }
 
         /* ── Views ───────────────────────────────────────────────── */
         .view { display: none; }
@@ -138,12 +188,45 @@
         #theme-toggle input:checked + .toggle-track { background: var(--brand); }
         #theme-toggle input:checked + .toggle-track::after { transform: translateX(22px); background: white; }
 
-        /* ── Mobile sidebar overlay ─────────────────────────────── */
+        /* ── Mobile ──────────────────────────────────────────────── */
+        #mobile-nav { display: none; }
+
         @media (max-width: 768px) {
-            #sidebar { position: fixed; top: 0; left: 0; height: 100%; z-index: 40; transform: translateX(-100%); transition: transform 0.25s; }
-            #sidebar.open { transform: translateX(0); }
-            #sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 39; }
-            #sidebar.open ~ #sidebar-overlay { display: block; }
+            /* Hide desktop sidebar entirely */
+            #sidebar { display: none !important; }
+
+            /* Show mobile top nav */
+            #mobile-nav { display: flex; }
+
+            /* Mobile dropdown menu */
+            #mobile-menu {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0; right: 0;
+                background: var(--bg-surface);
+                border-bottom: 1px solid var(--border-subtle);
+                padding: 8px 16px 16px;
+                z-index: 50;
+                flex-direction: column;
+                gap: 4px;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+            }
+            #mobile-menu.open { display: flex; }
+
+            .mobile-nav-item {
+                display: flex; align-items: center; gap: 12px;
+                padding: 12px 14px; border-radius: 10px;
+                font-size: 15px; font-weight: 500;
+                color: var(--text-muted); cursor: pointer;
+                transition: all 0.18s;
+            }
+            .mobile-nav-item:hover { background: var(--bg-element); color: var(--text-main); }
+            .mobile-nav-item.active { background: var(--brand-dim); color: var(--brand); }
+            .mobile-nav-divider { height: 1px; background: var(--border-subtle); margin: 6px 0; }
+
+            /* Main area takes full width on mobile */
+            #app { flex-direction: column; }
         }
 
         /* ── Progress ring ───────────────────────────────────────── */
@@ -231,64 +314,115 @@
 <div id="app" class="flex h-screen overflow-hidden hidden">
 
     <!-- ── Sidebar ─────────────────────────────────────── -->
-    <aside id="sidebar" class="flex flex-col overflow-y-auto flex-shrink-0">
-        <!-- Logo -->
-        <div style="padding:28px 20px 24px">
-            <h1 style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;letter-spacing:-1px;color:var(--text-main)">
-                Task<span style="color:var(--brand)">Flow</span>
-            </h1>
-            <p style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px">Workspace</p>
-        </div>
+    <aside id="sidebar">
+        <!-- Toggle button on edge -->
+        <button id="sidebar-toggle" onclick="toggleSidebar()" title="Toggle menu">
+            <span class="toggle-arrow">‹</span>
+        </button>
 
-        <!-- Nav -->
-        <nav style="padding:0 12px;flex:1">
-            <p style="font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-muted);padding:0 8px;margin-bottom:8px">Menu</p>
-            <div class="nav-item active" data-view="dashboard" onclick="switchView('dashboard')">
-                <span class="nav-icon">⬡</span> Dashboard
+        <div id="sidebar-inner">
+            <!-- Logo -->
+            <div style="padding:24px 16px 20px;display:flex;align-items:center;gap:10px;overflow:hidden">
+                <span style="font-size:22px;flex-shrink:0">⬡</span>
+                <div class="sidebar-label">
+                    <h1 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;letter-spacing:-1px;color:var(--text-main);line-height:1">
+                        Task<span style="color:var(--brand)">Flow</span>
+                    </h1>
+                    <p style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-top:1px">Workspace</p>
+                </div>
             </div>
-            <div class="nav-item" data-view="kanban" onclick="switchView('kanban')">
-                <span class="nav-icon">⊞</span> Kanban Board
-            </div>
-            <div style="height:1px;background:var(--border-subtle);margin:16px 8px"></div>
-            <p style="font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-muted);padding:0 8px;margin-bottom:8px">Actions</p>
-            <div class="nav-item" onclick="openMembersPanel()">
-                <span class="nav-icon">👥</span> Team Members
-            </div>
-        </nav>
 
-        <!-- Bottom -->
-        <div style="padding:16px 20px 24px;border-top:1px solid var(--border-subtle)">
-            <!-- Theme toggle -->
-            <div class="flex items-center justify-between mb-4">
-                <span style="font-size:12px;color:var(--text-muted)">🌙 Dark mode</span>
-                <label id="theme-toggle">
-                    <input type="checkbox" id="theme-check" onchange="toggleTheme(this.checked)">
-                    <span class="toggle-track"></span>
-                </label>
+            <!-- Nav -->
+            <nav style="padding:0 10px;flex:1">
+                <p class="sidebar-section-label" style="font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-muted);padding:0 8px;margin-bottom:8px">Menu</p>
+                <div class="nav-item active" data-view="dashboard" onclick="switchView('dashboard')" title="Dashboard">
+                    <span class="nav-icon">⬡</span>
+                    <span class="sidebar-label">Dashboard</span>
+                </div>
+                <div class="nav-item" data-view="kanban" onclick="switchView('kanban')" title="Kanban Board">
+                    <span class="nav-icon">⊞</span>
+                    <span class="sidebar-label">Kanban Board</span>
+                </div>
+                <div class="sidebar-section-label" style="height:1px;background:var(--border-subtle);margin:14px 8px 14px"></div>
+                <p class="sidebar-section-label" style="font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-muted);padding:0 8px;margin-bottom:8px">Actions</p>
+                <div class="nav-item" onclick="openMembersPanel()" title="Team Members">
+                    <span class="nav-icon">👥</span>
+                    <span class="sidebar-label">Team Members</span>
+                </div>
+            </nav>
+
+            <!-- Bottom — expanded -->
+            <div class="sidebar-bottom-full" style="padding:14px 16px 22px;border-top:1px solid var(--border-subtle)">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+                    <span style="font-size:12px;color:var(--text-muted)" id="theme-label">🌙 Dark mode</span>
+                    <label id="theme-toggle">
+                        <input type="checkbox" id="theme-check" onchange="toggleTheme(this.checked)">
+                        <span class="toggle-track"></span>
+                    </label>
+                </div>
+                <button onclick="logout()" style="width:100%;background:transparent;border:1px solid var(--border-strong);color:var(--text-muted);border-radius:10px;padding:9px;font-size:13px;cursor:pointer;transition:all 0.2s" onmouseover="this.style.borderColor='var(--status-danger)';this.style.color='var(--status-danger)'" onmouseout="this.style.borderColor='var(--border-strong)';this.style.color='var(--text-muted)'">
+                    Sign Out
+                </button>
             </div>
-            <button onclick="logout()" style="width:100%;background:transparent;border:1px solid var(--border-strong);color:var(--text-muted);border-radius:10px;padding:9px;font-size:13px;cursor:pointer;transition:all 0.2s" onmouseover="this.style.borderColor='var(--status-danger)';this.style.color='var(--status-danger)'" onmouseout="this.style.borderColor='var(--border-strong)';this.style.color='var(--text-muted)'">
-                Sign Out
-            </button>
+
+            <!-- Bottom — collapsed (icons only) -->
+            <div class="sidebar-bottom-mini" style="border-top:1px solid var(--border-subtle);padding-top:14px">
+                <button onclick="toggleTheme(!document.getElementById('theme-check').checked); document.getElementById('theme-check').checked = !document.getElementById('theme-check').checked" title="Toggle theme" style="background:none;border:none;font-size:18px;cursor:pointer;padding:6px;border-radius:8px;color:var(--text-muted);transition:background 0.18s" onmouseover="this.style.background='var(--bg-element)'" onmouseout="this.style.background='none'">🌙</button>
+                <button onclick="logout()" title="Sign Out" style="background:none;border:none;font-size:18px;cursor:pointer;padding:6px;border-radius:8px;color:var(--text-muted);transition:background 0.18s" onmouseover="this.style.background='rgba(239,68,68,0.12)';this.style.color='var(--status-danger)'" onmouseout="this.style.background='none';this.style.color='var(--text-muted)'">⏻</button>
+            </div>
         </div>
     </aside>
-
-    <!-- Mobile sidebar overlay -->
-    <div id="sidebar-overlay" onclick="document.getElementById('sidebar').classList.remove('open')"></div>
 
     <!-- ── Main Content ─────────────────────────────────── -->
     <div class="flex-1 flex flex-col overflow-hidden">
 
-        <!-- Top bar -->
-        <header style="background:var(--bg-surface);border-bottom:1px solid var(--border-subtle);padding:14px 28px;display:flex;align-items:center;gap:16px;flex-shrink:0">
-            <!-- Mobile hamburger -->
-            <button id="hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')" style="display:none;background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer">☰</button>
+        <!-- Desktop top bar -->
+        <header style="background:var(--bg-surface);border-bottom:1px solid var(--border-subtle);padding:14px 28px;display:flex;align-items:center;gap:16px;flex-shrink:0;position:relative">
             <div id="page-title" style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--text-main)">Dashboard</div>
             <div class="flex-1"></div>
-            <!-- Error banner -->
             <div id="error-banner" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:var(--status-danger);border-radius:10px;padding:8px 14px;font-size:13px;display:none">
                 ⚠ <span id="error-text"></span>
             </div>
         </header>
+
+        <!-- Mobile top navbar -->
+        <nav id="mobile-nav" style="background:var(--bg-surface);border-bottom:1px solid var(--border-subtle);padding:0 16px;align-items:center;gap:12px;flex-shrink:0;position:relative;z-index:50">
+            <!-- Hamburger -->
+            <button id="hamburger-btn" onclick="toggleMobileMenu()" style="background:none;border:none;cursor:pointer;padding:14px 4px;display:flex;flex-direction:column;gap:5px;justify-content:center" aria-label="Menu">
+                <span class="ham-line" style="display:block;width:22px;height:2px;background:var(--text-main);border-radius:2px;transition:all 0.25s"></span>
+                <span class="ham-line" style="display:block;width:22px;height:2px;background:var(--text-main);border-radius:2px;transition:all 0.25s"></span>
+                <span class="ham-line" style="display:block;width:22px;height:2px;background:var(--text-main);border-radius:2px;transition:all 0.25s"></span>
+            </button>
+
+            <!-- Logo -->
+            <span style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;letter-spacing:-1px;color:var(--text-main)">Task<span style="color:var(--brand)">Flow</span></span>
+
+            <div style="flex:1"></div>
+
+            <!-- Theme toggle (mobile) -->
+            <label id="theme-toggle-mobile" style="position:relative;width:42px;height:24px;flex-shrink:0">
+                <input type="checkbox" id="theme-check-mobile" onchange="toggleTheme(this.checked);document.getElementById('theme-check').checked=this.checked" style="opacity:0;width:0;height:0">
+                <span class="toggle-track" style="position:absolute;inset:0"></span>
+            </label>
+
+            <!-- Dropdown menu -->
+            <div id="mobile-menu">
+                <div id="mob-nav-dashboard" class="mobile-nav-item active" onclick="switchView('dashboard');closeMobileMenu()">
+                    <span style="font-size:18px">⬡</span> Dashboard
+                </div>
+                <div id="mob-nav-kanban" class="mobile-nav-item" onclick="switchView('kanban');closeMobileMenu()">
+                    <span style="font-size:18px">⊞</span> Kanban Board
+                </div>
+                <div class="mobile-nav-divider"></div>
+                <div class="mobile-nav-item" onclick="openMembersPanel();closeMobileMenu()">
+                    <span style="font-size:18px">👥</span> Team Members
+                </div>
+                <div class="mobile-nav-divider"></div>
+                <div class="mobile-nav-item" onclick="logout()" style="color:var(--status-danger)">
+                    <span style="font-size:18px">⏻</span> Sign Out
+                </div>
+            </div>
+        </nav>
 
         <!-- Scrollable content area -->
         <main class="flex-1 overflow-y-auto" style="padding:28px">
@@ -385,30 +519,37 @@
                 <!-- New Task Form -->
                 <div style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:16px;padding:24px;margin-bottom:24px">
                     <div style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);font-weight:700;margin-bottom:16px">New Task</div>
-                    <div class="grid grid-cols-2 md:flex md:items-start gap-3 mb-3">
-                        <input id="title-input" type="text" placeholder="Task title..." class="tf-input md:flex-1">
-                        <div class="relative md:flex-1">
-                            <select id="member-select" class="tf-input pr-10" style="cursor:pointer">
+
+                    <!-- Row 1: Title · Member · Project (equal width, always visible) -->
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
+                        <input id="title-input" type="text" placeholder="Task title..." class="tf-input">
+                        <div style="position:relative">
+                            <select id="member-select" class="tf-input" style="cursor:pointer;padding-right:36px">
                                 <option value="">Assign to...</option>
                             </select>
                             <div style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted);font-size:11px">▼</div>
                         </div>
-                        <input id="project-input" type="text" placeholder="Project name..." class="tf-input md:flex-1">
-                        <input id="due-date-input" type="date" class="tf-input md:w-[160px]">
-                        <div class="relative md:w-[150px]">
-                            <select id="status-select" class="tf-input pr-10" style="cursor:pointer">
+                        <input id="project-input" type="text" placeholder="Project name..." class="tf-input">
+                    </div>
+
+                    <!-- Row 2: Date · Status · Priority · + Add button -->
+                    <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;flex-wrap:wrap">
+                        <input id="due-date-input" type="date" class="tf-input" style="flex:1;min-width:140px;max-width:200px">
+                        <div style="position:relative;flex:1;min-width:120px;max-width:170px">
+                            <select id="status-select" class="tf-input" style="cursor:pointer;padding-right:36px">
                                 <option>To Do</option><option>In Progress</option><option>Done</option>
                             </select>
                             <div style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted);font-size:11px">▼</div>
                         </div>
-                        <div class="relative md:w-[130px]">
-                            <select id="priority-select" class="tf-input pr-10" style="cursor:pointer">
+                        <div style="position:relative;flex:1;min-width:110px;max-width:150px">
+                            <select id="priority-select" class="tf-input" style="cursor:pointer;padding-right:36px">
                                 <option>Low</option><option>Medium</option><option>High</option>
                             </select>
                             <div style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted);font-size:11px">▼</div>
                         </div>
-                        <button id="add-btn" style="background:var(--brand);color:white;border:none;border-radius:12px;padding:11px 28px;font-size:15px;font-weight:600;cursor:pointer;white-space:nowrap;transition:opacity 0.2s;col-span:2" class="col-span-2 md:w-auto w-full" onmouseover="this.style.opacity=0.88" onmouseout="this.style.opacity=1">+ Add</button>
+                        <button id="add-btn" style="background:var(--brand);color:white;border:none;border-radius:12px;padding:11px 32px;font-size:15px;font-weight:600;cursor:pointer;white-space:nowrap;transition:opacity 0.2s;flex-shrink:0" onmouseover="this.style.opacity=0.85" onmouseout="this.style.opacity=1">+ Add</button>
                     </div>
+
                     <textarea id="desc-input" placeholder="Task description (optional)..." class="tf-input" style="resize:none;height:68px"></textarea>
                 </div>
 

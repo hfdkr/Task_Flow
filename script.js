@@ -8,12 +8,61 @@ let searchQuery     = '';
 let pendingDeleteId = null;
 let allTasksCache   = [];
 
+// ─── Mobile Menu ─────────────────────────────────────────────────────────────
+function toggleMobileMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const btn  = document.getElementById('hamburger-btn');
+    const isOpen = menu.classList.toggle('open');
+    // Animate hamburger → X
+    const lines = btn.querySelectorAll('.ham-line');
+    if (isOpen) {
+        lines[0].style.transform = 'translateY(7px) rotate(45deg)';
+        lines[1].style.opacity   = '0';
+        lines[2].style.transform = 'translateY(-7px) rotate(-45deg)';
+    } else {
+        lines[0].style.transform = '';
+        lines[1].style.opacity   = '';
+        lines[2].style.transform = '';
+    }
+}
+
+function closeMobileMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const btn  = document.getElementById('hamburger-btn');
+    menu.classList.remove('open');
+    const lines = btn ? btn.querySelectorAll('.ham-line') : [];
+    lines.forEach(l => { l.style.transform = ''; l.style.opacity = ''; });
+}
+
+// Close mobile menu when tapping outside
+document.addEventListener('click', e => {
+    const nav = document.getElementById('mobile-nav');
+    if (nav && !nav.contains(e.target)) closeMobileMenu();
+});
+
+// ─── Sidebar Toggle ───────────────────────────────────────────────────────────
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('collapsed');
+    localStorage.setItem('tf-sidebar', sidebar.classList.contains('collapsed') ? 'collapsed' : 'expanded');
+}
+
+function initSidebar() {
+    const saved = localStorage.getItem('tf-sidebar');
+    if (saved === 'collapsed') {
+        document.getElementById('sidebar').classList.add('collapsed');
+    }
+}
+
 // ─── Theme ────────────────────────────────────────────────────────────────────
 function initTheme() {
+    initSidebar();
     const saved = localStorage.getItem('tf-theme') || 'dark';
     document.documentElement.setAttribute('data-theme', saved);
     const chk = document.getElementById('theme-check');
     if (chk) chk.checked = (saved === 'dark');
+    const chkM = document.getElementById('theme-check-mobile');
+    if (chkM) chkM.checked = (saved === 'dark');
     // Update label
     const lbl = document.querySelector('#sidebar label + span, #sidebar .toggle-label');
     updateThemeLabel(saved);
@@ -37,13 +86,17 @@ function switchView(name) {
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
 
     document.getElementById('view-' + name).classList.add('active');
-    document.querySelector(`[data-view="${name}"]`).classList.add('active');
+    const desktopNav = document.querySelector(`[data-view="${name}"]`);
+    if (desktopNav) desktopNav.classList.add('active');
+
+    // Sync mobile nav active state
+    document.querySelectorAll('.mobile-nav-item').forEach(n => n.classList.remove('active'));
+    const mobileNav = document.getElementById('mob-nav-' + name);
+    if (mobileNav) mobileNav.classList.add('active');
 
     const titles = { dashboard: 'Dashboard', kanban: 'Kanban Board' };
-    document.getElementById('page-title').textContent = titles[name] || name;
-
-    // Close mobile sidebar
-    document.getElementById('sidebar').classList.remove('open');
+    const titleEl = document.getElementById('page-title');
+    if (titleEl) titleEl.textContent = titles[name] || name;
 
     // Refresh data for the active view
     if (name === 'dashboard') renderDashboard();
