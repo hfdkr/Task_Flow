@@ -346,7 +346,7 @@
                 <div class="sidebar-section-label" style="height:1px;background:var(--border-subtle);margin:14px 8px 14px"></div>
                 <p class="sidebar-section-label" style="font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-muted);padding:0 8px;margin-bottom:8px">Actions</p>
                 <div class="nav-item" onclick="openMembersPanel()" title="Team Members">
-                    <span class="nav-icon">👥</span>
+                    <span class="nav-icon"></span>
                     <span class="sidebar-label">Team Members</span>
                 </div>
             </nav>
@@ -354,7 +354,7 @@
             <!-- Bottom — expanded -->
             <div class="sidebar-bottom-full" style="padding:14px 16px 22px;border-top:1px solid var(--border-subtle)">
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-                    <span style="font-size:12px;color:var(--text-muted)" id="theme-label">🌙 Dark mode</span>
+                    <span style="font-size:12px;color:var(--text-muted)" id="theme-label"> Dark mode</span>
                     <label id="theme-toggle">
                         <input type="checkbox" id="theme-check" onchange="toggleTheme(this.checked)">
                         <span class="toggle-track"></span>
@@ -367,7 +367,7 @@
 
             <!-- Bottom — collapsed (icons only) -->
             <div class="sidebar-bottom-mini" style="border-top:1px solid var(--border-subtle);padding-top:14px">
-                <button onclick="toggleTheme(!document.getElementById('theme-check').checked); document.getElementById('theme-check').checked = !document.getElementById('theme-check').checked" title="Toggle theme" style="background:none;border:none;font-size:18px;cursor:pointer;padding:6px;border-radius:8px;color:var(--text-muted);transition:background 0.18s" onmouseover="this.style.background='var(--bg-element)'" onmouseout="this.style.background='none'">🌙</button>
+                <button onclick="toggleTheme(!document.getElementById('theme-check').checked); document.getElementById('theme-check').checked = !document.getElementById('theme-check').checked" title="Toggle theme" style="background:none;border:none;font-size:18px;cursor:pointer;padding:6px;border-radius:8px;color:var(--text-muted);transition:background 0.18s" onmouseover="this.style.background='var(--bg-element)'" onmouseout="this.style.background='none'"></button>
                 <button onclick="logout()" title="Sign Out" style="background:none;border:none;font-size:18px;cursor:pointer;padding:6px;border-radius:8px;color:var(--text-muted);transition:background 0.18s" onmouseover="this.style.background='rgba(239,68,68,0.12)';this.style.color='var(--status-danger)'" onmouseout="this.style.background='none';this.style.color='var(--text-muted)'">⏻</button>
             </div>
         </div>
@@ -408,18 +408,18 @@
             <!-- Dropdown menu -->
             <div id="mobile-menu">
                 <div id="mob-nav-dashboard" class="mobile-nav-item active" onclick="switchView('dashboard');closeMobileMenu()">
-                    <span style="font-size:18px">⬡</span> Dashboard
+                    <span style="font-size:18px"></span> Dashboard
                 </div>
                 <div id="mob-nav-kanban" class="mobile-nav-item" onclick="switchView('kanban');closeMobileMenu()">
-                    <span style="font-size:18px">⊞</span> Kanban Board
+                    <span style="font-size:18px"></span> Kanban Board
                 </div>
                 <div class="mobile-nav-divider"></div>
                 <div class="mobile-nav-item" onclick="openMembersPanel();closeMobileMenu()">
-                    <span style="font-size:18px">👥</span> Team Members
+                     Team Members
                 </div>
                 <div class="mobile-nav-divider"></div>
                 <div class="mobile-nav-item" onclick="logout()" style="color:var(--status-danger)">
-                    <span style="font-size:18px">⏻</span> Sign Out
+                    <span style="font-size:18px"></span> Sign Out
                 </div>
             </div>
         </nav>
