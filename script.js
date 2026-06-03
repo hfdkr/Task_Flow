@@ -3,50 +3,50 @@ const API = 'http://localhost:3000/api';
 
 // ─── State ────────────────────────────────────────────────────────────────────
 let editingTaskId = null;
-let activeFilter  = 'all';
-let searchQuery   = '';
+let activeFilter = 'all';
+let searchQuery = '';
 let pendingDeleteId = null;
 
 // ─── DOM References ───────────────────────────────────────────────────────────
-const loginScreen    = document.getElementById('login-screen');
-const loginPassword  = document.getElementById('login-password');
-const loginBtn       = document.getElementById('login-btn');
-const loginError     = document.getElementById('login-error');
-const app            = document.getElementById('app');
+const loginScreen = document.getElementById('login-screen');
+const loginPassword = document.getElementById('login-password');
+const loginBtn = document.getElementById('login-btn');
+const loginError = document.getElementById('login-error');
+const app = document.getElementById('app');
 
-const titleInput    = document.getElementById('title-input');
-const memberSelect  = document.getElementById('member-select');
-const projectInput  = document.getElementById('project-input');
-const dueDateInput  = document.getElementById('due-date-input');
-const statusSelect  = document.getElementById('status-select');
+const titleInput = document.getElementById('title-input');
+const memberSelect = document.getElementById('member-select');
+const projectInput = document.getElementById('project-input');
+const dueDateInput = document.getElementById('due-date-input');
+const statusSelect = document.getElementById('status-select');
 const prioritySelect = document.getElementById('priority-select');
-const descInput     = document.getElementById('desc-input');
-const addBtn        = document.getElementById('add-btn');
-const searchInput   = document.getElementById('search-input');
+const descInput = document.getElementById('desc-input');
+const addBtn = document.getElementById('add-btn');
+const searchInput = document.getElementById('search-input');
 
-const todoContainer     = document.getElementById('todo-container');
+const todoContainer = document.getElementById('todo-container');
 const progressContainer = document.getElementById('inprogress-container');
-const doneContainer     = document.getElementById('done-container');
+const doneContainer = document.getElementById('done-container');
 
-const todoCount     = document.getElementById('todo-count');
+const todoCount = document.getElementById('todo-count');
 const progressCount = document.getElementById('inprogress-count');
-const doneCount     = document.getElementById('done-count');
+const doneCount = document.getElementById('done-count');
 
 const headerTotalCount = document.getElementById('header-total-count');
-const headerDoneCount  = document.getElementById('header-done-count');
+const headerDoneCount = document.getElementById('header-done-count');
 
 const projectFiltersEl = document.getElementById('project-filters');
 
 const errorBanner = document.getElementById('error-banner');
-const errorText   = document.getElementById('error-text');
+const errorText = document.getElementById('error-text');
 
-const confirmModal  = document.getElementById('confirm-modal');
+const confirmModal = document.getElementById('confirm-modal');
 const confirmCancel = document.getElementById('confirm-cancel');
 const confirmDelete = document.getElementById('confirm-delete');
 
-const membersPanel    = document.getElementById('members-panel');
-const newMemberInput  = document.getElementById('new-member-input');
-const membersList     = document.getElementById('members-list');
+const membersPanel = document.getElementById('members-panel');
+const newMemberInput = document.getElementById('new-member-input');
+const membersList = document.getElementById('members-list');
 
 
 // ─── Error Banner ─────────────────────────────────────────────────────────────
@@ -68,7 +68,7 @@ function hideError() {
 // On page load, check if the user already has a valid session
 async function checkAuth() {
     try {
-        const res  = await fetch(`${API}/me`, { credentials: 'include' });
+        const res = await fetch(`${API}/me`, { credentials: 'include' });
         const data = await res.json();
 
         if (data.authenticated) {
@@ -103,11 +103,11 @@ async function handleLogin() {
     loginError.classList.add('hidden');
 
     try {
-        const res  = await fetch(`${API}/login`, {
-            method:      'POST',
-            headers:     { 'Content-Type': 'application/json' },
+        const res = await fetch(`${API}/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
-            body:        JSON.stringify({ password })
+            body: JSON.stringify({ password })
         });
         const data = await res.json();
 
@@ -146,8 +146,8 @@ async function apiFetch(url, options = {}) {
     return res.json();
 }
 
-async function fetchTasks()          { return (await apiFetch(`${API}/tasks`)).tasks; }
-async function fetchMembers()        { return (await apiFetch(`${API}/members`)).members; }
+async function fetchTasks() { return (await apiFetch(`${API}/tasks`)).tasks; }
+async function fetchMembers() { return (await apiFetch(`${API}/members`)).members; }
 
 async function createTask(task) {
     return apiFetch(`${API}/tasks`, { method: 'POST', body: JSON.stringify(task) });
@@ -172,8 +172,8 @@ async function removeMember(id) {
 
 // ─── Members Panel ────────────────────────────────────────────────────────────
 
-function openMembersPanel()  { membersPanel.classList.remove('hidden'); }
-function closeMembersPanel() { membersPanel.classList.add('hidden');    }
+function openMembersPanel() { membersPanel.classList.remove('hidden'); }
+function closeMembersPanel() { membersPanel.classList.add('hidden'); }
 
 // Close panel when clicking the dark backdrop
 membersPanel.addEventListener('click', e => {
@@ -186,8 +186,8 @@ async function renderMembersPanel() {
     // Rebuild the member dropdown in the form
     memberSelect.innerHTML = '<option value="">Assign to...</option>';
     members.forEach(m => {
-        const opt   = document.createElement('option');
-        opt.value   = m.name;
+        const opt = document.createElement('option');
+        opt.value = m.name;
         opt.textContent = m.name;
         memberSelect.appendChild(opt);
     });
@@ -276,12 +276,12 @@ confirmModal.addEventListener('click', e => {
 addBtn.addEventListener('click', handleAdd);
 
 async function handleAdd() {
-    const title       = titleInput.value.trim();
-    const member      = memberSelect.value.trim();
-    const project     = projectInput.value.trim();
-    const dueDate     = dueDateInput.value;
-    const status      = statusSelect.value;
-    const priority    = prioritySelect.value;
+    const title = titleInput.value.trim();
+    const member = memberSelect.value.trim();
+    const project = projectInput.value.trim();
+    const dueDate = dueDateInput.value;
+    const status = statusSelect.value;
+    const priority = prioritySelect.value;
     const description = descInput.value.trim();
 
     if (!title || !member) {
@@ -306,29 +306,29 @@ async function handleAdd() {
 }
 
 function clearForm() {
-    titleInput.value     = '';
-    memberSelect.value   = '';
-    projectInput.value   = '';
-    dueDateInput.value   = '';
-    statusSelect.value   = 'To Do';
+    titleInput.value = '';
+    memberSelect.value = '';
+    projectInput.value = '';
+    dueDateInput.value = '';
+    statusSelect.value = 'To Do';
     prioritySelect.value = 'Low';
-    descInput.value      = '';
+    descInput.value = '';
 }
 
 async function editTask(id) {
     const tasks = await fetchTasks();
-    const task  = tasks.find(t => t.id === id);
+    const task = tasks.find(t => t.id === id);
     if (!task) return;
 
-    titleInput.value     = task.title;
-    memberSelect.value   = task.member;
-    projectInput.value   = task.project     || '';
-    dueDateInput.value   = task.dueDate     || '';
-    statusSelect.value   = task.status;
+    titleInput.value = task.title;
+    memberSelect.value = task.member;
+    projectInput.value = task.project || '';
+    dueDateInput.value = task.dueDate || '';
+    statusSelect.value = task.status;
     prioritySelect.value = task.priority;
-    descInput.value      = task.description || '';
+    descInput.value = task.description || '';
 
-    editingTaskId      = id;
+    editingTaskId = id;
     addBtn.textContent = 'Update Task';
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -428,9 +428,9 @@ document.querySelectorAll('.drop-zone').forEach(zone => {
 
 function showLoadingSkeleton() {
     const skeleton = `<div class="skeleton h-[140px] w-full"></div>`;
-    todoContainer.innerHTML     = skeleton + skeleton;
+    todoContainer.innerHTML = skeleton + skeleton;
     progressContainer.innerHTML = skeleton;
-    doneContainer.innerHTML     = skeleton + skeleton;
+    doneContainer.innerHTML = skeleton + skeleton;
 }
 
 async function renderTasks() {
@@ -446,35 +446,35 @@ async function renderTasks() {
     // Apply search filter
     if (searchQuery) {
         tasks = tasks.filter(t =>
-            t.title.toLowerCase().includes(searchQuery)       ||
-            t.member.toLowerCase().includes(searchQuery)      ||
-            (t.project     && t.project.toLowerCase().includes(searchQuery)) ||
+            t.title.toLowerCase().includes(searchQuery) ||
+            t.member.toLowerCase().includes(searchQuery) ||
+            (t.project && t.project.toLowerCase().includes(searchQuery)) ||
             (t.description && t.description.toLowerCase().includes(searchQuery))
         );
     }
 
-    todoContainer.innerHTML     = '';
+    todoContainer.innerHTML = '';
     progressContainer.innerHTML = '';
-    doneContainer.innerHTML     = '';
+    doneContainer.innerHTML = '';
 
     let todo = 0, progress = 0, done = 0;
 
     tasks.forEach(task => {
         const el = createTaskElement(task);
-        if (task.status === 'To Do')       { todoContainer.appendChild(el);     todo++;     }
+        if (task.status === 'To Do') { todoContainer.appendChild(el); todo++; }
         if (task.status === 'In Progress') { progressContainer.appendChild(el); progress++; }
-        if (task.status === 'Done')        { doneContainer.appendChild(el);     done++;     }
+        if (task.status === 'Done') { doneContainer.appendChild(el); done++; }
     });
 
-    if (todo === 0)     todoContainer.innerHTML     = emptyState();
+    if (todo === 0) todoContainer.innerHTML = emptyState();
     if (progress === 0) progressContainer.innerHTML = emptyState();
-    if (done === 0)     doneContainer.innerHTML     = emptyState();
+    if (done === 0) doneContainer.innerHTML = emptyState();
 
-    todoCount.textContent        = todo;
-    progressCount.textContent    = progress;
-    doneCount.textContent        = done;
+    todoCount.textContent = todo;
+    progressCount.textContent = progress;
+    doneCount.textContent = done;
     headerTotalCount.textContent = allTasks.length;
-    headerDoneCount.textContent  = allTasks.filter(t => t.status === 'Done').length;
+    headerDoneCount.textContent = allTasks.filter(t => t.status === 'Done').length;
 }
 
 function isOverdue(dueDate, status) {
@@ -484,11 +484,11 @@ function isOverdue(dueDate, status) {
 
 function formatDate(dueDate, status) {
     if (!dueDate) return '';
-    const date     = new Date(dueDate);
-    const overdue  = isOverdue(dueDate, status);
-    const label    = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    const color    = overdue ? 'text-status-danger' : 'text-text-muted';
-    const icon     = overdue ? '⚠ ' : '📅 ';
+    const date = new Date(dueDate);
+    const overdue = isOverdue(dueDate, status);
+    const label = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const color = overdue ? 'text-status-danger' : 'text-text-muted';
+    const icon = overdue ? '⚠ ' : '📅 ';
     return `<span class="font-dm-sans text-[11px] ${color}">${icon}${label}${overdue ? ' · Overdue' : ''}</span>`;
 }
 
@@ -499,7 +499,7 @@ function createTaskElement(task) {
     div.dataset.id = task.id;
 
     div.addEventListener('dragstart', e => onDragStart(e, task.id));
-    div.addEventListener('dragend',   e => onDragEnd(e));
+    div.addEventListener('dragend', e => onDragEnd(e));
 
     const projectBadge = task.project
         ? `<span class="font-dm-sans text-[10px] font-semibold uppercase tracking-[0.6px] px-[8px] py-[3px] rounded-full bg-brand/10 border border-brand/20 text-brand cursor-pointer hover:bg-brand/20 transition-colors" onclick="setFilter('${escapeAttr(task.project)}')" title="Filter by ${escapeAttr(task.project)}">⬡ ${task.project}</span>`
@@ -539,19 +539,20 @@ function createTaskElement(task) {
             <div class="relative flex-1">
                 <select onchange="changeStatus(${task.id}, this.value)"
                     class="w-full bg-bg-surface border border-border-strong rounded-[8px] px-[12px] py-[8px] text-text-main font-dm-sans text-[13px] outline-none appearance-none cursor-pointer pr-[32px] transition-all duration-300">
-                    <option ${task.status === 'To Do'       ? 'selected' : ''}>To Do</option>
+                    <option ${task.status === 'To Do' ? 'selected' : ''}>To Do</option>
                     <option ${task.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
-                    <option ${task.status === 'Done'        ? 'selected' : ''}>Done</option>
+                    <option ${task.status === 'Done' ? 'selected' : ''}>Done</option>
                 </select>
                 <div class="absolute right-[10px] top-1/2 -translate-y-1/2 pointer-events-none text-text-muted text-[10px]">▼</div>
             </div>
             <button onclick="editTask(${task.id})"
-                class="p-[8px] border border-border-strong rounded-[8px] hover:bg-border-subtle transition-colors cursor-pointer">
-                <img src="assets/icon (1).png" alt="Edit" class="w-[14px] h-[14px]">
+                class="p-[8px] border border-border-strong rounded-[8px] hover:bg-border-subtle transition-colors cursor-pointer flex items-center justify-center">
+                <i class="fi fi-sr-pencil w-[14px] h-[14px] text-[14px] leading-none"></i>
             </button>
+
             <button onclick="askDeleteConfirmation(${task.id})"
-                class="p-[8px] border border-border-strong rounded-[8px] hover:bg-status-danger/20 transition-colors cursor-pointer">
-                <img src="assets/icon.png" alt="Delete" class="w-[14px] h-[14px]">
+                class="p-[8px] border border-border-strong rounded-[8px] hover:bg-status-danger/20 transition-colors cursor-pointer flex items-center justify-center">
+                <i class="fi fi-sr-trash text-red-500 w-[14px] h-[14px] text-[14px] leading-none"></i>
             </button>
         </div>
     `;
@@ -560,7 +561,7 @@ function createTaskElement(task) {
 }
 
 function priorityClass(p) {
-    if (p === 'High')   return 'bg-status-danger/10 border-status-danger/20 text-status-danger';
+    if (p === 'High') return 'bg-status-danger/10 border-status-danger/20 text-status-danger';
     if (p === 'Medium') return 'bg-status-progress/10 border-status-progress/20 text-status-progress';
     return 'bg-status-done/10 border-status-done/20 text-status-done';
 }
