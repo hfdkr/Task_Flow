@@ -44,16 +44,16 @@
             --font-dm-sans: "DM Sans", sans-serif;
         }
 
-        .filter-btn        { background: transparent; border-color: #2a2b36; color: #6B7280; }
-        .filter-btn:hover  { border-color: #5B8DF8; color: #5B8DF8; }
-        .active-filter     { border-color: #5B8DF8 !important; background-color: rgba(91,141,248,0.12) !important; color: #5B8DF8 !important; }
+        .filter-btn        { background: transparent; border-color: var(--color-border-strong); color: var(--color-text-muted); }
+        .filter-btn:hover  { border-color: var(--color-brand); color: var(--color-brand); }
+        .active-filter     { border-color: var(--color-brand) !important; background-color: rgba(91,141,248,0.12) !important; color: var(--color-brand) !important; }
 
         /* Drag and drop */
         .task-card.dragging         { opacity: 0.4; transform: scale(0.97); }
-        .drop-zone.drag-over        { outline: 2px dashed #5B8DF8; outline-offset: 4px; background: rgba(91,141,248,0.04); }
+        .drop-zone.drag-over        { outline: 2px dashed var(--color-brand); outline-offset: 4px; background: rgba(91,141,248,0.04); }
 
         /* Loading skeleton pulse */
-        .skeleton { background: linear-gradient(90deg, #1a1b23 25%, #20212b 50%, #1a1b23 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 14px; }
+        .skeleton { background: linear-gradient(90deg, var(--color-bg-element) 25%, var(--color-border-strong) 50%, var(--color-bg-element) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 14px; }
         @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
         /* Overdue glow */
