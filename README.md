@@ -132,12 +132,13 @@ http://localhost:3000
 
 ---
 
-##  Author
+##  Authors
 
 **Hafid Karkouch**
 
 * GitHub: https://github.com/hfdkr
 
+**Hamza Bari**
 ---
 
 ##  Support
