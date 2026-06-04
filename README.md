@@ -111,3 +111,37 @@ http://localhost:3000
 * Modern Design
 
 ---
+
+
+##  Security
+
+* Session-based Authentication
+* Protected API Routes
+* Sensitive Files Excluded via `.gitignore`
+
+---
+
+##  Future Improvements
+
+* MySQL Database Integration
+* User Roles & Permissions
+* Email Notifications
+* File Attachments
+* Team Collaboration Features
+* Deployment Support
+
+---
+
+##  Author
+
+**Hafid Karkouch**
+
+* GitHub: https://github.com/hfdkr
+
+---
+
+##  Support
+
+If you like this project, consider giving it a star on GitHub.
+
+ Star the repository to support future development.
