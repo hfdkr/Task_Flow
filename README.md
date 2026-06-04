@@ -144,11 +144,12 @@ http://localhost:3000
 
 **Hassan akbad**
 
-*https://github.com/akbad091
+* GitHub: https://github.com/akbad091
 
 **Ilysas Assfar**
 
-*https://github.com/assfar35-stack
+* GitHub: https://github.com/assfar35-stack
+  
 ---
 
 ##  Support
