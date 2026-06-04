@@ -139,6 +139,16 @@ http://localhost:3000
 * GitHub: https://github.com/hfdkr
 
 **Hamza Bari**
+
+* GitHub: https://github.com/u0ke
+
+**Hassan akbad**
+
+*https://github.com/akbad091
+
+**Ilysas Assfar**
+
+*https://github.com/assfar35-stack
 ---
 
 ##  Support
