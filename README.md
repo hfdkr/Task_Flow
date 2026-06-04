@@ -18,3 +18,38 @@ A modern full-stack task management application designed to help teams organize,
 * ⚡ Real-Time Task Updates
 
 ---
+ 
+##  Screenshots
+
+### Dashboard
+
+Add your dashboard screenshot here
+
+```md
+![Dashboard](assets/dashboard.png)
+```
+
+### Kanban Board
+
+```md
+![Kanban](assets/kanban.png)
+```
+
+---
+
+## 📂 Project Structure
+
+```bash
+Task_Flow/
+│
+├── assets/
+├── node_modules/
+├── data.json
+├── index.html
+├── script.js
+├── server.js
+├── package.json
+└── .gitignore
+```
+
+---
