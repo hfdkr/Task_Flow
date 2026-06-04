@@ -77,7 +77,9 @@ function toggleTheme(isDark) {
 
 function updateThemeLabel(theme) {
     const labelEl = document.querySelector('#sidebar nav ~ div span:first-child');
-    if (labelEl) labelEl.textContent = theme === 'dark' ? '🌙 Dark mode' : '☀️ Light mode';
+    if (labelEl) {
+        labelEl.innerHTML = theme === 'dark' ? '<i class="fi fi-rr-moon"></i> Dark mode' : '<i class="fi fi-rr-brightness"></i> Light mode';
+    }
 }
 
 // ─── View Switching ───────────────────────────────────────────────────────────
