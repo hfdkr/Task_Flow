@@ -53,3 +53,61 @@ Task_Flow/
 ```
 
 ---
+
+
+##  Installation
+
+### Clone the repository
+
+```bash
+git clone https://github.com/hfdkr/Task_Flow.git
+cd Task_Flow
+```
+
+### Install dependencies
+
+```bash
+npm install
+```
+
+### Start the server
+
+```bash
+node server.js
+```
+
+### Open the application
+
+```bash
+http://localhost:3000
+```
+
+---
+
+##  Main Functionalities
+
+### Task Management
+
+* Create tasks
+* Edit tasks
+* Delete tasks
+* Update task status
+* Assign members
+* Set priorities
+
+### Dashboard Analytics
+
+* Total Tasks
+* Completed Tasks
+* In Progress Tasks
+* Task Distribution
+* Member Workload
+
+### User Experience
+
+* Responsive UI
+* Dark / Light Mode
+* Smooth Animations
+* Modern Design
+
+---
