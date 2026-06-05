@@ -134,7 +134,7 @@ http://localhost:3000
 
 ##  Authors
 
-**Hafid Karkouch**
+**Hafid kr**
 
 * GitHub: https://github.com/hfdkr
 
@@ -146,7 +146,7 @@ http://localhost:3000
 
 * GitHub: https://github.com/akbad091
 
-**Ilysas Assfar**
+**Ilyas Assfar**
 
 * GitHub: https://github.com/assfar35-stack
   
