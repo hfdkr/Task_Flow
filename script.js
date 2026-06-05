@@ -114,7 +114,7 @@ const appEl         = document.getElementById('app');
 
 const titleInput    = document.getElementById('title-input');
 const memberSelect  = document.getElementById('member-select');
-const projectInput  = document.getElementById('project-input');
+const projectSelect = document.getElementById('project-select');
 const dueDateInput  = document.getElementById('due-date-input');
 const statusSelect  = document.getElementById('status-select');
 const prioritySelect = document.getElementById('priority-select');
@@ -139,6 +139,10 @@ const confirmDelete    = document.getElementById('confirm-delete');
 const membersPanel     = document.getElementById('members-panel');
 const newMemberInput   = document.getElementById('new-member-input');
 const membersList      = document.getElementById('members-list');
+
+const projectsPanel    = document.getElementById('projects-panel');
+const newProjectInput  = document.getElementById('new-project-input');
+const projectsList     = document.getElementById('projects-list');
 
 
 // ─── Error Banner ─────────────────────────────────────────────────────────────
@@ -212,6 +216,9 @@ async function updateTask(id, c)    { return apiFetch(`${API}/tasks/${id}`, { me
 async function removeTask(id)       { return apiFetch(`${API}/tasks/${id}`, { method:'DELETE' }); }
 async function createMember(name)   { return apiFetch(`${API}/members`, { method:'POST', body: JSON.stringify({ name }) }); }
 async function removeMember(id)     { return apiFetch(`${API}/members/${id}`, { method:'DELETE' }); }
+async function fetchProjects()      { return (await apiFetch(`${API}/projects`)).projects; }
+async function createProject(name)  { return apiFetch(`${API}/projects`, { method:'POST', body: JSON.stringify({ name }) }); }
+async function removeProject(id)    { return apiFetch(`${API}/projects/${id}`, { method:'DELETE' }); }
 
 
 // ─── Members Panel ────────────────────────────────────────────────────────────
@@ -264,6 +271,59 @@ async function deleteMember(id) {
 }
 
 
+// ─── Projects Panel ───────────────────────────────────────────────────────────
+function openProjectsPanel()  { projectsPanel.classList.remove('hidden'); }
+function closeProjectsPanel() { projectsPanel.classList.add('hidden'); }
+projectsPanel.addEventListener('click', e => { if (e.target === projectsPanel) closeProjectsPanel(); });
+newProjectInput.addEventListener('keydown', e => { if (e.key === 'Enter') addProject(); });
+
+async function renderProjectsPanel() {
+    const projects = await fetchProjects();
+    // Rebuild project select dropdown
+    const current = projectSelect.value;
+    projectSelect.innerHTML = '<option value="">No project...</option>';
+    projects.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = opt.textContent = p.name;
+        projectSelect.appendChild(opt);
+    });
+    if (projects.some(p => p.name === current)) projectSelect.value = current;
+
+    // Render panel list
+    projectsList.innerHTML = '';
+    if (!projects.length) {
+        projectsList.innerHTML = `<p style="font-size:13px;color:var(--text-muted)">No projects yet. Add one above.</p>`;
+        return;
+    }
+    projects.forEach(p => {
+        const row = document.createElement('div');
+        row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;background:var(--bg-element);border:1px solid var(--border-strong);border-radius:10px;padding:10px 14px';
+        row.innerHTML = `
+            <div style="display:flex;align-items:center;gap:10px">
+                <span style="width:30px;height:30px;background:var(--brand-dim);border:1px solid rgba(108,143,255,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--brand)">◫</span>
+                <span style="font-size:14px;color:var(--text-main)">${p.name}</span>
+            </div>
+            <button onclick="deleteProject(${p.id})" style="color:var(--text-muted);font-size:16px;cursor:pointer;background:none;border:none;transition:color 0.18s" onmouseover="this.style.color='var(--status-danger)'" onmouseout="this.style.color='var(--text-muted)'">✕</button>`;
+        projectsList.appendChild(row);
+    });
+}
+
+async function addProject() {
+    const name = newProjectInput.value.trim();
+    if (!name) return;
+    const result = await createProject(name);
+    if (!result.success) { showError(result.message || 'Failed to add project'); return; }
+    newProjectInput.value = '';
+    await renderProjectsPanel();
+}
+
+async function deleteProject(id) {
+    const result = await removeProject(id);
+    if (!result.success) { showError('Failed to remove project'); return; }
+    await renderProjectsPanel();
+}
+
+
 // ─── Delete Modal ─────────────────────────────────────────────────────────────
 confirmCancel.addEventListener('click', () => { confirmModal.classList.add('hidden'); pendingDeleteId = null; });
 confirmDelete.addEventListener('click', async () => {
@@ -287,7 +347,7 @@ async function handleAdd() {
     if (!title || !member) { showError('Please fill in the task title and assign a member'); return; }
     hideError();
 
-    const payload = { title, member, project: projectInput.value.trim(), dueDate: dueDateInput.value, status: statusSelect.value, priority: prioritySelect.value, description: descInput.value.trim() };
+    const payload = { title, member, project: projectSelect.value.trim(), dueDate: dueDateInput.value, status: statusSelect.value, priority: prioritySelect.value, description: descInput.value.trim() };
 
     if (editingTaskId) {
         const result = await updateTask(editingTaskId, payload);
@@ -304,7 +364,7 @@ async function handleAdd() {
 }
 
 function clearForm() {
-    titleInput.value = ''; memberSelect.value = ''; projectInput.value = '';
+    titleInput.value = ''; memberSelect.value = ''; projectSelect.value = '';
     dueDateInput.value = ''; statusSelect.value = 'To Do'; prioritySelect.value = 'Low'; descInput.value = '';
 }
 
@@ -313,7 +373,7 @@ async function editTask(id) {
     const task  = tasks.find(t => t.id === id);
     if (!task) return;
     titleInput.value = task.title; memberSelect.value = task.member;
-    projectInput.value = task.project||''; dueDateInput.value = task.dueDate||'';
+    projectSelect.value = task.project||''; dueDateInput.value = task.dueDate||'';
     statusSelect.value = task.status; prioritySelect.value = task.priority; descInput.value = task.description||'';
     editingTaskId = id;
     addBtn.textContent = 'Update Task';
@@ -657,6 +717,7 @@ async function init() {
     showLoadingSkeleton();
     try {
         await renderMembersPanel();
+        await renderProjectsPanel();
         await renderDashboard();
         await renderTasks();
     } catch (err) {

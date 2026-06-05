@@ -329,6 +329,27 @@
     </div>
 
     <!-- ═══════════════════════════════════════════════════════
+     PROJECTS PANEL
+════════════════════════════════════════════════════════ -->
+    <div id="projects-panel" class="fixed inset-0 modal-bg flex items-center justify-end z-50 hidden">
+        <div
+            style="background:var(--bg-surface);border-left:1px solid var(--border-subtle);width:100%;max-width:340px;height:100%;padding:32px;display:flex;flex-direction:column;gap:20px;overflow-y:auto">
+            <div class="flex items-center justify-between">
+                <h3 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--text-main)">Projects</h3>
+                <button onclick="closeProjectsPanel()"
+                    style="color:var(--text-muted);font-size:20px;cursor:pointer;background:none;border:none;line-height:1">✕</button>
+            </div>
+            <div class="flex gap-2">
+                <input id="new-project-input" type="text" placeholder="Project name..." class="tf-input"
+                    style="border-radius:10px;padding:10px 14px">
+                <button onclick="addProject()"
+                    style="background:var(--brand);color:white;border-radius:10px;padding:10px 18px;font-size:13px;font-weight:600;cursor:pointer;border:none;white-space:nowrap">Add</button>
+            </div>
+            <div id="projects-list" class="flex flex-col gap-2"></div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
      MAIN APP SHELL
 ════════════════════════════════════════════════════════ -->
     <div id="app" class="flex h-screen overflow-hidden hidden">
@@ -377,6 +398,10 @@
                     <div class="nav-item" onclick="openMembersPanel()" title="Team Members">
                         <span class="nav-icon"></span>
                         <span class="sidebar-label">Team Members</span>
+                    </div>
+                    <div class="nav-item" onclick="openProjectsPanel()" title="Projects">
+                        <span class="nav-icon"></span>
+                        <span class="sidebar-label">Projects</span>
                     </div>
                 </nav>
 
@@ -472,6 +497,9 @@
                     <div class="mobile-nav-divider"></div>
                     <div class="mobile-nav-item" onclick="openMembersPanel();closeMobileMenu()">
                         Team Members
+                    </div>
+                    <div class="mobile-nav-item" onclick="openProjectsPanel();closeMobileMenu()">
+                        Projects
                     </div>
                     <div class="mobile-nav-divider"></div>
                     <div class="mobile-nav-item" onclick="logout()" style="color:var(--status-danger)">
@@ -630,7 +658,14 @@
                                     style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted);font-size:11px">
                                     ▼</div>
                             </div>
-                            <input id="project-input" type="text" placeholder="Project name..." class="tf-input">
+                            <div style="position:relative">
+                                <select id="project-select" class="tf-input" style="cursor:pointer;padding-right:36px">
+                                    <option value="">No project...</option>
+                                </select>
+                                <div
+                                    style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted);font-size:11px">
+                                    ▼</div>
+                            </div>
                         </div>
 
                         <!-- Row 2: Date · Status · Priority · + Add button -->

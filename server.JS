@@ -78,7 +78,8 @@ function readData() {
     const raw = fs.readFileSync(DATA_FILE, 'utf-8');
     const data = JSON.parse(raw);
     // backward-compat: if file only has tasks array
-    if (!data.members) data.members = [];
+    if (!data.members)  data.members  = [];
+    if (!data.projects) data.projects = [];
     return data;
 }
 
@@ -192,6 +193,56 @@ app.delete('/api/tasks/:id', requireAuth, (req, res) => {
     } catch (err) {
         console.error('DELETE /api/tasks/:id error:', err);
         res.status(500).json({ success: false, message: 'Failed to delete task' });
+    }
+});
+
+function readProjects()  { const d = readData(); return d.projects || []; }
+function writeProjects(projects) { const d = readData(); d.projects = projects; writeData(d); }
+
+// ─── Projects API ─────────────────────────────────────────────────────────────
+
+// GET /api/projects
+app.get('/api/projects', requireAuth, (req, res) => {
+    try {
+        res.json({ success: true, projects: readProjects() });
+    } catch (err) {
+        res.status(500).json({ success: false, message: 'Failed to load projects' });
+    }
+});
+
+// POST /api/projects
+app.post('/api/projects', requireAuth, (req, res) => {
+    try {
+        const { name } = req.body;
+        if (!name || !name.trim()) {
+            return res.status(400).json({ success: false, message: 'Name is required' });
+        }
+        const projects = readProjects();
+        const clean    = sanitize(name.trim());
+        if (projects.some(p => p.name.toLowerCase() === clean.toLowerCase())) {
+            return res.status(409).json({ success: false, message: 'Project already exists' });
+        }
+        const project = { id: Date.now(), name: clean };
+        projects.push(project);
+        writeProjects(projects);
+        res.status(201).json({ success: true, project });
+    } catch (err) {
+        res.status(500).json({ success: false, message: 'Failed to add project' });
+    }
+});
+
+// DELETE /api/projects/:id
+app.delete('/api/projects/:id', requireAuth, (req, res) => {
+    try {
+        const id       = parseInt(req.params.id);
+        const projects = readProjects();
+        if (!projects.some(p => p.id === id)) {
+            return res.status(404).json({ success: false, message: 'Project not found' });
+        }
+        writeProjects(projects.filter(p => p.id !== id));
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ success: false, message: 'Failed to delete project' });
     }
 });
 
