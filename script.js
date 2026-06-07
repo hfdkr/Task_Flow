@@ -1041,3 +1041,170 @@ document.getElementById('danger-modal').addEventListener('click', e => {
 });
 
 checkAuth();
+// ─── Account Settings Modal ───────────────────────────────────────────────────
+
+function openAccountModal() {
+    const modal = document.getElementById('account-modal');
+    if (!modal || !currentUser) return;
+    modal.classList.remove('hidden');
+
+    // Fill header
+    const initials = currentUser.name.trim().split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+    const bigAv = document.getElementById('acct-avatar-big');
+    if (bigAv) bigAv.textContent = initials;
+    const headerName = document.getElementById('acct-header-name');
+    if (headerName) headerName.textContent = currentUser.name;
+    const headerRole = document.getElementById('acct-header-role');
+    if (headerRole) headerRole.textContent = currentUser.role === 'admin' ? '⭐ Admin' : 'Member';
+
+    // Fill profile tab
+    const nameEl  = document.getElementById('acct-name');
+    const emailEl = document.getElementById('acct-email');
+    if (nameEl)  nameEl.value  = currentUser.name  || '';
+    if (emailEl) emailEl.value = currentUser.email || '';
+
+    // Fill info card
+    const roleEl   = document.getElementById('acct-info-role');
+    const joinedEl = document.getElementById('acct-info-joined');
+    if (roleEl)   roleEl.textContent   = currentUser.role === 'admin' ? 'Admin' : 'Member';
+    if (joinedEl) joinedEl.textContent = currentUser.createdAt
+        ? new Date(currentUser.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+        : '—';
+
+    // Sync preferences toggles
+    const themeChk = document.getElementById('acct-theme-check');
+    if (themeChk) themeChk.checked = (localStorage.getItem('tf-theme') || 'dark') === 'dark';
+    const sidebarChk = document.getElementById('acct-sidebar-check');
+    if (sidebarChk) sidebarChk.checked = localStorage.getItem('tf-sidebar') === 'collapsed';
+
+    // Reset to profile tab
+    switchAccountTab('profile');
+    clearAccountMsgs();
+}
+
+function closeAccountModal() {
+    const modal = document.getElementById('account-modal');
+    if (modal) modal.classList.add('hidden');
+    clearAccountMsgs();
+}
+
+// Close on backdrop click
+document.addEventListener('click', e => {
+    const modal = document.getElementById('account-modal');
+    if (modal && e.target === modal) closeAccountModal();
+});
+
+// Close on Escape key
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeAccountModal();
+});
+
+function clearAccountMsgs() {
+    ['acct-profile-msg', 'acct-security-msg'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    });
+    // Clear password fields
+    ['acct-cur-pwd', 'acct-new-pwd', 'acct-confirm-pwd'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+    // Reset strength meter
+    updateStrength('');
+}
+
+function switchAccountTab(tab) {
+    const tabs   = ['profile', 'security', 'preferences'];
+    tabs.forEach(t => {
+        const panel = document.getElementById(`acct-panel-${t}`);
+        const btn   = document.getElementById(`acct-tab-${t}`);
+        if (panel) panel.style.display = t === tab ? 'block' : 'none';
+        if (btn) {
+            btn.style.borderBottomColor = t === tab ? 'var(--brand)' : 'transparent';
+            btn.style.color             = t === tab ? 'var(--brand)' : 'var(--text-muted)';
+        }
+    });
+}
+
+function showAccountMsg(panelId, text, ok) {
+    const el = document.getElementById(panelId);
+    if (!el) return;
+    el.textContent       = text;
+    el.style.display     = 'block';
+    el.style.color       = ok ? 'var(--status-done)'   : 'var(--status-danger)';
+    el.style.background  = ok ? 'rgba(16,185,129,0.08)' : 'rgba(239,68,68,0.08)';
+    el.style.border      = `1px solid ${ok ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)'}`;
+    if (ok) setTimeout(() => { el.style.display = 'none'; }, 4000);
+}
+
+// ── Save Profile ──────────────────────────────────────────────
+async function saveProfile() {
+    const name  = (document.getElementById('acct-name')?.value  || '').trim();
+    const email = (document.getElementById('acct-email')?.value || '').trim();
+
+    if (!name)  { showAccountMsg('acct-profile-msg', 'الاسم مطلوب.', false); return; }
+    if (!email) { showAccountMsg('acct-profile-msg', 'البريد الإلكتروني مطلوب.', false); return; }
+
+    try {
+        const res = await apiFetch(`${API}/account/profile`, {
+            method: 'PUT',
+            body: JSON.stringify({ name, email })
+        });
+        if (res.success) {
+            currentUser.name  = res.user.name;
+            currentUser.email = res.user.email;
+            updateUserUI();
+            // Update modal header live
+            const headerName = document.getElementById('acct-header-name');
+            if (headerName) headerName.textContent = res.user.name;
+            const bigAv = document.getElementById('acct-avatar-big');
+            if (bigAv) bigAv.textContent = res.user.name.trim().split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+            showAccountMsg('acct-profile-msg', '✓ تم حفظ الملف الشخصي بنجاح.', true);
+        } else {
+            showAccountMsg('acct-profile-msg', res.message || 'فشل التحديث.', false);
+        }
+    } catch {
+        showAccountMsg('acct-profile-msg', 'خطأ في الاتصال بالسيرفر.', false);
+    }
+}
+
+// ── Save Password ─────────────────────────────────────────────
+async function savePassword() {
+    const curPwd     = document.getElementById('acct-cur-pwd')?.value     || '';
+    const newPwd     = document.getElementById('acct-new-pwd')?.value     || '';
+    const confirmPwd = document.getElementById('acct-confirm-pwd')?.value || '';
+
+    if (!curPwd)              { showAccountMsg('acct-security-msg', 'أدخل كلمة المرور الحالية.', false); return; }
+    if (newPwd.length < 6)   { showAccountMsg('acct-security-msg', 'كلمة المرور الجديدة يجب أن تكون 6 أحرف على الأقل.', false); return; }
+    if (newPwd !== confirmPwd){ showAccountMsg('acct-security-msg', 'كلمة المرور الجديدة غير متطابقة.', false); return; }
+
+    try {
+        const res = await apiFetch(`${API}/account/password`, {
+            method: 'PUT',
+            body: JSON.stringify({ currentPassword: curPwd, newPassword: newPwd })
+        });
+        if (res.success) {
+            document.getElementById('acct-cur-pwd').value     = '';
+            document.getElementById('acct-new-pwd').value     = '';
+            document.getElementById('acct-confirm-pwd').value = '';
+            updateStrength('');
+            showAccountMsg('acct-security-msg', '✓ تم تغيير كلمة المرور بنجاح.', true);
+        } else {
+            showAccountMsg('acct-security-msg', res.message || 'فشل تغيير كلمة المرور.', false);
+        }
+    } catch {
+        showAccountMsg('acct-security-msg', 'خطأ في الاتصال بالسيرفر.', false);
+    }
+}
+
+// ── Sidebar preference ────────────────────────────────────────
+function setPrefSidebar(collapsed) {
+    const sidebar = document.getElementById('sidebar');
+    if (collapsed) {
+        sidebar.classList.add('collapsed');
+        localStorage.setItem('tf-sidebar', 'collapsed');
+    } else {
+        sidebar.classList.remove('collapsed');
+        localStorage.setItem('tf-sidebar', 'expanded');
+    }
+}

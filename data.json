@@ -77,10 +77,6 @@
     {
       "id": 1780348156408,
       "name": "ilyass"
-    },
-    {
-      "id": 1780353003818,
-      "name": "hamza"
     }
   ],
   "projects": [
@@ -94,21 +90,5 @@
     }
   ],
   "users": [
-    {
-      "id": 1780843108468,
-      "name": "hafid",
-      "email": "hafidkarkouch5@gmail.com",
-      "password": "$2b$12$HR6dOKypbgwUUwYUazpfkeOyfnk.PV1TgDc8mCPfnnAXUFhs.1Kqe",
-      "role": "admin",
-      "createdAt": "2026-06-07T14:38:28.468Z"
-    },
-    {
-      "id": 1780843142994,
-      "name": "loranss",
-      "email": "hafidkarkouch51@gmail.com",
-      "password": "$2b$12$zsFLM8E9ccFJi9X6EZ1yWOpvQXjUCFxDhzLtpvne6l0qTFbQUCXYe",
-      "role": "member",
-      "createdAt": "2026-06-07T14:39:02.994Z"
-    }
   ]
 }

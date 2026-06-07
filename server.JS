@@ -1,4 +1,6 @@
 // ─── Imports ──────────────────────────────────────────────────────────────────
+require('dotenv').config();
+
 const express      = require('express');
 const cors         = require('cors');
 const path         = require('path');
@@ -6,9 +8,9 @@ const fs           = require('fs');
 const session      = require('express-session');
 const bcrypt       = require('bcrypt');
 
-const app  = express();
-const PORT = 3000;
-const SALT_ROUNDS = 12;
+const app         = express();
+const PORT        = process.env.PORT          || 3000;
+const SALT_ROUNDS = parseInt(process.env.BCRYPT_ROUNDS || '12', 10);
 
 // ─── Middleware ───────────────────────────────────────────────────────────────
 app.use(cors({ origin: true, credentials: true }));
@@ -68,6 +70,39 @@ function writeMembers(members)   { const d = readData(); d.members  = members;  
 function writeProjects(projects) { const d = readData(); d.projects = projects; writeData(d); }
 function writeUsers(users)       { const d = readData(); d.users    = users;    writeData(d); }
 
+// ─── Bootstrap Admin from .env ────────────────────────────────────────────────
+// Runs once at startup. If ADMIN_EMAIL is set in .env and no user with that
+// email exists yet, it creates the admin account automatically.
+async function bootstrapAdmin() {
+    const adminEmail = (process.env.ADMIN_EMAIL || '').toLowerCase().trim();
+    const adminPwd   = process.env.ADMIN_PASSWORD || '';
+    const adminName  = process.env.ADMIN_NAME     || 'Admin';
+
+    if (!adminEmail || !adminPwd) {
+        console.log('[TaskFlow] No ADMIN_EMAIL/ADMIN_PASSWORD in .env — skipping admin bootstrap.');
+        return;
+    }
+
+    const users = readUsers();
+    if (users.some(u => u.email === adminEmail)) {
+        console.log(`[TaskFlow] Admin account already exists: ${adminEmail}`);
+        return;
+    }
+
+    const hash  = await bcrypt.hash(adminPwd, SALT_ROUNDS);
+    const admin = {
+        id:        Date.now(),
+        name:      adminName,
+        email:     adminEmail,
+        password:  hash,
+        role:      'admin',
+        createdAt: new Date().toISOString()
+    };
+    users.unshift(admin); // put admin first
+    writeUsers(users);
+    console.log(`[TaskFlow] ✓ Admin account created: ${adminEmail}`);
+}
+
 // ─── Auth Routes ──────────────────────────────────────────────────────────────
 
 // POST /api/register
@@ -107,7 +142,7 @@ app.post('/api/register', async (req, res) => {
 
         res.status(201).json({
             success: true,
-            user: { id: user.id, name: user.name, email: user.email, role: user.role }
+            user: { id: user.id, name: user.name, email: user.email, role: user.role, createdAt: user.createdAt }
         });
     } catch (err) {
         console.error('Register error:', err);
@@ -137,14 +172,15 @@ app.post('/api/login', async (req, res) => {
             return res.status(401).json({ success: false, message: 'Incorrect password' });
         }
 
-        req.session.userId    = user.id;
-        req.session.userName  = user.name;
-        req.session.userEmail = user.email;
-        req.session.userRole  = user.role;
+        req.session.userId      = user.id;
+        req.session.userName    = user.name;
+        req.session.userEmail   = user.email;
+        req.session.userRole    = user.role;
+        req.session.userCreated = user.createdAt;
 
         res.json({
             success: true,
-            user: { id: user.id, name: user.name, email: user.email, role: user.role }
+            user: { id: user.id, name: user.name, email: user.email, role: user.role, createdAt: user.createdAt }
         });
     } catch (err) {
         console.error('Login error:', err);
@@ -164,10 +200,11 @@ app.get('/api/me', (req, res) => {
         res.json({
             authenticated: true,
             user: {
-                id:    req.session.userId,
-                name:  req.session.userName,
-                email: req.session.userEmail,
-                role:  req.session.userRole
+                id:        req.session.userId,
+                name:      req.session.userName,
+                email:     req.session.userEmail,
+                role:      req.session.userRole,
+                createdAt: req.session.userCreated
             }
         });
     } else {
@@ -321,5 +358,204 @@ app.delete('/api/members/:id', requireAuth, (req, res) => {
     }
 });
 
+// ─── Account: Profile Update ──────────────────────────────────────────────────
+
+// PUT /api/account/profile — update name & email only (no password needed)
+app.put('/api/account/profile', requireAuth, async (req, res) => {
+    try {
+        const { name, email } = req.body;
+        if (!name || !name.trim())          return res.status(400).json({ success: false, message: 'Name is required' });
+        if (!email || !isValidEmail(email)) return res.status(400).json({ success: false, message: 'Valid email is required' });
+
+        const users      = readUsers();
+        const idx        = users.findIndex(u => u.id === req.session.userId);
+        if (idx === -1)  return res.status(404).json({ success: false, message: 'User not found' });
+
+        const emailLower = email.toLowerCase().trim();
+        if (users.some(u => u.email === emailLower && u.id !== req.session.userId)) {
+            return res.status(409).json({ success: false, message: 'Email already used by another account' });
+        }
+
+        users[idx].name  = sanitize(name.trim());
+        users[idx].email = emailLower;
+        writeUsers(users);
+
+        req.session.userName  = users[idx].name;
+        req.session.userEmail = users[idx].email;
+
+        res.json({ success: true, user: { id: users[idx].id, name: users[idx].name, email: users[idx].email, role: users[idx].role, createdAt: users[idx].createdAt } });
+    } catch (err) {
+        console.error('PUT /api/account/profile error:', err);
+        res.status(500).json({ success: false, message: 'Failed to update profile' });
+    }
+});
+
+// PUT /api/account/password — change password only
+app.put('/api/account/password', requireAuth, async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+        if (!currentPassword) return res.status(400).json({ success: false, message: 'Current password is required' });
+        if (!newPassword || newPassword.length < 6) return res.status(400).json({ success: false, message: 'New password must be at least 6 characters' });
+
+        const users = readUsers();
+        const idx   = users.findIndex(u => u.id === req.session.userId);
+        if (idx === -1) return res.status(404).json({ success: false, message: 'User not found' });
+
+        const match = await bcrypt.compare(currentPassword, users[idx].password);
+        if (!match) return res.status(401).json({ success: false, message: 'Current password is incorrect' });
+
+        users[idx].password = await bcrypt.hash(newPassword, SALT_ROUNDS);
+        writeUsers(users);
+
+        res.json({ success: true });
+    } catch (err) {
+        console.error('PUT /api/account/password error:', err);
+        res.status(500).json({ success: false, message: 'Failed to change password' });
+    }
+});
+
+// ─── Account Update ───────────────────────────────────────────────────────────
+
+// PUT /api/account — update own name, email, password
+app.put('/api/account', requireAuth, async (req, res) => {
+    try {
+        const { name, email, currentPassword, newPassword } = req.body;
+        if (!name || !name.trim())          return res.status(400).json({ success: false, message: 'Name is required' });
+        if (!email || !isValidEmail(email)) return res.status(400).json({ success: false, message: 'Valid email is required' });
+        if (!currentPassword)               return res.status(400).json({ success: false, message: 'Current password is required' });
+
+        const users    = readUsers();
+        const idx      = users.findIndex(u => u.id === req.session.userId);
+        if (idx === -1) return res.status(404).json({ success: false, message: 'User not found' });
+
+        const match = await bcrypt.compare(currentPassword, users[idx].password);
+        if (!match) return res.status(401).json({ success: false, message: 'Current password is incorrect' });
+
+        const emailLower = email.toLowerCase().trim();
+        // Check email not taken by another user
+        if (users.some(u => u.email === emailLower && u.id !== req.session.userId)) {
+            return res.status(409).json({ success: false, message: 'Email already used by another account' });
+        }
+
+        users[idx].name  = sanitize(name.trim());
+        users[idx].email = emailLower;
+        if (newPassword) {
+            if (newPassword.length < 6) return res.status(400).json({ success: false, message: 'New password must be at least 6 characters' });
+            users[idx].password = await bcrypt.hash(newPassword, SALT_ROUNDS);
+        }
+
+        writeUsers(users);
+        req.session.userName  = users[idx].name;
+        req.session.userEmail = users[idx].email;
+
+        res.json({ success: true, user: { id: users[idx].id, name: users[idx].name, email: users[idx].email, role: users[idx].role } });
+    } catch (err) {
+        console.error('PUT /api/account error:', err);
+        res.status(500).json({ success: false, message: 'Failed to update account' });
+    }
+});
+
+// ─── Admin middleware ─────────────────────────────────────────────────────────
+function requireAdmin(req, res, next) {
+    if (req.session && req.session.userId && req.session.userRole === 'admin') return next();
+    res.status(403).json({ success: false, message: 'Admin access required' });
+}
+
+// ─── Admin: User Management API ───────────────────────────────────────────────
+
+// GET /api/admin/users — list all users (passwords stripped)
+app.get('/api/admin/users', requireAuth, requireAdmin, (req, res) => {
+    try {
+        const users = readUsers().map(({ password, ...u }) => u);
+        res.json({ success: true, users });
+    } catch (err) {
+        res.status(500).json({ success: false, message: 'Failed to load users' });
+    }
+});
+
+// POST /api/admin/users — create a user manually
+app.post('/api/admin/users', requireAuth, requireAdmin, async (req, res) => {
+    try {
+        const { name, email, password } = req.body;
+        if (!name || !name.trim())           return res.status(400).json({ success: false, message: 'Name is required' });
+        if (!email || !isValidEmail(email))  return res.status(400).json({ success: false, message: 'Valid email is required' });
+        if (!password || password.length < 6) return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
+
+        const users      = readUsers();
+        const emailLower = email.toLowerCase().trim();
+        if (users.some(u => u.email === emailLower)) {
+            return res.status(409).json({ success: false, message: 'An account with this email already exists' });
+        }
+
+        const hash = await bcrypt.hash(password, SALT_ROUNDS);
+        const user = { id: Date.now(), name: sanitize(name.trim()), email: emailLower, password: hash, role: 'member', createdAt: new Date().toISOString() };
+        users.push(user);
+        writeUsers(users);
+        const { password: _, ...safeUser } = user;
+        res.status(201).json({ success: true, user: safeUser });
+    } catch (err) {
+        res.status(500).json({ success: false, message: 'Failed to create user' });
+    }
+});
+
+// PUT /api/admin/users/:id/role — change a user's role
+app.put('/api/admin/users/:id/role', requireAuth, requireAdmin, (req, res) => {
+    try {
+        const id    = parseInt(req.params.id);
+        const { role } = req.body;
+        if (!['admin', 'member'].includes(role)) return res.status(400).json({ success: false, message: 'Invalid role' });
+        if (id === req.session.userId)           return res.status(400).json({ success: false, message: 'Cannot change your own role' });
+
+        const users = readUsers();
+        const idx   = users.findIndex(u => u.id === id);
+        if (idx === -1) return res.status(404).json({ success: false, message: 'User not found' });
+
+        users[idx].role = role;
+        writeUsers(users);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ success: false, message: 'Failed to update role' });
+    }
+});
+
+// DELETE /api/admin/users/:id — delete a user
+app.delete('/api/admin/users/:id', requireAuth, requireAdmin, (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        if (id === req.session.userId) return res.status(400).json({ success: false, message: 'Cannot delete your own account' });
+        const users = readUsers();
+        if (!users.some(u => u.id === id)) return res.status(404).json({ success: false, message: 'User not found' });
+        writeUsers(users.filter(u => u.id !== id));
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ success: false, message: 'Failed to delete user' });
+    }
+});
+
+// DELETE /api/admin/clear-tasks — wipe all tasks
+app.delete('/api/admin/clear-tasks', requireAuth, requireAdmin, (req, res) => {
+    try { writeTasks([]); res.json({ success: true }); }
+    catch (err) { res.status(500).json({ success: false, message: 'Failed to clear tasks' }); }
+});
+
+// DELETE /api/admin/reset — wipe tasks, members, projects (keep users)
+app.delete('/api/admin/reset', requireAuth, requireAdmin, (req, res) => {
+    try {
+        const d = readData();
+        d.tasks = []; d.members = []; d.projects = [];
+        writeData(d);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ success: false, message: 'Failed to reset workspace' });
+    }
+});
+
 // ─── Start ────────────────────────────────────────────────────────────────────
-app.listen(PORT, () => console.log(`TaskFlow running on http://localhost:${PORT}`));
+bootstrapAdmin().then(() => {
+    app.listen(PORT, () => {
+        console.log(`[TaskFlow] Server running → http://localhost:${PORT}`);
+    });
+}).catch(err => {
+    console.error('[TaskFlow] Bootstrap error:', err);
+    process.exit(1);
+});
