@@ -9,7 +9,8 @@
       "dueDate": "2026-06-04",
       "status": "In Progress",
       "priority": "High",
-      "createdAt": "2026-06-03T19:33:35.626Z"
+      "createdAt": "2026-06-03T19:33:35.626Z",
+      "updatedAt": "2026-06-07T14:41:00.593Z"
     },
     {
       "id": 1780347390364,
@@ -31,9 +32,9 @@
       "description": "ble bla bla bla",
       "dueDate": "2026-06-11",
       "status": "Done",
-      "priority": "Medium",
+      "priority": "Low",
       "createdAt": "2026-06-01T20:58:41.073Z",
-      "updatedAt": "2026-06-03T23:15:42.106Z"
+      "updatedAt": "2026-06-07T14:41:45.558Z"
     },
     {
       "id": 1780353224799,
@@ -90,6 +91,24 @@
     {
       "id": 1780676985571,
       "name": "code arena"
+    }
+  ],
+  "users": [
+    {
+      "id": 1780843108468,
+      "name": "hafid",
+      "email": "hafidkarkouch5@gmail.com",
+      "password": "$2b$12$HR6dOKypbgwUUwYUazpfkeOyfnk.PV1TgDc8mCPfnnAXUFhs.1Kqe",
+      "role": "admin",
+      "createdAt": "2026-06-07T14:38:28.468Z"
+    },
+    {
+      "id": 1780843142994,
+      "name": "loranss",
+      "email": "hafidkarkouch51@gmail.com",
+      "password": "$2b$12$zsFLM8E9ccFJi9X6EZ1yWOpvQXjUCFxDhzLtpvne6l0qTFbQUCXYe",
+      "role": "member",
+      "createdAt": "2026-06-07T14:39:02.994Z"
     }
   ]
 }

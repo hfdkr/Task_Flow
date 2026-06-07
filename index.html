@@ -263,26 +263,104 @@
 <body>
 
     <!-- ═══════════════════════════════════════════════════════
-     LOGIN SCREEN
+     AUTH SCREEN  (Sign In / Sign Up)
 ════════════════════════════════════════════════════════ -->
     <div id="login-screen" class="fixed inset-0 flex items-center justify-center z-50 hidden"
         style="background:var(--bg-base)">
-        <div style="background:var(--bg-surface);border:1px solid var(--border-subtle)"
-            class="rounded-[24px] p-[48px] w-full max-w-[420px] mx-6 shadow-2xl">
+
+        <!-- Decorative gradient blobs -->
+        <div style="position:absolute;top:-120px;left:-120px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(108,143,255,0.12) 0%,transparent 70%);pointer-events:none"></div>
+        <div style="position:absolute;bottom:-80px;right:-80px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(16,185,129,0.08) 0%,transparent 70%);pointer-events:none"></div>
+
+        <div style="background:var(--bg-surface);border:1px solid var(--border-subtle);position:relative;z-index:1"
+            class="rounded-[24px] p-[40px] w-full max-w-[440px] mx-6 shadow-2xl">
+
+            <!-- Logo -->
             <div class="mb-8">
-                <h1
-                    style="font-family:'Syne',sans-serif;font-size:40px;font-weight:800;letter-spacing:-1.5px;color:var(--text-main)">
-                    Task<span style="color:var(--brand)">Flow</span>
-                </h1>
-                <p style="color:var(--text-muted);font-size:14px;margin-top:4px">Sign in to your workspace</p>
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+                    <span style="font-size:26px">⬡</span>
+                    <h1 style="font-family:'Syne',sans-serif;font-size:32px;font-weight:800;letter-spacing:-1.5px;color:var(--text-main);line-height:1">
+                        Task<span style="color:var(--brand)">Flow</span>
+                    </h1>
+                </div>
+                <p id="auth-subtitle" style="color:var(--text-muted);font-size:14px">Welcome back — sign in to continue</p>
             </div>
-            <input id="login-password" type="password" placeholder="Password..." class="tf-input mb-3">
-            <p id="login-error" style="color:var(--status-danger);font-size:12px" class="mb-3 hidden">Wrong password.
-                Try again.</p>
-            <button id="login-btn"
-                style="background:var(--brand);color:white;border-radius:12px;padding:12px;width:100%;font-size:15px;font-weight:600;cursor:pointer;border:none;transition:opacity 0.2s">
-                Sign In →
-            </button>
+
+            <!-- Tab switcher -->
+            <div style="display:flex;background:var(--bg-element);border:1px solid var(--border-strong);border-radius:14px;padding:4px;margin-bottom:28px;gap:4px">
+                <button id="tab-signin" onclick="switchAuthTab('signin')"
+                    style="flex:1;padding:9px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all 0.2s;background:var(--brand);color:white">
+                    Sign In
+                </button>
+                <button id="tab-signup" onclick="switchAuthTab('signup')"
+                    style="flex:1;padding:9px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all 0.2s;background:transparent;color:var(--text-muted)">
+                    Sign Up
+                </button>
+            </div>
+
+            <!-- Sign In form -->
+            <div id="form-signin">
+                <div style="margin-bottom:14px">
+                    <label style="display:block;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Email</label>
+                    <input id="signin-email" type="email" placeholder="you@example.com" class="tf-input">
+                </div>
+                <div style="margin-bottom:8px">
+                    <label style="display:block;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Password</label>
+                    <div style="position:relative">
+                        <input id="signin-password" type="password" placeholder="Your password..." class="tf-input" style="padding-right:44px">
+                        <button onclick="togglePwd('signin-password',this)" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:16px;line-height:1">👁</button>
+                    </div>
+                </div>
+                <p id="signin-error" style="color:var(--status-danger);font-size:12px;margin-bottom:14px;display:none"></p>
+                <button id="signin-btn" onclick="handleSignIn()"
+                    style="background:var(--brand);color:white;border-radius:12px;padding:13px;width:100%;font-size:15px;font-weight:600;cursor:pointer;border:none;transition:opacity 0.2s;margin-top:4px">
+                    Sign In →
+                </button>
+                <p style="text-align:center;font-size:13px;color:var(--text-muted);margin-top:18px">
+                    Don't have an account?
+                    <span onclick="switchAuthTab('signup')" style="color:var(--brand);cursor:pointer;font-weight:600">Sign up free</span>
+                </p>
+            </div>
+
+            <!-- Sign Up form -->
+            <div id="form-signup" style="display:none">
+                <div style="margin-bottom:14px">
+                    <label style="display:block;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Full Name</label>
+                    <input id="signup-name" type="text" placeholder="Your name..." class="tf-input">
+                </div>
+                <div style="margin-bottom:14px">
+                    <label style="display:block;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Email</label>
+                    <input id="signup-email" type="email" placeholder="you@example.com" class="tf-input">
+                </div>
+                <div style="margin-bottom:8px">
+                    <label style="display:block;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Password <span style="color:var(--text-muted);font-weight:400;text-transform:none;letter-spacing:0">(min. 6 chars)</span></label>
+                    <div style="position:relative">
+                        <input id="signup-password" type="password" placeholder="Create a password..." class="tf-input" style="padding-right:44px" oninput="updateStrength(this.value)">
+                        <button onclick="togglePwd('signup-password',this)" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:16px;line-height:1">👁</button>
+                    </div>
+                    <!-- Password strength bar -->
+                    <div style="margin-top:8px;display:flex;gap:4px" id="strength-bars">
+                        <div class="strength-bar" style="flex:1;height:3px;border-radius:99px;background:var(--border-strong);transition:background 0.3s"></div>
+                        <div class="strength-bar" style="flex:1;height:3px;border-radius:99px;background:var(--border-strong);transition:background 0.3s"></div>
+                        <div class="strength-bar" style="flex:1;height:3px;border-radius:99px;background:var(--border-strong);transition:background 0.3s"></div>
+                        <div class="strength-bar" style="flex:1;height:3px;border-radius:99px;background:var(--border-strong);transition:background 0.3s"></div>
+                    </div>
+                    <p id="strength-label" style="font-size:11px;color:var(--text-muted);margin-top:4px"></p>
+                </div>
+                <p id="signup-error" style="color:var(--status-danger);font-size:12px;margin-bottom:14px;display:none"></p>
+                <button id="signup-btn" onclick="handleSignUp()"
+                    style="background:var(--brand);color:white;border-radius:12px;padding:13px;width:100%;font-size:15px;font-weight:600;cursor:pointer;border:none;transition:opacity 0.2s;margin-top:4px">
+                    Create Account →
+                </button>
+                <p style="text-align:center;font-size:13px;color:var(--text-muted);margin-top:18px">
+                    Already have an account?
+                    <span onclick="switchAuthTab('signin')" style="color:var(--brand);cursor:pointer;font-weight:600">Sign in</span>
+                </p>
+                <p style="text-align:center;font-size:11px;color:var(--text-muted);margin-top:10px;opacity:0.7">
+                    🛡 The first account created becomes the workspace admin
+                </p>
+            </div>
+
         </div>
     </div>
 
@@ -408,6 +486,15 @@
                 <!-- Bottom — expanded -->
                 <div class="sidebar-bottom-full"
                     style="padding:14px 16px 22px;border-top:1px solid var(--border-subtle)">
+                    <!-- User card -->
+                    <div id="user-card" style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg-element);border:1px solid var(--border-strong);border-radius:12px;margin-bottom:12px">
+                        <div id="user-avatar" style="width:34px;height:34px;border-radius:50%;background:var(--brand-dim);border:1px solid rgba(108,143,255,0.3);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--brand);flex-shrink:0">?</div>
+                        <div style="min-width:0">
+                            <div id="user-name" style="font-size:13px;font-weight:600;color:var(--text-main);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">—</div>
+                            <div id="user-email" style="font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+                        </div>
+                        <div id="user-role-badge" style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;padding:2px 6px;border-radius:5px;background:var(--brand-dim);color:var(--brand);flex-shrink:0;display:none">Admin</div>
+                    </div>
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
                         <span style="font-size:12px;color:var(--text-muted)" id="theme-label"> Dark mode</span>
                         <label id="theme-toggle">
@@ -419,12 +506,14 @@
                         style="width:100%;background:transparent;border:1px solid var(--border-strong);color:var(--text-muted);border-radius:10px;padding:9px;font-size:13px;cursor:pointer;transition:all 0.2s"
                         onmouseover="this.style.borderColor='var(--status-danger)';this.style.color='var(--status-danger)'"
                         onmouseout="this.style.borderColor='var(--border-strong)';this.style.color='var(--text-muted)'">
-                        Sign Out
+                        ⏻ Sign Out
                     </button>
                 </div>
 
                 <!-- Bottom — collapsed (icons only) -->
                 <div class="sidebar-bottom-mini" style="border-top:1px solid var(--border-subtle);padding-top:14px">
+                    <!-- Mini avatar -->
+                    <div id="user-avatar-mini" style="width:32px;height:32px;border-radius:50%;background:var(--brand-dim);border:1px solid rgba(108,143,255,0.3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--brand)">?</div>
                     <button
                         onclick="toggleTheme(!document.getElementById('theme-check').checked); document.getElementById('theme-check').checked = !document.getElementById('theme-check').checked"
                         title="Toggle theme"

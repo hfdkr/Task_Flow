@@ -107,9 +107,6 @@ function switchView(name) {
 
 // ─── DOM References ───────────────────────────────────────────────────────────
 const loginScreen   = document.getElementById('login-screen');
-const loginPassword = document.getElementById('login-password');
-const loginBtn      = document.getElementById('login-btn');
-const loginError    = document.getElementById('login-error');
 const appEl         = document.getElementById('app');
 
 const titleInput    = document.getElementById('title-input');
@@ -154,13 +151,73 @@ function showError(msg) {
 function hideError() { errorBanner.style.display = 'none'; }
 
 
+// ─── Auth Tab Switcher ────────────────────────────────────────────────────────
+function switchAuthTab(tab) {
+    const isSignin = tab === 'signin';
+    document.getElementById('form-signin').style.display  = isSignin ? 'block' : 'none';
+    document.getElementById('form-signup').style.display  = isSignin ? 'none'  : 'block';
+    document.getElementById('tab-signin').style.background  = isSignin ? 'var(--brand)' : 'transparent';
+    document.getElementById('tab-signin').style.color       = isSignin ? 'white' : 'var(--text-muted)';
+    document.getElementById('tab-signup').style.background  = isSignin ? 'transparent' : 'var(--brand)';
+    document.getElementById('tab-signup').style.color       = isSignin ? 'var(--text-muted)' : 'white';
+    document.getElementById('auth-subtitle').textContent    = isSignin
+        ? 'Welcome back — sign in to continue'
+        : 'Create your free account to get started';
+    // Clear errors
+    setAuthError('signin', ''); setAuthError('signup', '');
+}
+
+function setAuthError(form, msg) {
+    const el = document.getElementById(`${form}-error`);
+    if (!el) return;
+    el.textContent = msg;
+    el.style.display = msg ? 'block' : 'none';
+}
+
+function setAuthLoading(btnId, loading) {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+    btn.disabled = loading;
+    btn.style.opacity = loading ? '0.65' : '1';
+    btn.style.cursor  = loading ? 'not-allowed' : 'pointer';
+}
+
+// Password visibility toggle
+function togglePwd(inputId, btn) {
+    const inp = document.getElementById(inputId);
+    if (!inp) return;
+    const isHidden = inp.type === 'password';
+    inp.type = isHidden ? 'text' : 'password';
+    btn.textContent = isHidden ? '🙈' : '👁';
+}
+
+// Password strength meter
+function updateStrength(val) {
+    const bars  = document.querySelectorAll('.strength-bar');
+    const label = document.getElementById('strength-label');
+    if (!bars.length || !label) return;
+    let score = 0;
+    if (val.length >= 6)  score++;
+    if (val.length >= 10) score++;
+    if (/[A-Z]/.test(val) && /[0-9]/.test(val)) score++;
+    if (/[^A-Za-z0-9]/.test(val)) score++;
+    const colors  = ['', '#ef4444', '#f59e0b', '#6c8fff', '#10b981'];
+    const labels  = ['', 'Weak', 'Fair', 'Good', 'Strong 💪'];
+    bars.forEach((b, i) => { b.style.background = i < score ? (colors[score] || 'var(--border-strong)') : 'var(--border-strong)'; });
+    label.textContent  = val.length ? labels[score] : '';
+    label.style.color  = colors[score] || 'var(--text-muted)';
+}
+
 // ─── Auth ─────────────────────────────────────────────────────────────────────
+let currentUser = null;
+
 async function checkAuth() {
     initTheme();
     try {
         const res  = await fetch(`${API}/me`, { credentials: 'include' });
         const data = await res.json();
-        data.authenticated ? showApp() : showLogin();
+        if (data.authenticated) { currentUser = data.user; showApp(); }
+        else showLogin();
     } catch {
         showLogin();
         showError('Cannot reach the server. Make sure it is running.');
@@ -170,34 +227,88 @@ async function checkAuth() {
 function showLogin() {
     loginScreen.classList.remove('hidden');
     appEl.classList.add('hidden');
+    switchAuthTab('signin');
 }
 
 function showApp() {
     loginScreen.classList.add('hidden');
     appEl.classList.remove('hidden');
+    updateUserUI();
     init();
 }
 
-loginBtn.addEventListener('click', handleLogin);
-loginPassword.addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
-loginBtn.addEventListener('mouseover', () => loginBtn.style.opacity = '0.85');
-loginBtn.addEventListener('mouseout',  () => loginBtn.style.opacity = '1');
+function updateUserUI() {
+    if (!currentUser) return;
+    const initials = currentUser.name.trim().split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+    // Sidebar avatar
+    const av = document.getElementById('user-avatar');
+    if (av) av.textContent = initials;
+    const avM = document.getElementById('user-avatar-mini');
+    if (avM) avM.textContent = initials;
+    // Name & email
+    const nameEl = document.getElementById('user-name');
+    if (nameEl) nameEl.textContent = currentUser.name;
+    const emailEl = document.getElementById('user-email');
+    if (emailEl) emailEl.textContent = currentUser.email;
+    // Role badge
+    const badge = document.getElementById('user-role-badge');
+    if (badge && currentUser.role === 'admin') {
+        badge.style.display = 'block';
+    }
+}
 
-async function handleLogin() {
-    const password = loginPassword.value;
-    loginError.classList.add('hidden');
+// Enter key support
+document.addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    if (!loginScreen.classList.contains('hidden')) {
+        const signinForm = document.getElementById('form-signin');
+        if (signinForm && signinForm.style.display !== 'none') handleSignIn();
+        else handleSignUp();
+    }
+});
+
+async function handleSignIn() {
+    const email    = (document.getElementById('signin-email')?.value    || '').trim();
+    const password = (document.getElementById('signin-password')?.value || '');
+    setAuthError('signin', '');
+    if (!email || !password) { setAuthError('signin', 'Please enter your email and password.'); return; }
+    setAuthLoading('signin-btn', true);
     try {
-        const res  = await fetch(`${API}/login`, { method:'POST', headers:{'Content-Type':'application/json'}, credentials:'include', body: JSON.stringify({ password }) });
+        const res  = await fetch(`${API}/login`, { method:'POST', headers:{'Content-Type':'application/json'}, credentials:'include', body: JSON.stringify({ email, password }) });
         const data = await res.json();
-        if (data.success) { loginPassword.value = ''; showApp(); }
-        else loginError.classList.remove('hidden');
+        if (data.success) { currentUser = data.user; showApp(); }
+        else setAuthError('signin', data.message || 'Invalid credentials.');
     } catch {
-        showError('Login failed. Is the server running?');
+        setAuthError('signin', 'Cannot reach server. Is it running?');
+    } finally {
+        setAuthLoading('signin-btn', false);
+    }
+}
+
+async function handleSignUp() {
+    const name     = (document.getElementById('signup-name')?.value     || '').trim();
+    const email    = (document.getElementById('signup-email')?.value    || '').trim();
+    const password = (document.getElementById('signup-password')?.value || '');
+    setAuthError('signup', '');
+    if (!name)            { setAuthError('signup', 'Please enter your name.');             return; }
+    if (!email)           { setAuthError('signup', 'Please enter your email.');            return; }
+    if (password.length < 6) { setAuthError('signup', 'Password must be at least 6 characters.'); return; }
+    setAuthLoading('signup-btn', true);
+    try {
+        const res  = await fetch(`${API}/register`, { method:'POST', headers:{'Content-Type':'application/json'}, credentials:'include', body: JSON.stringify({ name, email, password }) });
+        const data = await res.json();
+        if (data.success) { currentUser = data.user; showApp(); }
+        else setAuthError('signup', data.message || 'Registration failed.');
+    } catch {
+        setAuthError('signup', 'Cannot reach server. Is it running?');
+    } finally {
+        setAuthLoading('signup-btn', false);
     }
 }
 
 async function logout() {
     await fetch(`${API}/logout`, { method: 'POST', credentials: 'include' });
+    currentUser = null;
     showLogin();
 }
 
