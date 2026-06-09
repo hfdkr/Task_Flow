@@ -110,6 +110,7 @@ function switchView(name) {
 const loginScreen   = document.getElementById('login-screen');
 const appEl         = document.getElementById('app');
 
+// Legacy hidden inputs (kept for JS compatibility, now display:none)
 const titleInput    = document.getElementById('title-input');
 const memberSelect  = document.getElementById('member-select');
 const projectSelect = document.getElementById('project-select');
@@ -131,9 +132,12 @@ const doneCount     = document.getElementById('done-count');
 const projectFiltersEl = document.getElementById('project-filters');
 const errorBanner      = document.getElementById('error-banner');
 const errorText        = document.getElementById('error-text');
-const confirmModal     = document.getElementById('confirm-modal');
-const confirmCancel    = document.getElementById('confirm-cancel');
-const confirmDelete    = document.getElementById('confirm-delete');
+
+// Danger/confirm modal (uses danger-modal IDs)
+const confirmModal  = document.getElementById('danger-modal');
+const confirmCancel = document.getElementById('danger-modal');   // handled via closeDangerModal()
+const confirmDelete = document.getElementById('danger-confirm-btn');
+
 const membersPanel     = document.getElementById('members-panel');
 const newMemberInput   = document.getElementById('new-member-input');
 const membersList      = document.getElementById('members-list');
@@ -344,33 +348,70 @@ async function removeProject(id)    { return apiFetch(`${API}/projects/${id}`, {
 
 
 // ─── Members Panel ────────────────────────────────────────────────────────────
-function openMembersPanel()  { membersPanel.classList.remove('hidden'); }
-function closeMembersPanel() { membersPanel.classList.add('hidden'); }
-membersPanel.addEventListener('click', e => { if (e.target === membersPanel) closeMembersPanel(); });
-newMemberInput.addEventListener('keydown', e => { if (e.key === 'Enter') addMember(); });
+function openMembersPanel()  { if (membersPanel) membersPanel.classList.remove('hidden'); }
+function closeMembersPanel() { if (membersPanel) membersPanel.classList.add('hidden'); }
+if (membersPanel)    membersPanel.addEventListener('click', e => { if (e.target === membersPanel) closeMembersPanel(); });
+if (newMemberInput)  newMemberInput.addEventListener('keydown', e => { if (e.key === 'Enter') addMember(); });
+
+// Avatar palette — cycles through distinct hues for member avatars
+const AVATAR_COLORS = [
+    { bg: 'rgba(108,143,255,0.18)', border: 'rgba(108,143,255,0.35)', color: '#6c8fff' },  // blue
+    { bg: 'rgba(239,68,68,0.15)',   border: 'rgba(239,68,68,0.3)',   color: '#ef6060' },   // red
+    { bg: 'rgba(245,158,11,0.15)',  border: 'rgba(245,158,11,0.3)',  color: '#f59e0b' },   // amber
+    { bg: 'rgba(16,185,129,0.15)',  border: 'rgba(16,185,129,0.3)',  color: '#10b981' },   // green
+    { bg: 'rgba(168,85,247,0.15)',  border: 'rgba(168,85,247,0.3)',  color: '#a855f7' },   // purple
+    { bg: 'rgba(236,72,153,0.15)',  border: 'rgba(236,72,153,0.3)',  color: '#ec4899' },   // pink
+];
+
+function memberAvatarStyle(idx) {
+    const c = AVATAR_COLORS[idx % AVATAR_COLORS.length];
+    return `background:${c.bg};border:1.5px solid ${c.border};color:${c.color}`;
+}
+
+function memberInitials(name) {
+    return name.trim().split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+}
 
 async function renderMembersPanel() {
     const members = await fetchMembers();
+
+    // Sync hidden member-select (used by legacy form code)
     memberSelect.innerHTML = '<option value="">Assign to...</option>';
-    members.forEach(m => {
+    // Sync modal member selects
+    const modalMemberSelect = document.getElementById('modal-member-select');
+    if (modalMemberSelect) modalMemberSelect.innerHTML = '<option value="">Assign to...</option>';
+
+    members.forEach((m, idx) => {
         const opt = document.createElement('option');
         opt.value = opt.textContent = m.name;
         memberSelect.appendChild(opt);
+        if (modalMemberSelect) {
+            const opt2 = document.createElement('option');
+            opt2.value = opt2.textContent = m.name;
+            modalMemberSelect.appendChild(opt2);
+        }
     });
+
     membersList.innerHTML = '';
     if (!members.length) {
         membersList.innerHTML = `<p style="font-size:13px;color:var(--text-muted)">No members yet. Add one above.</p>`;
         return;
     }
-    members.forEach(m => {
+    members.forEach((m, idx) => {
+        const isAdmin = m.role === 'admin' || idx === 0; // first member or explicit admin
+        const avatarStyle = memberAvatarStyle(idx);
         const row = document.createElement('div');
-        row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;background:var(--bg-element);border:1px solid var(--border-strong);border-radius:10px;padding:10px 14px';
+        row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;background:var(--bg-element);border:1px solid var(--border-strong);border-radius:12px;padding:12px 16px;transition:border-color 0.18s';
+        row.onmouseover = () => row.style.borderColor = 'var(--border-strong)';
         row.innerHTML = `
-            <div style="display:flex;align-items:center;gap:10px">
-                <span style="width:30px;height:30px;background:var(--border-strong);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--text-light);text-transform:uppercase">${m.name.charAt(0)}</span>
-                <span style="font-size:14px;color:var(--text-main)">${m.name}</span>
+            <div style="display:flex;align-items:center;gap:12px">
+                <span style="width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;${avatarStyle}">${memberInitials(m.name)}</span>
+                <div>
+                    <div style="font-size:14px;font-weight:600;color:var(--text-main)">${m.name}</div>
+                    <div style="font-size:12px;color:var(--text-muted);margin-top:1px">${isAdmin ? 'Admin' : 'Member'}</div>
+                </div>
             </div>
-            <button onclick="deleteMember(${m.id})" style="color:var(--text-muted);font-size:16px;cursor:pointer;background:none;border:none;transition:color 0.18s" onmouseover="this.style.color='var(--status-danger)'" onmouseout="this.style.color='var(--text-muted)'">✕</button>`;
+            <button onclick="deleteMember(${m.id})" style="color:var(--text-muted);font-size:15px;cursor:pointer;background:none;border:none;transition:color 0.18s;padding:4px" onmouseover="this.style.color='var(--status-danger)'" onmouseout="this.style.color='var(--text-muted)'">✕</button>`;
         membersList.appendChild(row);
     });
 }
@@ -394,20 +435,27 @@ async function deleteMember(id) {
 
 
 // ─── Projects Panel ───────────────────────────────────────────────────────────
-function openProjectsPanel()  { projectsPanel.classList.remove('hidden'); }
-function closeProjectsPanel() { projectsPanel.classList.add('hidden'); }
-projectsPanel.addEventListener('click', e => { if (e.target === projectsPanel) closeProjectsPanel(); });
-newProjectInput.addEventListener('keydown', e => { if (e.key === 'Enter') addProject(); });
+function openProjectsPanel()  { if (projectsPanel) projectsPanel.classList.remove('hidden'); }
+function closeProjectsPanel() { if (projectsPanel) projectsPanel.classList.add('hidden'); }
+if (projectsPanel)   projectsPanel.addEventListener('click', e => { if (e.target === projectsPanel) closeProjectsPanel(); });
+if (newProjectInput) newProjectInput.addEventListener('keydown', e => { if (e.key === 'Enter') addProject(); });
 
 async function renderProjectsPanel() {
     const projects = await fetchProjects();
-    // Rebuild project select dropdown
+    // Rebuild project select dropdowns
     const current = projectSelect.value;
     projectSelect.innerHTML = '<option value="">No project...</option>';
+    const modalProjectSelect = document.getElementById('modal-project-select');
+    if (modalProjectSelect) modalProjectSelect.innerHTML = '<option value="">No project...</option>';
     projects.forEach(p => {
         const opt = document.createElement('option');
         opt.value = opt.textContent = p.name;
         projectSelect.appendChild(opt);
+        if (modalProjectSelect) {
+            const opt2 = document.createElement('option');
+            opt2.value = opt2.textContent = p.name;
+            modalProjectSelect.appendChild(opt2);
+        }
     });
     if (projects.some(p => p.name === current)) projectSelect.value = current;
 
@@ -447,62 +495,126 @@ async function deleteProject(id) {
 
 
 // ─── Delete Modal ─────────────────────────────────────────────────────────────
-confirmCancel.addEventListener('click', () => { confirmModal.classList.add('hidden'); pendingDeleteId = null; });
-confirmDelete.addEventListener('click', async () => {
-    if (pendingDeleteId === null) return;
-    confirmModal.classList.add('hidden');
-    const result = await removeTask(pendingDeleteId);
-    pendingDeleteId = null;
-    if (!result.success) { showError('Failed to delete task'); return; }
-    await renderTasks();
-    await renderDashboard();
-});
-function askDeleteConfirmation(id) { pendingDeleteId = id; confirmModal.classList.remove('hidden'); }
-confirmModal.addEventListener('click', e => { if (e.target === confirmModal) { confirmModal.classList.add('hidden'); pendingDeleteId = null; } });
+function askDeleteConfirmation(id) {
+    pendingDeleteId = id;
+    showDangerModal('🗑', 'Delete Task?', 'This task will be permanently deleted. This cannot be undone.', async () => {
+        const result = await removeTask(pendingDeleteId);
+        pendingDeleteId = null;
+        if (!result.success) { showError('Failed to delete task'); return; }
+        await renderTasks();
+        await renderDashboard();
+    });
+}
 
 
 // ─── Task Form ────────────────────────────────────────────────────────────────
-addBtn.addEventListener('click', handleAdd);
+if (addBtn) addBtn.addEventListener('click', handleAdd);
 
 async function handleAdd() {
-    const title = titleInput.value.trim(), member = memberSelect.value.trim();
+    // Legacy inline form handler — now delegates to modal submit
+    await handleModalSubmit();
+}
+
+async function handleModalSubmit() {
+    const title   = (document.getElementById('modal-title-input')?.value || '').trim();
+    const member  = (document.getElementById('modal-member-select')?.value || '').trim();
     if (!title || !member) { showError('Please fill in the task title and assign a member'); return; }
     hideError();
 
-    const payload = { title, member, project: projectSelect.value.trim(), dueDate: dueDateInput.value, status: statusSelect.value, priority: prioritySelect.value, description: descInput.value.trim() };
+    const payload = {
+        title,
+        member,
+        project:     (document.getElementById('modal-project-select')?.value  || '').trim(),
+        dueDate:      document.getElementById('modal-due-date')?.value         || '',
+        status:       document.getElementById('modal-status-select')?.value    || 'To Do',
+        priority:     document.getElementById('modal-priority-select')?.value  || 'Medium',
+        description: (document.getElementById('modal-desc-input')?.value       || '').trim(),
+    };
 
     if (editingTaskId) {
         const result = await updateTask(editingTaskId, payload);
         if (!result.success) { showError('Failed to update task'); return; }
         editingTaskId = null;
-        addBtn.textContent = '+ Add';
     } else {
         const result = await createTask(payload);
         if (!result.success) { showError('Failed to add task'); return; }
     }
     clearForm();
+    closeTaskModal();
     await renderTasks();
     await renderDashboard();
 }
 
 function clearForm() {
-    titleInput.value = ''; memberSelect.value = ''; projectSelect.value = '';
-    dueDateInput.value = ''; statusSelect.value = 'To Do'; prioritySelect.value = 'Low'; descInput.value = '';
+    const ids = ['modal-title-input','modal-desc-input','modal-due-date'];
+    ids.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    const statusEl   = document.getElementById('modal-status-select');
+    const priorityEl = document.getElementById('modal-priority-select');
+    const memberEl   = document.getElementById('modal-member-select');
+    const projectEl  = document.getElementById('modal-project-select');
+    if (statusEl)   statusEl.value   = 'To Do';
+    if (priorityEl) priorityEl.value = 'Medium';
+    if (memberEl)   memberEl.value   = '';
+    if (projectEl)  projectEl.value  = '';
+    editingTaskId = null;
 }
 
 async function editTask(id) {
     const tasks = await fetchTasks();
     const task  = tasks.find(t => t.id === id);
     if (!task) return;
-    titleInput.value = task.title; memberSelect.value = task.member;
-    projectSelect.value = task.project||''; dueDateInput.value = task.dueDate||'';
-    statusSelect.value = task.status; prioritySelect.value = task.priority; descInput.value = task.description||'';
+    openTaskModal(task.status);
+    // Fill modal fields
+    document.getElementById('modal-title-input').value   = task.title;
+    document.getElementById('modal-desc-input').value    = task.description || '';
+    document.getElementById('modal-status-select').value = task.status;
+    document.getElementById('modal-priority-select').value = task.priority;
+    document.getElementById('modal-member-select').value = task.member;
+    document.getElementById('modal-project-select').value = task.project || '';
+    document.getElementById('modal-due-date').value      = task.dueDate || '';
+    document.getElementById('task-modal-title').textContent = 'Edit Task';
+    document.getElementById('modal-submit-btn').textContent  = 'Update Task';
     editingTaskId = id;
-    addBtn.textContent = 'Update Task';
-    // Switch to kanban if not there
-    switchView('kanban');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+// ─── Task Modal ───────────────────────────────────────────────────────────────
+function openTaskModal(defaultStatus) {
+    const modal = document.getElementById('task-modal');
+    if (!modal) return;
+    // Reset to "New Task" state unless called from editTask
+    if (!editingTaskId) {
+        clearForm();
+        document.getElementById('task-modal-title').textContent  = 'New Task';
+        document.getElementById('modal-submit-btn').textContent  = 'Create Task';
+        // Set default status if column + button was clicked
+        if (defaultStatus) {
+            const sel = document.getElementById('modal-status-select');
+            if (sel) sel.value = defaultStatus;
+        }
+        // Default due date to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('modal-due-date').value = today;
+    }
+    modal.classList.remove('hidden');
+    setTimeout(() => document.getElementById('modal-title-input')?.focus(), 50);
+}
+
+function closeTaskModal() {
+    const modal = document.getElementById('task-modal');
+    if (modal) modal.classList.add('hidden');
+    clearForm();
+}
+
+document.addEventListener('click', e => {
+    const modal = document.getElementById('task-modal');
+    if (modal && e.target === modal) closeTaskModal();
+});
+
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+        closeTaskModal();
+    }
+});
 
 async function changeStatus(id, newStatus) {
     try { await updateTask(id, { status: newStatus }); await renderTasks(); await renderDashboard(); }
@@ -511,7 +623,7 @@ async function changeStatus(id, newStatus) {
 
 
 // ─── Search + Filter ──────────────────────────────────────────────────────────
-searchInput.addEventListener('input', () => { searchQuery = searchInput.value.toLowerCase().trim(); renderTasks(); });
+if (searchInput) searchInput.addEventListener('input', () => { searchQuery = searchInput.value.toLowerCase().trim(); renderTasks(); });
 
 function setFilter(project) {
     activeFilter = project;
@@ -523,15 +635,17 @@ function setFilter(project) {
 
 function buildFilterButtons(tasks) {
     const projects = [...new Set(tasks.map(t => t.project).filter(p => p && p.trim()))].sort();
-    projectFiltersEl.innerHTML = `
-        <button data-project="all" onclick="setFilter('all')" class="filter-btn ${activeFilter==='all'?'active-filter':''}" style="font-size:12px;font-weight:500;padding:5px 14px;border-radius:99px;border:1px solid;transition:all 0.2s;cursor:pointer">All Projects</button>`;
+    const btnBase = 'font-size:13px;font-weight:500;padding:7px 18px;border-radius:99px;border:1px solid var(--border-strong);background:transparent;cursor:pointer;color:var(--text-muted);transition:all 0.2s;';
+    const btnActive = 'font-size:13px;font-weight:600;padding:7px 18px;border-radius:99px;border:1px solid var(--brand);background:var(--brand-dim);cursor:pointer;color:var(--brand);transition:all 0.2s;';
+    projectFiltersEl.innerHTML = `<button data-project="all" onclick="setFilter('all')" style="${activeFilter==='all'?btnActive:btnBase}" onmouseover="if(this.dataset.project!==activeFilter)this.style.borderColor='var(--brand)';this.style.color='var(--brand)'" onmouseout="if(this.dataset.project!==activeFilter){this.style.borderColor='var(--border-strong)';this.style.color='var(--text-muted)';}">All Projects</button>`;
     projects.forEach(project => {
         const btn = document.createElement('button');
         btn.dataset.project = project;
         btn.onclick = () => setFilter(project);
-        btn.className = `filter-btn ${activeFilter===project?'active-filter':''}`;
-        btn.style.cssText = 'font-size:12px;font-weight:500;padding:5px 14px;border-radius:99px;border:1px solid;transition:all 0.2s;cursor:pointer';
+        btn.style.cssText = activeFilter === project ? btnActive : btnBase;
         btn.textContent = project;
+        btn.onmouseover = () => { if (activeFilter !== project) { btn.style.borderColor = 'var(--brand)'; btn.style.color = 'var(--brand)'; } };
+        btn.onmouseout  = () => { if (activeFilter !== project) { btn.style.borderColor = 'var(--border-strong)'; btn.style.color = 'var(--text-muted)'; } };
         projectFiltersEl.appendChild(btn);
     });
 }
@@ -608,6 +722,13 @@ function priorityStyle(p) {
     return 'background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);color:var(--status-done)';
 }
 
+function memberColorIndex(name) {
+    // Stable color based on name chars
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    return Math.abs(hash) % AVATAR_COLORS.length;
+}
+
 function createTaskElement(task) {
     const div = document.createElement('div');
     div.className = `task-card${isOverdue(task.dueDate, task.status) ? ' overdue-card' : ''}`;
@@ -616,38 +737,32 @@ function createTaskElement(task) {
     div.addEventListener('dragstart', e => onDragStart(e, task.id));
     div.addEventListener('dragend',   e => onDragEnd(e));
 
-    const projectBadge = task.project
-        ? `<span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;padding:3px 8px;border-radius:99px;background:var(--brand-dim);border:1px solid rgba(108,143,255,0.2);color:var(--brand);cursor:pointer" onclick="setFilter('${escapeAttr(task.project)}')">${task.project}</span>`
-        : '';
     const dateLine = formatDate(task.dueDate, task.status);
-    const descBlock = task.description ? `<p style="font-size:12px;color:var(--text-muted);line-height:1.6">${task.description}</p>` : '';
+    const descBlock = task.description ? `<p style="font-size:12px;color:var(--text-muted);line-height:1.6;margin-top:2px">${task.description}</p>` : '';
+
+    const colorIdx = memberColorIndex(task.member);
+    const ac = AVATAR_COLORS[colorIdx];
+    const avatarStyle = `background:${ac.bg};border:1.5px solid ${ac.border};color:${ac.color}`;
+    const initials = memberInitials(task.member);
 
     div.innerHTML = `
         <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
-            <h4 style="font-size:15px;font-weight:500;color:var(--text-main);line-height:1.35">${task.title}</h4>
-            ${projectBadge}
-        </div>
-        ${descBlock}
-        <div style="display:flex;align-items:center;justify-content:space-between">
-            <div style="display:flex;align-items:center;gap:8px">
-                <span style="width:24px;height:24px;background:var(--border-strong);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text-light);text-transform:uppercase">${task.member.charAt(0)}</span>
-                <span style="font-size:13px;color:var(--text-muted)">${task.member}</span>
+            <span style="${priorityStyle(task.priority)};font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;padding:3px 9px;border-radius:99px;flex-shrink:0">${task.priority}</span>
+            <div style="display:flex;gap:4px;margin-left:auto">
+                <button onclick="editTask(${task.id})" title="Edit" style="padding:5px 7px;border:1px solid var(--border-strong);border-radius:7px;cursor:pointer;background:none;color:var(--text-muted);font-size:13px;transition:all 0.18s;line-height:1" onmouseover="this.style.background='var(--bg-hover)';this.style.color='var(--brand)'" onmouseout="this.style.background='none';this.style.color='var(--text-muted)'">✏</button>
+                <button onclick="askDeleteConfirmation(${task.id})" title="Delete" style="padding:5px 7px;border:1px solid var(--border-strong);border-radius:7px;cursor:pointer;background:none;color:var(--text-muted);font-size:13px;transition:all 0.18s;line-height:1" onmouseover="this.style.background='rgba(239,68,68,0.12)';this.style.color='var(--status-danger)'" onmouseout="this.style.background='none';this.style.color='var(--text-muted)'">🗑</button>
             </div>
-            <span style="${priorityStyle(task.priority)};font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;padding:3px 10px;border-radius:99px">${task.priority}</span>
         </div>
-        ${dateLine ? `<div>${dateLine}</div>` : ''}
-        <hr style="border-color:var(--border-strong)">
-        <div style="display:flex;align-items:center;gap:8px">
-            <div style="position:relative;flex:1">
-                <select onchange="changeStatus(${task.id}, this.value)" style="width:100%;background:var(--bg-surface);border:1px solid var(--border-strong);border-radius:8px;padding:7px 32px 7px 12px;color:var(--text-main);font-size:13px;outline:none;appearance:none;cursor:pointer">
-                    <option${task.status==='To Do'?' selected':''}>To Do</option>
-                    <option${task.status==='In Progress'?' selected':''}>In Progress</option>
-                    <option${task.status==='Done'?' selected':''}>Done</option>
-                </select>
-                <div style="position:absolute;right:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted);font-size:10px">▼</div>
+        <div>
+            <h4 style="font-size:15px;font-weight:600;color:var(--text-main);line-height:1.35;margin-bottom:2px">${task.title}</h4>
+            ${descBlock}
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px">
+            <div>${dateLine ? `<div>${dateLine}</div>` : ''}</div>
+            <div class="avatar-wrap" style="position:relative">
+                <span style="width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;cursor:default;${avatarStyle}">${initials}</span>
+                <span class="avatar-tooltip">${task.member}</span>
             </div>
-            <button onclick="editTask(${task.id})" title="Edit" style="padding:7px 10px;border:1px solid var(--border-strong);border-radius:8px;cursor:pointer;background:none;color:var(--text-muted);font-size:14px;transition:all 0.18s" onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background='none'">✏</button>
-            <button onclick="askDeleteConfirmation(${task.id})" title="Delete" style="padding:7px 10px;border:1px solid var(--border-strong);border-radius:8px;cursor:pointer;background:none;color:var(--text-muted);font-size:14px;transition:all 0.18s" onmouseover="this.style.background='rgba(239,68,68,0.15)';this.style.color='var(--status-danger)'" onmouseout="this.style.background='none';this.style.color='var(--text-muted)'">🗑</button>
         </div>`;
     return div;
 }

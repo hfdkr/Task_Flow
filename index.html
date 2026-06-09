@@ -387,20 +387,19 @@
     <!-- ═══════════════════════════════════════════════════════
      MEMBERS PANEL
 ════════════════════════════════════════════════════════ -->
-    <div id="members-panel" class="fixed inset-0 modal-bg flex items-center justify-end z-50 hidden">
+    <div id="members-panel" class="fixed inset-0 modal-bg flex items-center justify-center z-50 hidden">
         <div
-            style="background:var(--bg-surface);border-left:1px solid var(--border-subtle);width:100%;max-width:340px;height:100%;padding:32px;display:flex;flex-direction:column;gap:20px;overflow-y:auto">
+            style="background:var(--bg-surface);border:1px solid var(--border-subtle);width:100%;max-width:400px;border-radius:24px;padding:32px;display:flex;flex-direction:column;gap:20px;max-height:90vh;overflow-y:auto">
             <div class="flex items-center justify-between">
-                <h3 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--text-main)">Team
-                    Members</h3>
+                <h3 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--text-main)">Team Members</h3>
                 <button onclick="closeMembersPanel()"
-                    style="color:var(--text-muted);font-size:20px;cursor:pointer;background:none;border:none;line-height:1">✕</button>
+                    style="color:var(--text-muted);font-size:20px;cursor:pointer;background:none;border:none;line-height:1;transition:color 0.18s" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'">✕</button>
             </div>
             <div class="flex gap-2">
                 <input id="new-member-input" type="text" placeholder="Member name..." class="tf-input"
                     style="border-radius:10px;padding:10px 14px">
                 <button onclick="addMember()"
-                    style="background:var(--brand);color:white;border-radius:10px;padding:10px 18px;font-size:13px;font-weight:600;cursor:pointer;border:none;white-space:nowrap">Add</button>
+                    style="background:var(--brand);color:white;border-radius:10px;padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer;border:none;white-space:nowrap;transition:opacity 0.2s" onmouseover="this.style.opacity=0.85" onmouseout="this.style.opacity=1">Add</button>
             </div>
             <div id="members-list" class="flex flex-col gap-2"></div>
         </div>
@@ -736,79 +735,34 @@
                 <!-- ════════════════ KANBAN VIEW ════════════════ -->
                 <div id="view-kanban" class="view">
 
-                    <!-- New Task Form -->
-                    <div
-                        style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:16px;padding:24px;margin-bottom:24px">
-                        <div
-                            style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);font-weight:700;margin-bottom:16px">
-                            New Task</div>
-
-                        <!-- Row 1: Title · Member · Project (equal width, always visible) -->
-                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
-                            <input id="title-input" type="text" placeholder="Task title..." class="tf-input">
-                            <div style="position:relative">
-                                <select id="member-select" class="tf-input" style="cursor:pointer;padding-right:36px">
-                                    <option value="">Assign to...</option>
-                                </select>
-                                <div
-                                    style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted);font-size:11px">
-                                    ▼</div>
-                            </div>
-                            <div style="position:relative">
-                                <select id="project-select" class="tf-input" style="cursor:pointer;padding-right:36px">
-                                    <option value="">No project...</option>
-                                </select>
-                                <div
-                                    style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted);font-size:11px">
-                                    ▼</div>
-                            </div>
-                        </div>
-
-                        <!-- Row 2: Date · Status · Priority · + Add button -->
-                        <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;flex-wrap:wrap">
-                            <input id="due-date-input" type="date" class="tf-input"
-                                style="flex:1;min-width:140px;max-width:200px">
-                            <div style="position:relative;flex:1;min-width:120px;max-width:170px">
-                                <select id="status-select" class="tf-input" style="cursor:pointer;padding-right:36px">
-                                    <option>To Do</option>
-                                    <option>In Progress</option>
-                                    <option>Done</option>
-                                </select>
-                                <div
-                                    style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted);font-size:11px">
-                                    ▼</div>
-                            </div>
-                            <div style="position:relative;flex:1;min-width:110px;max-width:150px">
-                                <select id="priority-select" class="tf-input" style="cursor:pointer;padding-right:36px">
-                                    <option>Low</option>
-                                    <option>Medium</option>
-                                    <option>High</option>
-                                </select>
-                                <div
-                                    style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted);font-size:11px">
-                                    ▼</div>
-                            </div>
-                            <button id="add-btn"
-                                style="background:var(--brand);color:white;border:none;border-radius:12px;padding:11px 32px;font-size:15px;font-weight:600;cursor:pointer;white-space:nowrap;transition:opacity 0.2s;flex-shrink:0"
-                                onmouseover="this.style.opacity=0.85" onmouseout="this.style.opacity=1">+ Add</button>
-                        </div>
-
-                        <textarea id="desc-input" placeholder="Task description (optional)..." class="tf-input"
-                            style="resize:none;height:68px"></textarea>
+                    <!-- Kanban header row -->
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+                        <h2 style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--text-main)">Kanban Board</h2>
+                        <button onclick="openTaskModal()"
+                            style="background:var(--brand);color:white;border:none;border-radius:14px;padding:10px 22px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;transition:opacity 0.2s"
+                            onmouseover="this.style.opacity=0.85" onmouseout="this.style.opacity=1">
+                            <span style="font-size:18px;line-height:1">+</span> New Task
+                        </button>
                     </div>
 
-                    <!-- Search + Filters -->
+                    <!-- Hidden selects still needed for JS compatibility -->
+                    <select id="member-select" style="display:none"><option value="">Assign to...</option></select>
+                    <select id="project-select" style="display:none"><option value="">No project...</option></select>
+                    <select id="status-select" style="display:none"><option>To Do</option><option>In Progress</option><option>Done</option></select>
+                    <select id="priority-select" style="display:none"><option>Low</option><option selected>Medium</option><option>High</option></select>
+                    <input id="title-input" type="text" style="display:none">
+                    <input id="due-date-input" type="date" style="display:none">
+                    <textarea id="desc-input" style="display:none"></textarea>
+                    <button id="add-btn" style="display:none"></button>
+
+                    <!-- Project Filter Tabs + Search -->
                     <div class="mb-5 flex flex-col gap-3">
-                        <div style="position:relative">
-                            <span
-                                style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none">🔍</span>
-                            <input id="search-input" type="text" placeholder="Search tasks..." class="tf-input"
-                                style="padding-left:42px">
-                        </div>
-                        <div class="flex items-center gap-3 flex-wrap">
-                            <span
-                                style="font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px">Filter:</span>
+                        <div class="flex items-center gap-2 flex-wrap">
                             <div id="project-filters" class="flex items-center gap-2 flex-wrap"></div>
+                        </div>
+                        <div style="position:relative">
+                            <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none">🔍</span>
+                            <input id="search-input" type="text" placeholder="Search tasks..." class="tf-input" style="padding-left:42px">
                         </div>
                     </div>
 
@@ -818,13 +772,13 @@
                         <div
                             style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:16px;padding:24px;min-height:400px;display:flex;flex-direction:column">
                             <div class="flex items-center justify-between mb-5">
-                                <h3
-                                    style="color:var(--status-todo);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px">
-                                    To Do</h3>
-                                <span id="todo-count"
-                                    style="min-width:24px;height:24px;background:var(--bg-element);border:1px solid var(--border-strong);border-radius:99px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--status-todo);padding:0 6px">0</span>
+                                <div style="display:flex;align-items:center;gap:8px">
+                                    <span style="width:9px;height:9px;border-radius:50%;background:var(--status-todo);flex-shrink:0"></span>
+                                    <h3 style="color:var(--text-main);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px">To Do</h3>
+                                    <span id="todo-count" style="min-width:22px;height:22px;background:var(--bg-element);border:1px solid var(--border-strong);border-radius:99px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text-muted);padding:0 5px">0</span>
+                                </div>
+                                <button onclick="openTaskModal('To Do')" style="width:26px;height:26px;background:none;border:1px solid var(--border-strong);border-radius:8px;cursor:pointer;color:var(--text-muted);font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.18s" onmouseover="this.style.borderColor='var(--brand)';this.style.color='var(--brand)'" onmouseout="this.style.borderColor='var(--border-strong)';this.style.color='var(--text-muted)'">+</button>
                             </div>
-                            <hr style="border-color:var(--border-subtle);margin-bottom:20px">
                             <div id="todo-container" data-status="To Do"
                                 class="drop-zone flex-1 flex flex-col gap-4 min-h-[80px]"></div>
                         </div>
@@ -832,13 +786,13 @@
                         <div
                             style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:16px;padding:24px;min-height:400px;display:flex;flex-direction:column">
                             <div class="flex items-center justify-between mb-5">
-                                <h3
-                                    style="color:var(--status-prog);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px">
-                                    In Progress</h3>
-                                <span id="inprogress-count"
-                                    style="min-width:24px;height:24px;background:var(--bg-element);border:1px solid var(--border-strong);border-radius:99px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--status-prog);padding:0 6px">0</span>
+                                <div style="display:flex;align-items:center;gap:8px">
+                                    <span style="width:9px;height:9px;border-radius:50%;background:var(--status-prog);flex-shrink:0"></span>
+                                    <h3 style="color:var(--text-main);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px">In Progress</h3>
+                                    <span id="inprogress-count" style="min-width:22px;height:22px;background:var(--bg-element);border:1px solid var(--border-strong);border-radius:99px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text-muted);padding:0 5px">0</span>
+                                </div>
+                                <button onclick="openTaskModal('In Progress')" style="width:26px;height:26px;background:none;border:1px solid var(--border-strong);border-radius:8px;cursor:pointer;color:var(--text-muted);font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.18s" onmouseover="this.style.borderColor='var(--brand)';this.style.color='var(--brand)'" onmouseout="this.style.borderColor='var(--border-strong)';this.style.color='var(--text-muted)'">+</button>
                             </div>
-                            <hr style="border-color:var(--border-subtle);margin-bottom:20px">
                             <div id="inprogress-container" data-status="In Progress"
                                 class="drop-zone flex-1 flex flex-col gap-4 min-h-[80px]"></div>
                         </div>
@@ -846,13 +800,13 @@
                         <div
                             style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:16px;padding:24px;min-height:400px;display:flex;flex-direction:column">
                             <div class="flex items-center justify-between mb-5">
-                                <h3
-                                    style="color:var(--status-done);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px">
-                                    Done</h3>
-                                <span id="done-count"
-                                    style="min-width:24px;height:24px;background:var(--bg-element);border:1px solid var(--border-strong);border-radius:99px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--status-done);padding:0 6px">0</span>
+                                <div style="display:flex;align-items:center;gap:8px">
+                                    <span style="width:9px;height:9px;border-radius:50%;background:var(--status-done);flex-shrink:0"></span>
+                                    <h3 style="color:var(--text-main);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px">Done</h3>
+                                    <span id="done-count" style="min-width:22px;height:22px;background:var(--bg-element);border:1px solid var(--border-strong);border-radius:99px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text-muted);padding:0 5px">0</span>
+                                </div>
+                                <button onclick="openTaskModal('Done')" style="width:26px;height:26px;background:none;border:1px solid var(--border-strong);border-radius:8px;cursor:pointer;color:var(--text-muted);font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.18s" onmouseover="this.style.borderColor='var(--brand)';this.style.color='var(--brand)'" onmouseout="this.style.borderColor='var(--border-strong)';this.style.color='var(--text-muted)'">+</button>
                             </div>
-                            <hr style="border-color:var(--border-subtle);margin-bottom:20px">
                             <div id="done-container" data-status="Done"
                                 class="drop-zone flex-1 flex flex-col gap-4 min-h-[80px]"></div>
                         </div>
@@ -979,6 +933,91 @@
                 </div><!-- /view-settings -->
 
             </main>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+     NEW TASK MODAL
+════════════════════════════════════════════════════════ -->
+    <div id="task-modal" class="fixed inset-0 modal-bg flex items-center justify-center z-50 hidden">
+        <div style="background:var(--bg-surface);border:1px solid var(--border-subtle);width:100%;max-width:520px;border-radius:24px;overflow:hidden;margin:16px" class="shadow-2xl">
+            <!-- Header -->
+            <div style="padding:28px 28px 0;display:flex;align-items:center;justify-content:space-between">
+                <h2 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--text-main)" id="task-modal-title">New Task</h2>
+                <button onclick="closeTaskModal()" style="background:var(--bg-element);border:1px solid var(--border-strong);color:var(--text-muted);border-radius:10px;padding:8px 12px;cursor:pointer;font-size:15px;line-height:1;transition:all 0.18s" onmouseover="this.style.borderColor='var(--brand)';this.style.color='var(--brand)'" onmouseout="this.style.borderColor='var(--border-strong)';this.style.color='var(--text-muted)'">✕</button>
+            </div>
+            <!-- Body -->
+            <div style="padding:24px 28px 28px">
+                <!-- Title -->
+                <div style="margin-bottom:16px">
+                    <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px">Title</label>
+                    <input id="modal-title-input" type="text" class="tf-input" placeholder="What needs to be done?">
+                </div>
+                <!-- Description -->
+                <div style="margin-bottom:16px">
+                    <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px">Description</label>
+                    <textarea id="modal-desc-input" class="tf-input" placeholder="Add some details..." style="resize:none;height:90px"></textarea>
+                </div>
+                <!-- Status + Priority -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+                    <div>
+                        <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px">Status</label>
+                        <div style="position:relative">
+                            <select id="modal-status-select" class="tf-input" style="cursor:pointer;padding-right:36px">
+                                <option>To Do</option>
+                                <option>In Progress</option>
+                                <option>Done</option>
+                            </select>
+                            <div style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted);font-size:11px">▼</div>
+                        </div>
+                    </div>
+                    <div>
+                        <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px">Priority</label>
+                        <div style="position:relative">
+                            <select id="modal-priority-select" class="tf-input" style="cursor:pointer;padding-right:36px">
+                                <option>Low</option>
+                                <option selected>Medium</option>
+                                <option>High</option>
+                            </select>
+                            <div style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted);font-size:11px">▼</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Assignee + Project -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+                    <div>
+                        <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px">Assignee</label>
+                        <div style="position:relative">
+                            <select id="modal-member-select" class="tf-input" style="cursor:pointer;padding-right:36px">
+                                <option value="">Assign to...</option>
+                            </select>
+                            <div style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted);font-size:11px">▼</div>
+                        </div>
+                    </div>
+                    <div>
+                        <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px">Project</label>
+                        <div style="position:relative">
+                            <select id="modal-project-select" class="tf-input" style="cursor:pointer;padding-right:36px">
+                                <option value="">No project...</option>
+                            </select>
+                            <div style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted);font-size:11px">▼</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Due Date -->
+                <div style="margin-bottom:24px">
+                    <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px">Due Date</label>
+                    <div style="position:relative">
+                        <input id="modal-due-date" type="date" class="tf-input" style="padding-right:44px">
+                        <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;font-size:15px">📅</span>
+                    </div>
+                </div>
+                <!-- Actions -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                    <button onclick="closeTaskModal()" style="background:var(--bg-element);border:1px solid var(--border-strong);color:var(--text-main);border-radius:14px;padding:13px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.18s" onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background='var(--bg-element)'">Cancel</button>
+                    <button id="modal-submit-btn" onclick="handleModalSubmit()" style="background:var(--brand);color:white;border:none;border-radius:14px;padding:13px;font-size:14px;font-weight:600;cursor:pointer;transition:opacity 0.2s" onmouseover="this.style.opacity=0.85" onmouseout="this.style.opacity=1">Create Task</button>
+                </div>
+            </div>
         </div>
     </div>
 
