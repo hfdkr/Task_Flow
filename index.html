@@ -164,6 +164,62 @@
         .drop-zone.drag-over { outline: 2px dashed var(--brand); outline-offset: 6px; background: var(--brand-dim); border-radius: 14px; }
         .overdue-card { border-color: rgba(239,68,68,0.5) !important; }
 
+        .kanban-shell { max-width: 1340px; margin: 0 auto; }
+        .board-header { display:flex; align-items:flex-start; justify-content:space-between; gap:20px; margin-bottom:30px; }
+        .board-title { font-family:"Syne",sans-serif; font-size:34px; font-weight:800; color:var(--text-main); line-height:1; }
+        .board-actions { display:flex; align-items:center; gap:12px; flex-wrap:wrap; justify-content:flex-end; }
+        .view-switch { display:flex; align-items:center; gap:4px; background:var(--bg-element); border:1px solid var(--border-subtle); border-radius:12px; padding:4px; }
+        .view-switch button { border:0; border-radius:8px; padding:10px 22px; background:transparent; color:var(--text-light); font-size:14px; font-weight:600; cursor:pointer; min-width:78px; }
+        .view-switch button.active { background:#454852; color:#dce5ff; box-shadow:0 1px 0 rgba(255,255,255,0.04) inset; }
+        .primary-action { background:var(--brand); color:white; border:none; border-radius:24px; padding:13px 26px; font-size:15px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:10px; min-height:46px; box-shadow:0 12px 28px rgba(108,143,255,0.24); }
+        .primary-action:hover { filter:brightness(1.06); }
+        .board-controls { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+        .board-search { position:relative; width:min(100%, 360px); }
+        .board-search i { position:absolute; left:15px; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:14px; pointer-events:none; }
+        .board-search span { display:none; }
+        .board-search .tf-input { padding-left:42px; border-radius:99px; }
+        .task-table-wrap { background:linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012)); border:1px solid var(--border-subtle); border-radius:14px; overflow:hidden; }
+        .task-table { width:100%; border-collapse:collapse; table-layout:fixed; }
+        .task-table th { background:rgba(255,255,255,0.045); color:#c5c7d5; font-size:14px; font-weight:800; text-transform:uppercase; letter-spacing:1px; text-align:left; padding:22px 20px; border-bottom:1px solid var(--border-subtle); }
+        .task-table td { color:#cfd1dc; font-size:15px; padding:26px 20px; border-bottom:1px solid rgba(255,255,255,0.045); vertical-align:middle; }
+        .task-table tr:last-child td { border-bottom:0; }
+        .task-table tr:hover td { background:rgba(255,255,255,0.018); }
+        .table-task-title { color:#f0f1f5; font-size:15px; font-weight:500; line-height:1.35; }
+        .pill { display:inline-flex; align-items:center; justify-content:center; border-radius:99px; min-width:58px; padding:5px 12px; font-size:11px; font-weight:800; line-height:1; }
+        .status-pill { text-transform:none; }
+        .priority-pill { text-transform:uppercase; letter-spacing:0.6px; min-width:78px; }
+        .member-cell { display:flex; align-items:center; gap:12px; min-width:0; }
+        .member-avatar { width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:white; font-size:10px; font-weight:800; }
+        .table-date { display:flex; align-items:center; gap:8px; color:#c8cad6; white-space:nowrap; }
+        .table-date i { color:var(--text-muted); font-size:14px; }
+        .table-actions { display:flex; align-items:center; gap:16px; }
+        .icon-action { background:none; border:0; cursor:pointer; padding:4px; font-size:20px; line-height:1; color:var(--brand); }
+        .icon-action.delete { color:#c3454a; }
+        .board-footer { display:flex; align-items:center; justify-content:space-between; gap:16px; color:#c3c5d2; font-size:15px; margin-top:16px; }
+        .pagination { display:flex; align-items:center; gap:8px; }
+        .page-btn { width:32px; height:32px; border-radius:8px; border:1px solid var(--border-subtle); background:transparent; color:var(--text-light); display:flex; align-items:center; justify-content:center; font-size:14px; cursor:pointer; }
+        .page-btn.active { background:#9db2ff; color:#10204e; border-color:#9db2ff; font-weight:800; }
+        .empty-row { padding:48px 20px !important; text-align:center; color:var(--text-muted) !important; }
+        #kanban-columns-view { display:none; }
+        #view-kanban[data-board-mode="kanban"] #kanban-list-view { display:none; }
+        #view-kanban[data-board-mode="kanban"] #kanban-columns-view { display:grid; }
+
+        @media (max-width: 1100px) {
+            .task-table { min-width: 980px; }
+            .task-table-wrap { overflow-x:auto; }
+        }
+        @media (max-width: 768px) {
+            .board-header { flex-direction:column; align-items:stretch; margin-bottom:22px; }
+            .board-title { font-size:28px; }
+            .board-actions { justify-content:space-between; }
+            .view-switch { flex:1; }
+            .view-switch button { flex:1; padding-inline:12px; }
+            .primary-action { justify-content:center; padding-inline:18px; }
+            .board-controls { align-items:stretch; }
+            .board-search { width:100%; }
+            .board-footer { flex-direction:column; align-items:flex-start; }
+        }
+
         /* ── Filter buttons ──────────────────────────────────────── */
         .filter-btn { background: transparent; border-color: var(--border-strong); color: var(--text-muted); }
         .filter-btn:hover { border-color: var(--brand); color: var(--brand); }
@@ -469,7 +525,7 @@
                     </div>
                     <div class="nav-item" data-view="kanban" onclick="switchView('kanban')" title="Kanban Board">
                         <span class="nav-icon">⊞</span>
-                        <span class="sidebar-label">Kanban Board</span>
+                        <span class="sidebar-label">Task Board</span>
                     </div>
                     <div class="sidebar-section-label"
                         style="height:1px;background:var(--border-subtle);margin:14px 8px 14px"></div>
@@ -588,7 +644,7 @@
                         <span style="font-size:18px"></span> Dashboard
                     </div>
                     <div id="mob-nav-kanban" class="mobile-nav-item" onclick="switchView('kanban');closeMobileMenu()">
-                        <span style="font-size:18px"></span> Kanban Board
+                        <span style="font-size:18px"></span> Task Board
                     </div>
                     <div class="mobile-nav-divider"></div>
                     <div class="mobile-nav-item" onclick="openMembersPanel();closeMobileMenu()">
@@ -737,16 +793,21 @@
                 </div>
 
                 <!-- ════════════════ KANBAN VIEW ════════════════ -->
-                <div id="view-kanban" class="view">
+                <div id="view-kanban" class="view" data-board-mode="list">
+                    <div class="kanban-shell">
 
-                    <!-- Kanban header row -->
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
-                        <h2 style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--text-main)">Kanban Board</h2>
-                        <button onclick="openTaskModal()"
-                            style="background:var(--brand);color:white;border:none;border-radius:14px;padding:10px 22px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;transition:opacity 0.2s"
-                            onmouseover="this.style.opacity=0.85" onmouseout="this.style.opacity=1">
-                            <span style="font-size:18px;line-height:1">+</span> New Task
-                        </button>
+                    <div class="board-header">
+                        <h2 class="board-title">Task Board</h2>
+                        <div class="board-actions">
+                            <div class="view-switch" aria-label="Board view">
+                                <button id="board-mode-list" class="active" type="button" onclick="setBoardMode('list')">List</button>
+                                <button id="board-mode-kanban" type="button" onclick="setBoardMode('kanban')">Kanban</button>
+                            </div>
+                            <button class="primary-action" onclick="openTaskModal()">
+                                <i class="fi fi-rr-plus"></i>
+                                New Task
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Hidden selects still needed for JS compatibility -->
@@ -760,18 +821,57 @@
                     <button id="add-btn" style="display:none"></button>
 
                     <!-- Project Filter Tabs + Search -->
-                    <div class="mb-5 flex flex-col gap-3">
+                    <div class="board-controls">
                         <div class="flex items-center gap-2 flex-wrap">
                             <div id="project-filters" class="flex items-center gap-2 flex-wrap"></div>
                         </div>
-                        <div style="position:relative">
+                        <div class="board-search">
+                            <i class="fi fi-rr-search"></i>
                             <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none">🔍</span>
-                            <input id="search-input" type="text" placeholder="Search tasks..." class="tf-input" style="padding-left:42px">
+                            <input id="search-input" type="text" placeholder="Search tasks..." class="tf-input">
+                        </div>
+                    </div>
+
+                    <div id="kanban-list-view">
+                        <div class="task-table-wrap">
+                            <table class="task-table" aria-label="Task list">
+                                <colgroup>
+                                    <col style="width:22%">
+                                    <col style="width:13%">
+                                    <col style="width:12%">
+                                    <col style="width:17%">
+                                    <col style="width:17%">
+                                    <col style="width:14%">
+                                    <col style="width:9%">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>Task</th>
+                                        <th>Status</th>
+                                        <th>Priority</th>
+                                        <th>Member</th>
+                                        <th>Project</th>
+                                        <th>Due Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="task-table-body"></tbody>
+                            </table>
+                        </div>
+                        <div class="board-footer">
+                            <span id="task-summary">Showing 0 tasks</span>
+                            <div class="pagination" aria-label="Pagination">
+                                <button class="page-btn" type="button"><i class="fi fi-rr-angle-small-left"></i></button>
+                                <button class="page-btn active" type="button">1</button>
+                                <button class="page-btn" type="button">2</button>
+                                <button class="page-btn" type="button">3</button>
+                                <button class="page-btn" type="button"><i class="fi fi-rr-angle-small-right"></i></button>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Kanban columns -->
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 items-start">
+                    <div id="kanban-columns-view" class="grid grid-cols-1 lg:grid-cols-3 gap-5 items-start">
                         <!-- To Do -->
                         <div
                             style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:16px;padding:24px;min-height:400px;display:flex;flex-direction:column">
@@ -815,6 +915,8 @@
                                 class="drop-zone flex-1 flex flex-col gap-4 min-h-[80px]"></div>
                         </div>
                     </div>
+                </div>
+
                 </div>
 
                 <!-- ════════════════ SETTINGS VIEW (Admin only) ════════════════ -->

@@ -7,6 +7,7 @@ let activeFilter    = 'all';
 let searchQuery     = '';
 let pendingDeleteId = null;
 let allTasksCache   = [];
+let boardMode       = 'list';
 
 // ─── Mobile Menu ─────────────────────────────────────────────────────────────
 function toggleMobileMenu() {
@@ -128,6 +129,8 @@ const doneContainer     = document.getElementById('done-container');
 const todoCount     = document.getElementById('todo-count');
 const progressCount = document.getElementById('inprogress-count');
 const doneCount     = document.getElementById('done-count');
+const taskTableBody = document.getElementById('task-table-body');
+const taskSummary   = document.getElementById('task-summary');
 
 const projectFiltersEl = document.getElementById('project-filters');
 const errorBanner      = document.getElementById('error-banner');
@@ -369,7 +372,7 @@ function memberAvatarStyle(idx) {
 }
 
 function memberInitials(name) {
-    return name.trim().split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+    return String(name || '?').trim().split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
 }
 
 async function renderMembersPanel() {
@@ -625,6 +628,14 @@ async function changeStatus(id, newStatus) {
 // ─── Search + Filter ──────────────────────────────────────────────────────────
 if (searchInput) searchInput.addEventListener('input', () => { searchQuery = searchInput.value.toLowerCase().trim(); renderTasks(); });
 
+function setBoardMode(mode) {
+    boardMode = mode === 'kanban' ? 'kanban' : 'list';
+    const view = document.getElementById('view-kanban');
+    if (view) view.dataset.boardMode = boardMode;
+    document.getElementById('board-mode-list')?.classList.toggle('active', boardMode === 'list');
+    document.getElementById('board-mode-kanban')?.classList.toggle('active', boardMode === 'kanban');
+}
+
 function setFilter(project) {
     activeFilter = project;
     document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -637,9 +648,10 @@ function buildFilterButtons(tasks) {
     const projects = [...new Set(tasks.map(t => t.project).filter(p => p && p.trim()))].sort();
     const btnBase = 'font-size:13px;font-weight:500;padding:7px 18px;border-radius:99px;border:1px solid var(--border-strong);background:transparent;cursor:pointer;color:var(--text-muted);transition:all 0.2s;';
     const btnActive = 'font-size:13px;font-weight:600;padding:7px 18px;border-radius:99px;border:1px solid var(--brand);background:var(--brand-dim);cursor:pointer;color:var(--brand);transition:all 0.2s;';
-    projectFiltersEl.innerHTML = `<button data-project="all" onclick="setFilter('all')" style="${activeFilter==='all'?btnActive:btnBase}" onmouseover="if(this.dataset.project!==activeFilter)this.style.borderColor='var(--brand)';this.style.color='var(--brand)'" onmouseout="if(this.dataset.project!==activeFilter){this.style.borderColor='var(--border-strong)';this.style.color='var(--text-muted)';}">All Projects</button>`;
+    projectFiltersEl.innerHTML = `<button class="filter-btn" data-project="all" onclick="setFilter('all')" style="${activeFilter==='all'?btnActive:btnBase}" onmouseover="if(this.dataset.project!==activeFilter)this.style.borderColor='var(--brand)';this.style.color='var(--brand)'" onmouseout="if(this.dataset.project!==activeFilter){this.style.borderColor='var(--border-strong)';this.style.color='var(--text-muted)';}">All Projects</button>`;
     projects.forEach(project => {
         const btn = document.createElement('button');
+        btn.className = 'filter-btn';
         btn.dataset.project = project;
         btn.onclick = () => setFilter(project);
         btn.style.cssText = activeFilter === project ? btnActive : btnBase;
@@ -685,6 +697,7 @@ async function renderTasks() {
         (t.project && t.project.toLowerCase().includes(searchQuery)) ||
         (t.description && t.description.toLowerCase().includes(searchQuery))
     );
+    renderTaskTable(tasks, allTasks);
     todoContainer.innerHTML = progressContainer.innerHTML = doneContainer.innerHTML = '';
     let todo = 0, progress = 0, done = 0;
     tasks.forEach(task => {
@@ -722,7 +735,67 @@ function priorityStyle(p) {
     return 'background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);color:var(--status-done)';
 }
 
+function statusStyle(status) {
+    if (status === 'Done') return 'background:rgba(16,185,129,0.16);border:1px solid rgba(16,185,129,0.28);color:#4ade80';
+    if (status === 'In Progress') return 'background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.32);color:#fbbf24';
+    return 'background:rgba(79,142,247,0.16);border:1px solid rgba(79,142,247,0.32);color:#65a3ff';
+}
+
+function renderTaskTable(tasks, allTasks) {
+    if (!taskTableBody) return;
+    if (!tasks.length) {
+        taskTableBody.innerHTML = `<tr><td class="empty-row" colspan="7">No tasks match this view.</td></tr>`;
+    } else {
+        taskTableBody.innerHTML = tasks.map(createTaskRow).join('');
+    }
+
+    if (taskSummary) {
+        const projectCount = new Set(allTasks.map(t => t.project).filter(Boolean)).size;
+        const totalLabel = `${allTasks.length} total task${allTasks.length === 1 ? '' : 's'}`;
+        taskSummary.textContent = `Showing ${tasks.length} task${tasks.length === 1 ? '' : 's'} of ${totalLabel} across ${projectCount} project${projectCount === 1 ? '' : 's'}`;
+    }
+}
+
+function createTaskRow(task) {
+    const ac = AVATAR_COLORS[memberColorIndex(task.member)];
+    const initials = memberInitials(task.member || '?');
+    const dueDate = formatTableDate(task.dueDate);
+    const project = task.project || 'No project';
+
+    return `
+        <tr>
+            <td><div class="table-task-title">${escapeHtml(task.title)}</div></td>
+            <td><span class="pill status-pill" style="${statusStyle(task.status)}">${escapeHtml(statusLabel(task.status))}</span></td>
+            <td><span class="pill priority-pill" style="${priorityStyle(task.priority)}">${escapeHtml(task.priority)}</span></td>
+            <td>
+                <div class="member-cell">
+                    <span class="member-avatar" style="background:${ac.color};">${escapeHtml(initials)}</span>
+                    <span>${escapeHtml(task.member)}</span>
+                </div>
+            </td>
+            <td>${escapeHtml(project)}</td>
+            <td><span class="table-date"><i class="fi fi-rr-calendar"></i>${dueDate}</span></td>
+            <td>
+                <div class="table-actions">
+                    <button class="icon-action" onclick="editTask(${task.id})" title="Edit task"><i class="fi fi-rr-pencil"></i></button>
+                    <button class="icon-action delete" onclick="askDeleteConfirmation(${task.id})" title="Delete task"><i class="fi fi-rr-trash"></i></button>
+                </div>
+            </td>
+        </tr>`;
+}
+
+function statusLabel(status) {
+    return status === 'In Progress' ? 'In progress' : status;
+}
+
+function formatTableDate(dueDate) {
+    if (!dueDate) return 'No date';
+    const date = new Date(dueDate);
+    return date.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }).replace(',', '');
+}
+
 function memberColorIndex(name) {
+    name = String(name || '?');
     // Stable color based on name chars
     let hash = 0;
     for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
@@ -774,7 +847,16 @@ function emptyState() {
     </div>`;
 }
 
-function escapeAttr(str) { return str.replace(/'/g, "\\'"); }
+function escapeAttr(str) { return String(str ?? '').replace(/'/g, "\\'"); }
+function escapeHtml(str) {
+    return String(str ?? '').replace(/[&<>"']/g, ch => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+    }[ch]));
+}
 
 
 // ─── Dashboard Render ─────────────────────────────────────────────────────────
@@ -951,6 +1033,7 @@ function relativeTime(iso) {
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 async function init() {
+    setBoardMode(boardMode);
     showLoadingSkeleton();
     try {
         await renderMembersPanel();
