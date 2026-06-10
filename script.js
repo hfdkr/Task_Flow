@@ -1274,12 +1274,12 @@ async function saveProfile() {
             if (headerName) headerName.textContent = res.user.name;
             const bigAv = document.getElementById('acct-avatar-big');
             if (bigAv) bigAv.textContent = res.user.name.trim().split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
-            showAccountMsg('acct-profile-msg', '✓ تم حفظ الملف الشخصي بنجاح.', true);
+            showAccountMsg('acct-profile-msg', ' Profile saved successfully.', true);
         } else {
-            showAccountMsg('acct-profile-msg', res.message || 'فشل التحديث.', false);
+            showAccountMsg('acct-profile-msg', res.message || 'Update failed.', false);
         }
     } catch {
-        showAccountMsg('acct-profile-msg', 'خطأ في الاتصال بالسيرفر.', false);
+        showAccountMsg('acct-profile-msg', 'Server connection error.', false);
     }
 }
 
@@ -1289,9 +1289,9 @@ async function savePassword() {
     const newPwd     = document.getElementById('acct-new-pwd')?.value     || '';
     const confirmPwd = document.getElementById('acct-confirm-pwd')?.value || '';
 
-    if (!curPwd)              { showAccountMsg('acct-security-msg', 'أدخل كلمة المرور الحالية.', false); return; }
-    if (newPwd.length < 6)   { showAccountMsg('acct-security-msg', 'كلمة المرور الجديدة يجب أن تكون 6 أحرف على الأقل.', false); return; }
-    if (newPwd !== confirmPwd){ showAccountMsg('acct-security-msg', 'كلمة المرور الجديدة غير متطابقة.', false); return; }
+    if (!curPwd)              { showAccountMsg('acct-security-msg', 'Enter your current password.', false); return; }
+    if (newPwd.length < 6)   { showAccountMsg('acct-security-msg', 'The new password must be at least 6 characters long.', false); return; }
+    if (newPwd !== confirmPwd){ showAccountMsg('acct-security-msg', 'The new password does not match.', false); return; }
 
     try {
         const res = await apiFetch(`${API}/account/password`, {
@@ -1303,12 +1303,12 @@ async function savePassword() {
             document.getElementById('acct-new-pwd').value     = '';
             document.getElementById('acct-confirm-pwd').value = '';
             updateStrength('');
-            showAccountMsg('acct-security-msg', '✓ تم تغيير كلمة المرور بنجاح.', true);
+            showAccountMsg('acct-security-msg', '✓ Password changed successfully.', true);
         } else {
-            showAccountMsg('acct-security-msg', res.message || 'فشل تغيير كلمة المرور.', false);
+            showAccountMsg('acct-security-msg', res.message || 'Password change failed.', false);
         }
     } catch {
-        showAccountMsg('acct-security-msg', 'خطأ في الاتصال بالسيرفر.', false);
+        showAccountMsg('acct-security-msg', 'Server connection error.', false);
     }
 }
 
