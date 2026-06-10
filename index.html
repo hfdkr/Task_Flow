@@ -204,6 +204,32 @@
         #view-kanban[data-board-mode="kanban"] #kanban-list-view { display:none; }
         #view-kanban[data-board-mode="kanban"] #kanban-columns-view { display:grid; }
 
+        :root[data-theme="light"] .view-switch { background:var(--bg-surface); border-color:var(--border-subtle); }
+        :root[data-theme="light"] .view-switch button { color:var(--text-light); }
+        :root[data-theme="light"] .view-switch button.active { background:var(--brand-dim); color:var(--brand); box-shadow:none; }
+        :root[data-theme="light"] .primary-action { box-shadow:0 10px 24px rgba(74,114,245,0.18); }
+        :root[data-theme="light"] .task-table-wrap { background:var(--bg-surface); border-color:var(--border-subtle); }
+        :root[data-theme="light"] .task-table th {
+            background:var(--bg-element);
+            color:var(--text-main);
+            border-bottom-color:var(--border-subtle);
+        }
+        :root[data-theme="light"] .task-table td {
+            color:var(--text-light);
+            border-bottom-color:var(--border-subtle);
+        }
+        :root[data-theme="light"] .task-table tr:hover td {
+            background:rgba(74,114,245,0.04);
+        }
+        :root[data-theme="light"] .table-task-title { color:var(--text-main); }
+        :root[data-theme="light"] .table-date { color:var(--text-light); }
+        :root[data-theme="light"] .table-date i { color:var(--text-muted); }
+        :root[data-theme="light"] .icon-action { color:var(--brand); }
+        :root[data-theme="light"] .icon-action.delete { color:#c92d3a; }
+        :root[data-theme="light"] .page-btn { background:var(--bg-surface); border-color:var(--border-subtle); color:var(--text-light); }
+        :root[data-theme="light"] .page-btn.active { background:var(--brand); color:white; border-color:var(--brand); }
+        :root[data-theme="light"] .board-footer { color:var(--text-light); }
+
         @media (max-width: 1100px) {
             .task-table { min-width: 980px; }
             .task-table-wrap { overflow-x:auto; }
