@@ -64,8 +64,6 @@ function initTheme() {
     if (chk) chk.checked = (saved === 'dark');
     const chkM = document.getElementById('theme-check-mobile');
     if (chkM) chkM.checked = (saved === 'dark');
-    // Update label
-    const lbl = document.querySelector('#sidebar label + span, #sidebar .toggle-label');
     updateThemeLabel(saved);
 }
 
@@ -119,7 +117,6 @@ const dueDateInput  = document.getElementById('due-date-input');
 const statusSelect  = document.getElementById('status-select');
 const prioritySelect = document.getElementById('priority-select');
 const descInput     = document.getElementById('desc-input');
-const addBtn        = document.getElementById('add-btn');
 const searchInput   = document.getElementById('search-input');
 
 const todoContainer     = document.getElementById('todo-container');
@@ -135,11 +132,6 @@ const taskSummary   = document.getElementById('task-summary');
 const projectFiltersEl = document.getElementById('project-filters');
 const errorBanner      = document.getElementById('error-banner');
 const errorText        = document.getElementById('error-text');
-
-// Danger/confirm modal (uses danger-modal IDs)
-const confirmModal  = document.getElementById('danger-modal');
-const confirmCancel = document.getElementById('danger-modal');   // handled via closeDangerModal()
-const confirmDelete = document.getElementById('danger-confirm-btn');
 
 const membersPanel     = document.getElementById('members-panel');
 const newMemberInput   = document.getElementById('new-member-input');
@@ -511,12 +503,6 @@ function askDeleteConfirmation(id) {
 
 
 // ─── Task Form ────────────────────────────────────────────────────────────────
-if (addBtn) addBtn.addEventListener('click', handleAdd);
-
-async function handleAdd() {
-    // Legacy inline form handler — now delegates to modal submit
-    await handleModalSubmit();
-}
 
 async function handleModalSubmit() {
     const title   = (document.getElementById('modal-title-input')?.value || '').trim();
@@ -1232,7 +1218,7 @@ function closeDangerModal() {
     _dangerCallback = null;
 }
 document.getElementById('danger-confirm-btn').addEventListener('click', async () => {
-    if (_dangerCallback) { closeDangerModal(); await _dangerCallback(); }
+    if (_dangerCallback) { const cb = _dangerCallback; closeDangerModal(); await cb(); }
 });
 document.getElementById('danger-modal').addEventListener('click', e => {
     if (e.target === document.getElementById('danger-modal')) closeDangerModal();
