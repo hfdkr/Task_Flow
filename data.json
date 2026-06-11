@@ -267,15 +267,15 @@
     },
     {
       "title": "Tests fonctionnels (ajout, statuts, assignation)",
-      "member": "All",
+      "member": "hafid",
       "project": "task flow",
-      "description": "Tests &amp; Intégration — équipe entière",
+      "description": "Tests &amp;amp; Intégration — équipe entière",
       "dueDate": "2026-06-15",
       "priority": "High",
       "id": 1781200000018,
       "status": "Done",
       "createdAt": "2026-06-11T12:00:00.000Z",
-      "updatedAt": "2026-06-11T13:21:19.928Z"
+      "updatedAt": "2026-06-11T23:34:23.777Z"
     },
     {
       "title": "Gestion des branches GitHub + merges",
