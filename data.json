@@ -374,6 +374,14 @@
       "password": "$2b$12$ELSBQ1T5PSzFLR/VlWqi4OZxoFZGEDTvefpSKPgiy5C9OfmlJdOyS",
       "role": "admin",
       "createdAt": "2026-06-10T15:31:26.895Z"
+    },
+    {
+      "id": 1781190068182,
+      "name": "Hamza",
+      "email": "barihamza73@gmail.com",
+      "password": "$2b$12$ZUtaMof2ap281CwDhgwliuq6JX8.bskqve4m6gOtbBD1j70mX1Fl2",
+      "role": "member",
+      "createdAt": "2026-06-11T15:01:08.182Z"
     }
   ]
 }

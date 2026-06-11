@@ -2,34 +2,34 @@
 const API = 'http://localhost:3000/api';
 
 // ─── State ────────────────────────────────────────────────────────────────────
-let editingTaskId   = null;
-let activeFilter    = 'all';
-let searchQuery     = '';
+let editingTaskId = null;
+let activeFilter = 'all';
+let searchQuery = '';
 let pendingDeleteId = null;
-let allTasksCache   = [];
-let boardMode       = 'list';
+let allTasksCache = [];
+let boardMode = 'list';
 
 // ─── Mobile Menu ─────────────────────────────────────────────────────────────
 function toggleMobileMenu() {
     const menu = document.getElementById('mobile-menu');
-    const btn  = document.getElementById('hamburger-btn');
+    const btn = document.getElementById('hamburger-btn');
     const isOpen = menu.classList.toggle('open');
     // Animate hamburger → X
     const lines = btn.querySelectorAll('.ham-line');
     if (isOpen) {
         lines[0].style.transform = 'translateY(7px) rotate(45deg)';
-        lines[1].style.opacity   = '0';
+        lines[1].style.opacity = '0';
         lines[2].style.transform = 'translateY(-7px) rotate(-45deg)';
     } else {
         lines[0].style.transform = '';
-        lines[1].style.opacity   = '';
+        lines[1].style.opacity = '';
         lines[2].style.transform = '';
     }
 }
 
 function closeMobileMenu() {
     const menu = document.getElementById('mobile-menu');
-    const btn  = document.getElementById('hamburger-btn');
+    const btn = document.getElementById('hamburger-btn');
     menu.classList.remove('open');
     const lines = btn ? btn.querySelectorAll('.ham-line') : [];
     lines.forEach(l => { l.style.transform = ''; l.style.opacity = ''; });
@@ -77,7 +77,7 @@ function toggleTheme(isDark) {
 function updateThemeLabel(theme) {
     const labelEl = document.querySelector('#sidebar nav ~ div span:first-child');
     if (labelEl) {
-        labelEl.innerHTML = theme === 'dark' ? '<i class="fi fi-rr-moon"></i> Dark mode' : '<i class="fi fi-rr-brightness"></i> Light mode';
+        labelEl.innerHTML = theme === 'dark' ? '<span class="theme-label flex items-center gap-2"><img class="theme-icon h-[12px] w-[12px]" src="./assets/Icon (5).png" alt="Dark Mode"> Dark mode</span> ' : '<span class="theme-label flex items-center gap-2"><img class="theme-icon h-[12px] w-[12px]" src="./assets/Icon.svg" alt="Light Mode"> Light mode</span>';
     }
 }
 
@@ -101,45 +101,45 @@ function switchView(name) {
 
     // Refresh data for the active view
     if (name === 'dashboard') renderDashboard();
-    if (name === 'kanban')    renderTasks();
-    if (name === 'settings')  openSettingsView();
+    if (name === 'kanban') renderTasks();
+    if (name === 'settings') openSettingsView();
 }
 
 // ─── DOM References ───────────────────────────────────────────────────────────
-const loginScreen   = document.getElementById('login-screen');
-const appEl         = document.getElementById('app');
+const loginScreen = document.getElementById('login-screen');
+const appEl = document.getElementById('app');
 
 // Legacy hidden inputs (kept for JS compatibility, now display:none)
-const titleInput    = document.getElementById('title-input');
-const memberSelect  = document.getElementById('member-select');
+const titleInput = document.getElementById('title-input');
+const memberSelect = document.getElementById('member-select');
 const projectSelect = document.getElementById('project-select');
-const dueDateInput  = document.getElementById('due-date-input');
-const statusSelect  = document.getElementById('status-select');
+const dueDateInput = document.getElementById('due-date-input');
+const statusSelect = document.getElementById('status-select');
 const prioritySelect = document.getElementById('priority-select');
-const descInput     = document.getElementById('desc-input');
-const searchInput   = document.getElementById('search-input');
+const descInput = document.getElementById('desc-input');
+const searchInput = document.getElementById('search-input');
 
-const todoContainer     = document.getElementById('todo-container');
+const todoContainer = document.getElementById('todo-container');
 const progressContainer = document.getElementById('inprogress-container');
-const doneContainer     = document.getElementById('done-container');
+const doneContainer = document.getElementById('done-container');
 
-const todoCount     = document.getElementById('todo-count');
+const todoCount = document.getElementById('todo-count');
 const progressCount = document.getElementById('inprogress-count');
-const doneCount     = document.getElementById('done-count');
+const doneCount = document.getElementById('done-count');
 const taskTableBody = document.getElementById('task-table-body');
-const taskSummary   = document.getElementById('task-summary');
+const taskSummary = document.getElementById('task-summary');
 
 const projectFiltersEl = document.getElementById('project-filters');
-const errorBanner      = document.getElementById('error-banner');
-const errorText        = document.getElementById('error-text');
+const errorBanner = document.getElementById('error-banner');
+const errorText = document.getElementById('error-text');
 
-const membersPanel     = document.getElementById('members-panel');
-const newMemberInput   = document.getElementById('new-member-input');
-const membersList      = document.getElementById('members-list');
+const membersPanel = document.getElementById('members-panel');
+const newMemberInput = document.getElementById('new-member-input');
+const membersList = document.getElementById('members-list');
 
-const projectsPanel    = document.getElementById('projects-panel');
-const newProjectInput  = document.getElementById('new-project-input');
-const projectsList     = document.getElementById('projects-list');
+const projectsPanel = document.getElementById('projects-panel');
+const newProjectInput = document.getElementById('new-project-input');
+const projectsList = document.getElementById('projects-list');
 
 
 // ─── Error Banner ─────────────────────────────────────────────────────────────
@@ -154,13 +154,13 @@ function hideError() { errorBanner.style.display = 'none'; }
 // ─── Auth Tab Switcher ────────────────────────────────────────────────────────
 function switchAuthTab(tab) {
     const isSignin = tab === 'signin';
-    document.getElementById('form-signin').style.display  = isSignin ? 'block' : 'none';
-    document.getElementById('form-signup').style.display  = isSignin ? 'none'  : 'block';
-    document.getElementById('tab-signin').style.background  = isSignin ? 'var(--brand)' : 'transparent';
-    document.getElementById('tab-signin').style.color       = isSignin ? 'white' : 'var(--text-muted)';
-    document.getElementById('tab-signup').style.background  = isSignin ? 'transparent' : 'var(--brand)';
-    document.getElementById('tab-signup').style.color       = isSignin ? 'var(--text-muted)' : 'white';
-    document.getElementById('auth-subtitle').textContent    = isSignin
+    document.getElementById('form-signin').style.display = isSignin ? 'block' : 'none';
+    document.getElementById('form-signup').style.display = isSignin ? 'none' : 'block';
+    document.getElementById('tab-signin').style.background = isSignin ? 'var(--brand)' : 'transparent';
+    document.getElementById('tab-signin').style.color = isSignin ? 'white' : 'var(--text-muted)';
+    document.getElementById('tab-signup').style.background = isSignin ? 'transparent' : 'var(--brand)';
+    document.getElementById('tab-signup').style.color = isSignin ? 'var(--text-muted)' : 'white';
+    document.getElementById('auth-subtitle').textContent = isSignin
         ? 'Welcome back — sign in to continue'
         : 'Create your free account to get started';
     // Clear errors
@@ -179,7 +179,7 @@ function setAuthLoading(btnId, loading) {
     if (!btn) return;
     btn.disabled = loading;
     btn.style.opacity = loading ? '0.65' : '1';
-    btn.style.cursor  = loading ? 'not-allowed' : 'pointer';
+    btn.style.cursor = loading ? 'not-allowed' : 'pointer';
 }
 
 // Password visibility toggle
@@ -193,19 +193,19 @@ function togglePwd(inputId, btn) {
 
 // Password strength meter
 function updateStrength(val) {
-    const bars  = document.querySelectorAll('.strength-bar');
+    const bars = document.querySelectorAll('.strength-bar');
     const label = document.getElementById('strength-label');
     if (!bars.length || !label) return;
     let score = 0;
-    if (val.length >= 6)  score++;
+    if (val.length >= 6) score++;
     if (val.length >= 10) score++;
     if (/[A-Z]/.test(val) && /[0-9]/.test(val)) score++;
     if (/[^A-Za-z0-9]/.test(val)) score++;
-    const colors  = ['', '#ef4444', '#f59e0b', '#6c8fff', '#10b981'];
-    const labels  = ['', 'Weak', 'Fair', 'Good', 'Strong 💪'];
+    const colors = ['', '#ef4444', '#f59e0b', '#6c8fff', '#10b981'];
+    const labels = ['', 'Weak', 'Fair', 'Good', 'Strong 💪'];
     bars.forEach((b, i) => { b.style.background = i < score ? (colors[score] || 'var(--border-strong)') : 'var(--border-strong)'; });
-    label.textContent  = val.length ? labels[score] : '';
-    label.style.color  = colors[score] || 'var(--text-muted)';
+    label.textContent = val.length ? labels[score] : '';
+    label.style.color = colors[score] || 'var(--text-muted)';
 }
 
 // ─── Auth ─────────────────────────────────────────────────────────────────────
@@ -214,7 +214,7 @@ let currentUser = null;
 async function checkAuth() {
     initTheme();
     try {
-        const res  = await fetch(`${API}/me`, { credentials: 'include' });
+        const res = await fetch(`${API}/me`, { credentials: 'include' });
         const data = await res.json();
         if (data.authenticated) { currentUser = data.user; showApp(); }
         else showLogin();
@@ -256,13 +256,13 @@ function updateUserUI() {
         badge.style.display = 'block';
     }
     // Show Settings nav only for admins
-    const navSettings    = document.getElementById('nav-settings');
+    const navSettings = document.getElementById('nav-settings');
     const mobNavSettings = document.getElementById('mob-nav-settings');
     if (currentUser.role === 'admin') {
-        if (navSettings)    navSettings.style.display    = 'flex';
+        if (navSettings) navSettings.style.display = 'flex';
         if (mobNavSettings) mobNavSettings.style.display = 'flex';
     } else {
-        if (navSettings)    navSettings.style.display    = 'none';
+        if (navSettings) navSettings.style.display = 'none';
         if (mobNavSettings) mobNavSettings.style.display = 'none';
     }
 }
@@ -278,13 +278,13 @@ document.addEventListener('keydown', e => {
 });
 
 async function handleSignIn() {
-    const email    = (document.getElementById('signin-email')?.value    || '').trim();
+    const email = (document.getElementById('signin-email')?.value || '').trim();
     const password = (document.getElementById('signin-password')?.value || '');
     setAuthError('signin', '');
     if (!email || !password) { setAuthError('signin', 'Please enter your email and password.'); return; }
     setAuthLoading('signin-btn', true);
     try {
-        const res  = await fetch(`${API}/login`, { method:'POST', headers:{'Content-Type':'application/json'}, credentials:'include', body: JSON.stringify({ email, password }) });
+        const res = await fetch(`${API}/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ email, password }) });
         const data = await res.json();
         if (data.success) { currentUser = data.user; showApp(); }
         else setAuthError('signin', data.message || 'Invalid credentials.');
@@ -296,16 +296,16 @@ async function handleSignIn() {
 }
 
 async function handleSignUp() {
-    const name     = (document.getElementById('signup-name')?.value     || '').trim();
-    const email    = (document.getElementById('signup-email')?.value    || '').trim();
+    const name = (document.getElementById('signup-name')?.value || '').trim();
+    const email = (document.getElementById('signup-email')?.value || '').trim();
     const password = (document.getElementById('signup-password')?.value || '');
     setAuthError('signup', '');
-    if (!name)            { setAuthError('signup', 'Please enter your name.');             return; }
-    if (!email)           { setAuthError('signup', 'Please enter your email.');            return; }
+    if (!name) { setAuthError('signup', 'Please enter your name.'); return; }
+    if (!email) { setAuthError('signup', 'Please enter your email.'); return; }
     if (password.length < 6) { setAuthError('signup', 'Password must be at least 6 characters.'); return; }
     setAuthLoading('signup-btn', true);
     try {
-        const res  = await fetch(`${API}/register`, { method:'POST', headers:{'Content-Type':'application/json'}, credentials:'include', body: JSON.stringify({ name, email, password }) });
+        const res = await fetch(`${API}/register`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ name, email, password }) });
         const data = await res.json();
         if (data.success) { currentUser = data.user; showApp(); }
         else setAuthError('signup', data.message || 'Registration failed.');
@@ -325,37 +325,37 @@ async function logout() {
 
 // ─── API Helpers ──────────────────────────────────────────────────────────────
 async function apiFetch(url, options = {}) {
-    const res = await fetch(url, { ...options, credentials:'include', headers:{ 'Content-Type':'application/json', ...(options.headers||{}) } });
+    const res = await fetch(url, { ...options, credentials: 'include', headers: { 'Content-Type': 'application/json', ...(options.headers || {}) } });
     if (res.status === 401) { showLogin(); throw new Error('Session expired'); }
     return res.json();
 }
 
-async function fetchTasks()         { return (await apiFetch(`${API}/tasks`)).tasks; }
-async function fetchMembers()       { return (await apiFetch(`${API}/members`)).members; }
-async function createTask(task)     { return apiFetch(`${API}/tasks`, { method:'POST', body: JSON.stringify(task) }); }
-async function updateTask(id, c)    { return apiFetch(`${API}/tasks/${id}`, { method:'PUT', body: JSON.stringify(c) }); }
-async function removeTask(id)       { return apiFetch(`${API}/tasks/${id}`, { method:'DELETE' }); }
-async function createMember(name)   { return apiFetch(`${API}/members`, { method:'POST', body: JSON.stringify({ name }) }); }
-async function removeMember(id)     { return apiFetch(`${API}/members/${id}`, { method:'DELETE' }); }
-async function fetchProjects()      { return (await apiFetch(`${API}/projects`)).projects; }
-async function createProject(name)  { return apiFetch(`${API}/projects`, { method:'POST', body: JSON.stringify({ name }) }); }
-async function removeProject(id)    { return apiFetch(`${API}/projects/${id}`, { method:'DELETE' }); }
+async function fetchTasks() { return (await apiFetch(`${API}/tasks`)).tasks; }
+async function fetchMembers() { return (await apiFetch(`${API}/members`)).members; }
+async function createTask(task) { return apiFetch(`${API}/tasks`, { method: 'POST', body: JSON.stringify(task) }); }
+async function updateTask(id, c) { return apiFetch(`${API}/tasks/${id}`, { method: 'PUT', body: JSON.stringify(c) }); }
+async function removeTask(id) { return apiFetch(`${API}/tasks/${id}`, { method: 'DELETE' }); }
+async function createMember(name) { return apiFetch(`${API}/members`, { method: 'POST', body: JSON.stringify({ name }) }); }
+async function removeMember(id) { return apiFetch(`${API}/members/${id}`, { method: 'DELETE' }); }
+async function fetchProjects() { return (await apiFetch(`${API}/projects`)).projects; }
+async function createProject(name) { return apiFetch(`${API}/projects`, { method: 'POST', body: JSON.stringify({ name }) }); }
+async function removeProject(id) { return apiFetch(`${API}/projects/${id}`, { method: 'DELETE' }); }
 
 
 // ─── Members Panel ────────────────────────────────────────────────────────────
-function openMembersPanel()  { if (membersPanel) membersPanel.classList.remove('hidden'); }
+function openMembersPanel() { if (membersPanel) membersPanel.classList.remove('hidden'); }
 function closeMembersPanel() { if (membersPanel) membersPanel.classList.add('hidden'); }
-if (membersPanel)    membersPanel.addEventListener('click', e => { if (e.target === membersPanel) closeMembersPanel(); });
-if (newMemberInput)  newMemberInput.addEventListener('keydown', e => { if (e.key === 'Enter') addMember(); });
+if (membersPanel) membersPanel.addEventListener('click', e => { if (e.target === membersPanel) closeMembersPanel(); });
+if (newMemberInput) newMemberInput.addEventListener('keydown', e => { if (e.key === 'Enter') addMember(); });
 
 // Avatar palette — cycles through distinct hues for member avatars
 const AVATAR_COLORS = [
     { bg: 'rgba(108,143,255,0.18)', border: 'rgba(108,143,255,0.35)', color: '#6c8fff' },  // blue
-    { bg: 'rgba(239,68,68,0.15)',   border: 'rgba(239,68,68,0.3)',   color: '#ef6060' },   // red
-    { bg: 'rgba(245,158,11,0.15)',  border: 'rgba(245,158,11,0.3)',  color: '#f59e0b' },   // amber
-    { bg: 'rgba(16,185,129,0.15)',  border: 'rgba(16,185,129,0.3)',  color: '#10b981' },   // green
-    { bg: 'rgba(168,85,247,0.15)',  border: 'rgba(168,85,247,0.3)',  color: '#a855f7' },   // purple
-    { bg: 'rgba(236,72,153,0.15)',  border: 'rgba(236,72,153,0.3)',  color: '#ec4899' },   // pink
+    { bg: 'rgba(239,68,68,0.15)', border: 'rgba(239,68,68,0.3)', color: '#ef6060' },   // red
+    { bg: 'rgba(245,158,11,0.15)', border: 'rgba(245,158,11,0.3)', color: '#f59e0b' },   // amber
+    { bg: 'rgba(16,185,129,0.15)', border: 'rgba(16,185,129,0.3)', color: '#10b981' },   // green
+    { bg: 'rgba(168,85,247,0.15)', border: 'rgba(168,85,247,0.3)', color: '#a855f7' },   // purple
+    { bg: 'rgba(236,72,153,0.15)', border: 'rgba(236,72,153,0.3)', color: '#ec4899' },   // pink
 ];
 
 function memberAvatarStyle(idx) {
@@ -430,9 +430,9 @@ async function deleteMember(id) {
 
 
 // ─── Projects Panel ───────────────────────────────────────────────────────────
-function openProjectsPanel()  { if (projectsPanel) projectsPanel.classList.remove('hidden'); }
+function openProjectsPanel() { if (projectsPanel) projectsPanel.classList.remove('hidden'); }
 function closeProjectsPanel() { if (projectsPanel) projectsPanel.classList.add('hidden'); }
-if (projectsPanel)   projectsPanel.addEventListener('click', e => { if (e.target === projectsPanel) closeProjectsPanel(); });
+if (projectsPanel) projectsPanel.addEventListener('click', e => { if (e.target === projectsPanel) closeProjectsPanel(); });
 if (newProjectInput) newProjectInput.addEventListener('keydown', e => { if (e.key === 'Enter') addProject(); });
 
 async function renderProjectsPanel() {
@@ -505,19 +505,19 @@ function askDeleteConfirmation(id) {
 // ─── Task Form ────────────────────────────────────────────────────────────────
 
 async function handleModalSubmit() {
-    const title   = (document.getElementById('modal-title-input')?.value || '').trim();
-    const member  = (document.getElementById('modal-member-select')?.value || '').trim();
+    const title = (document.getElementById('modal-title-input')?.value || '').trim();
+    const member = (document.getElementById('modal-member-select')?.value || '').trim();
     if (!title || !member) { showError('Please fill in the task title and assign a member'); return; }
     hideError();
 
     const payload = {
         title,
         member,
-        project:     (document.getElementById('modal-project-select')?.value  || '').trim(),
-        dueDate:      document.getElementById('modal-due-date')?.value         || '',
-        status:       document.getElementById('modal-status-select')?.value    || 'To Do',
-        priority:     document.getElementById('modal-priority-select')?.value  || 'Medium',
-        description: (document.getElementById('modal-desc-input')?.value       || '').trim(),
+        project: (document.getElementById('modal-project-select')?.value || '').trim(),
+        dueDate: document.getElementById('modal-due-date')?.value || '',
+        status: document.getElementById('modal-status-select')?.value || 'To Do',
+        priority: document.getElementById('modal-priority-select')?.value || 'Medium',
+        description: (document.getElementById('modal-desc-input')?.value || '').trim(),
     };
 
     if (editingTaskId) {
@@ -535,34 +535,34 @@ async function handleModalSubmit() {
 }
 
 function clearForm() {
-    const ids = ['modal-title-input','modal-desc-input','modal-due-date'];
+    const ids = ['modal-title-input', 'modal-desc-input', 'modal-due-date'];
     ids.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-    const statusEl   = document.getElementById('modal-status-select');
+    const statusEl = document.getElementById('modal-status-select');
     const priorityEl = document.getElementById('modal-priority-select');
-    const memberEl   = document.getElementById('modal-member-select');
-    const projectEl  = document.getElementById('modal-project-select');
-    if (statusEl)   statusEl.value   = 'To Do';
+    const memberEl = document.getElementById('modal-member-select');
+    const projectEl = document.getElementById('modal-project-select');
+    if (statusEl) statusEl.value = 'To Do';
     if (priorityEl) priorityEl.value = 'Medium';
-    if (memberEl)   memberEl.value   = '';
-    if (projectEl)  projectEl.value  = '';
+    if (memberEl) memberEl.value = '';
+    if (projectEl) projectEl.value = '';
     editingTaskId = null;
 }
 
 async function editTask(id) {
     const tasks = await fetchTasks();
-    const task  = tasks.find(t => t.id === id);
+    const task = tasks.find(t => t.id === id);
     if (!task) return;
     openTaskModal(task.status);
     // Fill modal fields
-    document.getElementById('modal-title-input').value   = task.title;
-    document.getElementById('modal-desc-input').value    = task.description || '';
+    document.getElementById('modal-title-input').value = task.title;
+    document.getElementById('modal-desc-input').value = task.description || '';
     document.getElementById('modal-status-select').value = task.status;
     document.getElementById('modal-priority-select').value = task.priority;
     document.getElementById('modal-member-select').value = task.member;
     document.getElementById('modal-project-select').value = task.project || '';
-    document.getElementById('modal-due-date').value      = task.dueDate || '';
+    document.getElementById('modal-due-date').value = task.dueDate || '';
     document.getElementById('task-modal-title').textContent = 'Edit Task';
-    document.getElementById('modal-submit-btn').textContent  = 'Update Task';
+    document.getElementById('modal-submit-btn').textContent = 'Update Task';
     editingTaskId = id;
 }
 
@@ -573,8 +573,8 @@ function openTaskModal(defaultStatus) {
     // Reset to "New Task" state unless called from editTask
     if (!editingTaskId) {
         clearForm();
-        document.getElementById('task-modal-title').textContent  = 'New Task';
-        document.getElementById('modal-submit-btn').textContent  = 'Create Task';
+        document.getElementById('task-modal-title').textContent = 'New Task';
+        document.getElementById('modal-submit-btn').textContent = 'Create Task';
         // Set default status if column + button was clicked
         if (defaultStatus) {
             const sel = document.getElementById('modal-status-select');
@@ -634,7 +634,7 @@ function buildFilterButtons(tasks) {
     const projects = [...new Set(tasks.map(t => t.project).filter(p => p && p.trim()))].sort();
     const btnBase = 'font-size:13px;font-weight:500;padding:7px 18px;border-radius:99px;border:1px solid var(--border-strong);background:transparent;cursor:pointer;color:var(--text-muted);transition:all 0.2s;';
     const btnActive = 'font-size:13px;font-weight:600;padding:7px 18px;border-radius:99px;border:1px solid var(--brand);background:var(--brand-dim);cursor:pointer;color:var(--brand);transition:all 0.2s;';
-    projectFiltersEl.innerHTML = `<button class="filter-btn" data-project="all" onclick="setFilter('all')" style="${activeFilter==='all'?btnActive:btnBase}" onmouseover="if(this.dataset.project!==activeFilter)this.style.borderColor='var(--brand)';this.style.color='var(--brand)'" onmouseout="if(this.dataset.project!==activeFilter){this.style.borderColor='var(--border-strong)';this.style.color='var(--text-muted)';}">All Projects</button>`;
+    projectFiltersEl.innerHTML = `<button class="filter-btn" data-project="all" onclick="setFilter('all')" style="${activeFilter === 'all' ? btnActive : btnBase}" onmouseover="if(this.dataset.project!==activeFilter)this.style.borderColor='var(--brand)';this.style.color='var(--brand)'" onmouseout="if(this.dataset.project!==activeFilter){this.style.borderColor='var(--border-strong)';this.style.color='var(--text-muted)';}">All Projects</button>`;
     projects.forEach(project => {
         const btn = document.createElement('button');
         btn.className = 'filter-btn';
@@ -643,7 +643,7 @@ function buildFilterButtons(tasks) {
         btn.style.cssText = activeFilter === project ? btnActive : btnBase;
         btn.textContent = project;
         btn.onmouseover = () => { if (activeFilter !== project) { btn.style.borderColor = 'var(--brand)'; btn.style.color = 'var(--brand)'; } };
-        btn.onmouseout  = () => { if (activeFilter !== project) { btn.style.borderColor = 'var(--border-strong)'; btn.style.color = 'var(--text-muted)'; } };
+        btn.onmouseout = () => { if (activeFilter !== project) { btn.style.borderColor = 'var(--border-strong)'; btn.style.color = 'var(--text-muted)'; } };
         projectFiltersEl.appendChild(btn);
     });
 }
@@ -688,16 +688,16 @@ async function renderTasks() {
     let todo = 0, progress = 0, done = 0;
     tasks.forEach(task => {
         const el = createTaskElement(task);
-        if (task.status === 'To Do')       { todoContainer.appendChild(el);     todo++; }
+        if (task.status === 'To Do') { todoContainer.appendChild(el); todo++; }
         if (task.status === 'In Progress') { progressContainer.appendChild(el); progress++; }
-        if (task.status === 'Done')        { doneContainer.appendChild(el);     done++; }
+        if (task.status === 'Done') { doneContainer.appendChild(el); done++; }
     });
-    if (!todo)     todoContainer.innerHTML     = emptyState();
+    if (!todo) todoContainer.innerHTML = emptyState();
     if (!progress) progressContainer.innerHTML = emptyState();
-    if (!done)     doneContainer.innerHTML     = emptyState();
-    todoCount.textContent     = todo;
+    if (!done) doneContainer.innerHTML = emptyState();
+    todoCount.textContent = todo;
     progressCount.textContent = progress;
-    doneCount.textContent     = done;
+    doneCount.textContent = done;
 }
 
 function isOverdue(dueDate, status) {
@@ -707,16 +707,16 @@ function isOverdue(dueDate, status) {
 
 function formatDate(dueDate, status) {
     if (!dueDate) return '';
-    const date    = new Date(dueDate);
+    const date = new Date(dueDate);
     const overdue = isOverdue(dueDate, status);
-    const label   = date.toLocaleDateString('en-US', { month:'short', day:'numeric' });
-    const color   = overdue ? 'var(--status-danger)' : 'var(--text-muted)';
-    const icon    = overdue ? '⚠ ' : '📅 ';
-    return `<span style="font-size:11px;color:${color}">${icon}${label}${overdue?' · Overdue':''}</span>`;
+    const label = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const color = overdue ? 'var(--status-danger)' : 'var(--text-muted)';
+    const icon = overdue ? '⚠ ' : '📅 ';
+    return `<span style="font-size:11px;color:${color}">${icon}${label}${overdue ? ' · Overdue' : ''}</span>`;
 }
 
 function priorityStyle(p) {
-    if (p === 'High')   return 'background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);color:var(--status-danger)';
+    if (p === 'High') return 'background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);color:var(--status-danger)';
     if (p === 'Medium') return 'background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);color:var(--status-prog)';
     return 'background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);color:var(--status-done)';
 }
@@ -777,7 +777,7 @@ function statusLabel(status) {
 function formatTableDate(dueDate) {
     if (!dueDate) return 'No date';
     const date = new Date(dueDate);
-    return date.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }).replace(',', '');
+    return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(',', '');
 }
 
 function memberColorIndex(name) {
@@ -794,7 +794,7 @@ function createTaskElement(task) {
     div.draggable = true;
     div.dataset.id = task.id;
     div.addEventListener('dragstart', e => onDragStart(e, task.id));
-    div.addEventListener('dragend',   e => onDragEnd(e));
+    div.addEventListener('dragend', e => onDragEnd(e));
 
     const dateLine = formatDate(task.dueDate, task.status);
     const descBlock = task.description ? `<p style="font-size:12px;color:var(--text-muted);line-height:1.6;margin-top:2px">${task.description}</p>` : '';
@@ -851,18 +851,18 @@ async function renderDashboard() {
     try { tasks = await fetchTasks(); allTasksCache = tasks; }
     catch { return; }
 
-    const total    = tasks.length;
-    const todoN    = tasks.filter(t => t.status === 'To Do').length;
-    const progN    = tasks.filter(t => t.status === 'In Progress').length;
-    const doneN    = tasks.filter(t => t.status === 'Done').length;
-    const pct      = total ? Math.round((doneN / total) * 100) : 0;
-    const overdue  = tasks.filter(t => isOverdue(t.dueDate, t.status));
+    const total = tasks.length;
+    const todoN = tasks.filter(t => t.status === 'To Do').length;
+    const progN = tasks.filter(t => t.status === 'In Progress').length;
+    const doneN = tasks.filter(t => t.status === 'Done').length;
+    const pct = total ? Math.round((doneN / total) * 100) : 0;
+    const overdue = tasks.filter(t => isOverdue(t.dueDate, t.status));
 
     // ── Stat counters ──────────────────────────────────────
     animateCount('ds-total', total);
-    animateCount('ds-todo',  todoN);
-    animateCount('ds-prog',  progN);
-    animateCount('ds-done',  doneN);
+    animateCount('ds-todo', todoN);
+    animateCount('ds-prog', progN);
+    animateCount('ds-done', doneN);
 
     // Progress bars
     setBar('ds-todo-bar', total ? (todoN / total) * 100 : 0);
@@ -880,18 +880,18 @@ async function renderDashboard() {
     if (donutPct) animateCount('donut-pct', pct, '%');
 
     // ── Priority bar chart ──────────────────────────────────
-    const high   = tasks.filter(t => t.priority === 'High').length;
+    const high = tasks.filter(t => t.priority === 'High').length;
     const medium = tasks.filter(t => t.priority === 'Medium').length;
-    const low    = tasks.filter(t => t.priority === 'Low').length;
-    const maxP   = Math.max(high, medium, low, 1);
+    const low = tasks.filter(t => t.priority === 'Low').length;
+    const maxP = Math.max(high, medium, low, 1);
 
     const priChart = document.getElementById('priority-chart');
     if (priChart) {
         priChart.innerHTML = '';
         const bars = [
-            { label: 'High',   val: high,   color: 'var(--status-danger)' },
-            { label: 'Medium', val: medium, color: 'var(--status-prog)'   },
-            { label: 'Low',    val: low,    color: 'var(--status-done)'   },
+            { label: 'High', val: high, color: 'var(--status-danger)' },
+            { label: 'Medium', val: medium, color: 'var(--status-prog)' },
+            { label: 'Low', val: low, color: 'var(--status-done)' },
         ];
         bars.forEach(b => {
             const col = document.createElement('div');
@@ -904,9 +904,9 @@ async function renderDashboard() {
     }
     const priLegend = document.getElementById('priority-legend');
     if (priLegend) priLegend.innerHTML = [
-        { label:'High', val:high, c:'var(--status-danger)' },
-        { label:'Med',  val:medium, c:'var(--status-prog)' },
-        { label:'Low',  val:low, c:'var(--status-done)' },
+        { label: 'High', val: high, c: 'var(--status-danger)' },
+        { label: 'Med', val: medium, c: 'var(--status-prog)' },
+        { label: 'Low', val: low, c: 'var(--status-done)' },
     ].map(b => `<span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${b.c};margin-right:4px"></span>${b.label}: ${b.val}</span>`).join('');
 
     // ── Member load ────────────────────────────────────────
@@ -915,14 +915,14 @@ async function renderDashboard() {
         const byMember = {};
         tasks.forEach(t => { byMember[t.member] = (byMember[t.member] || 0) + 1; });
         const maxLoad = Math.max(...Object.values(byMember), 1);
-        memberLoad.innerHTML = Object.entries(byMember).sort((a,b) => b[1]-a[1]).map(([name, count]) => `
+        memberLoad.innerHTML = Object.entries(byMember).sort((a, b) => b[1] - a[1]).map(([name, count]) => `
             <div>
                 <div style="display:flex;justify-content:space-between;margin-bottom:5px">
                     <span style="font-size:13px;color:var(--text-main);font-weight:500">${name}</span>
-                    <span style="font-size:12px;color:var(--text-muted)">${count} task${count!==1?'s':''}</span>
+                    <span style="font-size:12px;color:var(--text-muted)">${count} task${count !== 1 ? 's' : ''}</span>
                 </div>
                 <div style="height:5px;border-radius:99px;background:var(--border-subtle);overflow:hidden">
-                    <div style="height:100%;border-radius:99px;background:var(--brand);width:0%;transition:width 0.7s cubic-bezier(.22,1,.36,1)" data-target="${(count/maxLoad)*100}"></div>
+                    <div style="height:100%;border-radius:99px;background:var(--brand);width:0%;transition:width 0.7s cubic-bezier(.22,1,.36,1)" data-target="${(count / maxLoad) * 100}"></div>
                 </div>
             </div>`).join('') || `<p style="font-size:13px;color:var(--text-muted)">No tasks yet</p>`;
         setTimeout(() => memberLoad.querySelectorAll('[data-target]').forEach(el => el.style.width = el.dataset.target + '%'), 100);
@@ -934,11 +934,11 @@ async function renderDashboard() {
         const byProject = {};
         tasks.forEach(t => {
             const key = t.project || '(no project)';
-            if (!byProject[key]) byProject[key] = { total:0, done:0 };
+            if (!byProject[key]) byProject[key] = { total: 0, done: 0 };
             byProject[key].total++;
             if (t.status === 'Done') byProject[key].done++;
         });
-        projectBreakdown.innerHTML = Object.entries(byProject).sort((a,b) => b[1].total-a[1].total).map(([proj, data]) => {
+        projectBreakdown.innerHTML = Object.entries(byProject).sort((a, b) => b[1].total - a[1].total).map(([proj, data]) => {
             const pPct = Math.round((data.done / data.total) * 100);
             return `<div>
                 <div style="display:flex;justify-content:space-between;margin-bottom:5px">
@@ -962,23 +962,23 @@ async function renderDashboard() {
                 <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.2);border-radius:10px">
                     <div>
                         <div style="font-size:13px;font-weight:500;color:var(--text-main)">${t.title}</div>
-                        <div style="font-size:11px;color:var(--text-muted);margin-top:2px">${t.member} · ${t.project||'—'}</div>
+                        <div style="font-size:11px;color:var(--text-muted);margin-top:2px">${t.member} · ${t.project || '—'}</div>
                     </div>
-                    <span style="font-size:11px;color:var(--status-danger)">⚠ ${new Date(t.dueDate).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</span>
+                    <span style="font-size:11px;color:var(--status-danger)">⚠ ${new Date(t.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
                 </div>`).join('');
     }
 
     // ── Recent activity ────────────────────────────────────
     const recentList = document.getElementById('recent-list');
     if (recentList) {
-        const sorted = [...tasks].sort((a,b) => new Date(b.updatedAt||b.createdAt) - new Date(a.updatedAt||a.createdAt)).slice(0, 5);
-        const statusColors = { 'To Do':'var(--status-todo)', 'In Progress':'var(--status-prog)', 'Done':'var(--status-done)' };
+        const sorted = [...tasks].sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt)).slice(0, 5);
+        const statusColors = { 'To Do': 'var(--status-todo)', 'In Progress': 'var(--status-prog)', 'Done': 'var(--status-done)' };
         recentList.innerHTML = sorted.map(t => `
             <div style="display:flex;align-items:flex-start;gap:10px">
-                <div style="width:8px;height:8px;border-radius:50%;background:${statusColors[t.status]||'var(--text-muted)'};flex-shrink:0;margin-top:4px"></div>
+                <div style="width:8px;height:8px;border-radius:50%;background:${statusColors[t.status] || 'var(--text-muted)'};flex-shrink:0;margin-top:4px"></div>
                 <div style="flex:1">
                     <div style="font-size:13px;color:var(--text-main);font-weight:500">${t.title}</div>
-                    <div style="font-size:11px;color:var(--text-muted);margin-top:2px">${t.member} · <span style="color:${statusColors[t.status]}">${t.status}</span> · ${relativeTime(t.updatedAt||t.createdAt)}</div>
+                    <div style="font-size:11px;color:var(--text-muted);margin-top:2px">${t.member} · <span style="color:${statusColors[t.status]}">${t.status}</span> · ${relativeTime(t.updatedAt || t.createdAt)}</div>
                 </div>
             </div>`).join('') || `<p style="font-size:13px;color:var(--text-muted)">No activity yet</p>`;
     }
@@ -989,8 +989,8 @@ function animateCount(id, target, suffix = '') {
     const el = document.getElementById(id);
     if (!el) return;
     const start = parseInt(el.textContent) || 0;
-    const dur   = 600;
-    const t0    = performance.now();
+    const dur = 600;
+    const t0 = performance.now();
     function step(now) {
         const p = Math.min((now - t0) / dur, 1);
         const e = 1 - Math.pow(1 - p, 3);
@@ -1009,7 +1009,7 @@ function relativeTime(iso) {
     if (!iso) return '';
     const diff = Date.now() - new Date(iso).getTime();
     const m = Math.floor(diff / 60000);
-    if (m < 1)  return 'just now';
+    if (m < 1) return 'just now';
     if (m < 60) return `${m}m ago`;
     const h = Math.floor(m / 60);
     if (h < 24) return `${h}h ago`;
@@ -1036,16 +1036,16 @@ async function init() {
 function openSettingsView() {
     switchView('settings');
     if (currentUser?.role === 'admin') {
-        document.getElementById('settings-locked').style.display  = 'none';
+        document.getElementById('settings-locked').style.display = 'none';
         document.getElementById('settings-content').style.display = 'block';
         // Pre-fill my account fields
-        const nameEl  = document.getElementById('settings-name');
+        const nameEl = document.getElementById('settings-name');
         const emailEl = document.getElementById('settings-email');
-        if (nameEl)  nameEl.value  = currentUser.name  || '';
+        if (nameEl) nameEl.value = currentUser.name || '';
         if (emailEl) emailEl.value = currentUser.email || '';
         renderUsersTable();
     } else {
-        document.getElementById('settings-locked').style.display  = 'flex';
+        document.getElementById('settings-locked').style.display = 'flex';
         document.getElementById('settings-content').style.display = 'none';
     }
 }
@@ -1069,10 +1069,10 @@ async function renderUsersTable() {
             </div>`;
 
         users.forEach(u => {
-            const isSelf    = u.id === currentUser.id;
-            const isAdmin   = u.role === 'admin';
-            const initials  = u.name.trim().split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
-            const joinDate  = new Date(u.createdAt).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+            const isSelf = u.id === currentUser.id;
+            const isAdmin = u.role === 'admin';
+            const initials = u.name.trim().split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+            const joinDate = new Date(u.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
             const row = document.createElement('div');
             row.style.cssText = 'display:grid;grid-template-columns:2fr 2fr 100px 100px auto;gap:12px;align-items:center;padding:12px 14px;background:var(--bg-element);border:1px solid var(--border-strong);border-radius:12px';
             row.innerHTML = `
@@ -1087,7 +1087,7 @@ async function renderUsersTable() {
                     <select onchange="changeUserRole(${u.id}, this.value)" ${isSelf ? 'disabled' : ''}
                         style="background:${isAdmin ? 'var(--brand-dim)' : 'var(--bg-hover)'};border:1px solid ${isAdmin ? 'rgba(108,143,255,0.3)' : 'var(--border-strong)'};color:${isAdmin ? 'var(--brand)' : 'var(--text-muted)'};border-radius:8px;padding:5px 10px;font-size:12px;font-weight:600;cursor:${isSelf ? 'not-allowed' : 'pointer'};appearance:none;width:100%">
                         <option value="member" ${u.role === 'member' ? 'selected' : ''}>Member</option>
-                        <option value="admin"  ${u.role === 'admin'  ? 'selected' : ''}>Admin</option>
+                        <option value="admin"  ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
                     </select>
                 </div>
                 <div style="font-size:12px;color:var(--text-muted)">${joinDate}</div>
@@ -1122,10 +1122,10 @@ async function adminDeleteUser(userId) {
 }
 
 async function adminAddUser() {
-    const name  = (document.getElementById('add-user-name')?.value  || '').trim();
+    const name = (document.getElementById('add-user-name')?.value || '').trim();
     const email = (document.getElementById('add-user-email')?.value || '').trim();
-    const pwd   = (document.getElementById('add-user-pwd')?.value   || '').trim();
-    const msg   = document.getElementById('add-user-msg');
+    const pwd = (document.getElementById('add-user-pwd')?.value || '').trim();
+    const msg = document.getElementById('add-user-msg');
 
     const show = (text, ok) => {
         if (!msg) return;
@@ -1136,15 +1136,15 @@ async function adminAddUser() {
     };
 
     if (!name || !email || !pwd) { show('All three fields are required.', false); return; }
-    if (pwd.length < 6)          { show('Password must be at least 6 characters.', false); return; }
+    if (pwd.length < 6) { show('Password must be at least 6 characters.', false); return; }
 
     try {
         const res = await apiFetch(`${API}/admin/users`, { method: 'POST', body: JSON.stringify({ name, email, password: pwd }) });
         if (res.success) {
             show(`✓ User "${name}" added successfully.`, true);
-            document.getElementById('add-user-name').value  = '';
+            document.getElementById('add-user-name').value = '';
             document.getElementById('add-user-email').value = '';
-            document.getElementById('add-user-pwd').value   = '';
+            document.getElementById('add-user-pwd').value = '';
             renderUsersTable();
         } else {
             show(res.message || 'Failed to add user.', false);
@@ -1153,11 +1153,11 @@ async function adminAddUser() {
 }
 
 async function saveMyAccount() {
-    const name   = (document.getElementById('settings-name')?.value   || '').trim();
-    const email  = (document.getElementById('settings-email')?.value  || '').trim();
+    const name = (document.getElementById('settings-name')?.value || '').trim();
+    const email = (document.getElementById('settings-email')?.value || '').trim();
     const newpwd = (document.getElementById('settings-newpwd')?.value || '');
     const curpwd = (document.getElementById('settings-curpwd')?.value || '');
-    const msg    = document.getElementById('settings-account-msg');
+    const msg = document.getElementById('settings-account-msg');
 
     const show = (text, ok) => {
         if (!msg) return;
@@ -1167,8 +1167,8 @@ async function saveMyAccount() {
         setTimeout(() => { msg.style.display = 'none'; }, 4000);
     };
 
-    if (!name || !email)  { show('Name and email are required.', false); return; }
-    if (!curpwd)          { show('Enter your current password to save.', false); return; }
+    if (!name || !email) { show('Name and email are required.', false); return; }
+    if (!curpwd) { show('Enter your current password to save.', false); return; }
 
     try {
         const res = await apiFetch(`${API}/account`, {
@@ -1176,7 +1176,7 @@ async function saveMyAccount() {
             body: JSON.stringify({ name, email, currentPassword: curpwd, newPassword: newpwd || undefined })
         });
         if (res.success) {
-            currentUser.name  = res.user.name;
+            currentUser.name = res.user.name;
             currentUser.email = res.user.email;
             updateUserUI();
             document.getElementById('settings-curpwd').value = '';
@@ -1207,9 +1207,9 @@ function adminResetWorkspace() {
 // ─── Danger Modal (generic) ───────────────────────────────────────────────────
 let _dangerCallback = null;
 function showDangerModal(icon, title, desc, onConfirm) {
-    document.getElementById('danger-icon').textContent  = icon;
+    document.getElementById('danger-icon').textContent = icon;
     document.getElementById('danger-title').textContent = title;
-    document.getElementById('danger-desc').textContent  = desc;
+    document.getElementById('danger-desc').textContent = desc;
     _dangerCallback = onConfirm;
     document.getElementById('danger-modal').classList.remove('hidden');
 }
@@ -1242,15 +1242,15 @@ function openAccountModal() {
     if (headerRole) headerRole.textContent = currentUser.role === 'admin' ? '⭐ Admin' : 'Member';
 
     // Fill profile tab
-    const nameEl  = document.getElementById('acct-name');
+    const nameEl = document.getElementById('acct-name');
     const emailEl = document.getElementById('acct-email');
-    if (nameEl)  nameEl.value  = currentUser.name  || '';
+    if (nameEl) nameEl.value = currentUser.name || '';
     if (emailEl) emailEl.value = currentUser.email || '';
 
     // Fill info card
-    const roleEl   = document.getElementById('acct-info-role');
+    const roleEl = document.getElementById('acct-info-role');
     const joinedEl = document.getElementById('acct-info-joined');
-    if (roleEl)   roleEl.textContent   = currentUser.role === 'admin' ? 'Admin' : 'Member';
+    if (roleEl) roleEl.textContent = currentUser.role === 'admin' ? 'Admin' : 'Member';
     if (joinedEl) joinedEl.textContent = currentUser.createdAt
         ? new Date(currentUser.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
         : '—';
@@ -1298,14 +1298,14 @@ function clearAccountMsgs() {
 }
 
 function switchAccountTab(tab) {
-    const tabs   = ['profile', 'security', 'preferences'];
+    const tabs = ['profile', 'security', 'preferences'];
     tabs.forEach(t => {
         const panel = document.getElementById(`acct-panel-${t}`);
-        const btn   = document.getElementById(`acct-tab-${t}`);
+        const btn = document.getElementById(`acct-tab-${t}`);
         if (panel) panel.style.display = t === tab ? 'block' : 'none';
         if (btn) {
             btn.style.borderBottomColor = t === tab ? 'var(--brand)' : 'transparent';
-            btn.style.color             = t === tab ? 'var(--brand)' : 'var(--text-muted)';
+            btn.style.color = t === tab ? 'var(--brand)' : 'var(--text-muted)';
         }
     });
 }
@@ -1313,20 +1313,20 @@ function switchAccountTab(tab) {
 function showAccountMsg(panelId, text, ok) {
     const el = document.getElementById(panelId);
     if (!el) return;
-    el.textContent       = text;
-    el.style.display     = 'block';
-    el.style.color       = ok ? 'var(--status-done)'   : 'var(--status-danger)';
-    el.style.background  = ok ? 'rgba(16,185,129,0.08)' : 'rgba(239,68,68,0.08)';
-    el.style.border      = `1px solid ${ok ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)'}`;
+    el.textContent = text;
+    el.style.display = 'block';
+    el.style.color = ok ? 'var(--status-done)' : 'var(--status-danger)';
+    el.style.background = ok ? 'rgba(16,185,129,0.08)' : 'rgba(239,68,68,0.08)';
+    el.style.border = `1px solid ${ok ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)'}`;
     if (ok) setTimeout(() => { el.style.display = 'none'; }, 4000);
 }
 
 // ── Save Profile ──────────────────────────────────────────────
 async function saveProfile() {
-    const name  = (document.getElementById('acct-name')?.value  || '').trim();
+    const name = (document.getElementById('acct-name')?.value || '').trim();
     const email = (document.getElementById('acct-email')?.value || '').trim();
 
-    if (!name)  { showAccountMsg('acct-profile-msg', 'الاسم مطلوب.', false); return; }
+    if (!name) { showAccountMsg('acct-profile-msg', 'الاسم مطلوب.', false); return; }
     if (!email) { showAccountMsg('acct-profile-msg', 'البريد الإلكتروني مطلوب.', false); return; }
 
     try {
@@ -1335,7 +1335,7 @@ async function saveProfile() {
             body: JSON.stringify({ name, email })
         });
         if (res.success) {
-            currentUser.name  = res.user.name;
+            currentUser.name = res.user.name;
             currentUser.email = res.user.email;
             updateUserUI();
             // Update modal header live
@@ -1354,13 +1354,13 @@ async function saveProfile() {
 
 // ── Save Password ─────────────────────────────────────────────
 async function savePassword() {
-    const curPwd     = document.getElementById('acct-cur-pwd')?.value     || '';
-    const newPwd     = document.getElementById('acct-new-pwd')?.value     || '';
+    const curPwd = document.getElementById('acct-cur-pwd')?.value || '';
+    const newPwd = document.getElementById('acct-new-pwd')?.value || '';
     const confirmPwd = document.getElementById('acct-confirm-pwd')?.value || '';
 
-    if (!curPwd)              { showAccountMsg('acct-security-msg', 'Enter your current password.', false); return; }
-    if (newPwd.length < 6)   { showAccountMsg('acct-security-msg', 'The new password must be at least 6 characters long.', false); return; }
-    if (newPwd !== confirmPwd){ showAccountMsg('acct-security-msg', 'The new password does not match.', false); return; }
+    if (!curPwd) { showAccountMsg('acct-security-msg', 'Enter your current password.', false); return; }
+    if (newPwd.length < 6) { showAccountMsg('acct-security-msg', 'The new password must be at least 6 characters long.', false); return; }
+    if (newPwd !== confirmPwd) { showAccountMsg('acct-security-msg', 'The new password does not match.', false); return; }
 
     try {
         const res = await apiFetch(`${API}/account/password`, {
@@ -1368,8 +1368,8 @@ async function savePassword() {
             body: JSON.stringify({ currentPassword: curPwd, newPassword: newPwd })
         });
         if (res.success) {
-            document.getElementById('acct-cur-pwd').value     = '';
-            document.getElementById('acct-new-pwd').value     = '';
+            document.getElementById('acct-cur-pwd').value = '';
+            document.getElementById('acct-new-pwd').value = '';
             document.getElementById('acct-confirm-pwd').value = '';
             updateStrength('');
             showAccountMsg('acct-security-msg', '✓ Password changed successfully.', true);

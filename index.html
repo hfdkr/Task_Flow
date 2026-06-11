@@ -12,7 +12,7 @@
         href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Syne:wght@400..800&display=swap"
         rel="stylesheet">
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
-    
+
 
     <style type="text/tailwindcss">
         /* ── Theme Tokens ─────────────────────────────────────────── */
@@ -352,8 +352,12 @@
         style="background:var(--bg-base)">
 
         <!-- Decorative gradient blobs -->
-        <div style="position:absolute;top:-120px;left:-120px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(108,143,255,0.12) 0%,transparent 70%);pointer-events:none"></div>
-        <div style="position:absolute;bottom:-80px;right:-80px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(16,185,129,0.08) 0%,transparent 70%);pointer-events:none"></div>
+        <div
+            style="position:absolute;top:-120px;left:-120px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(108,143,255,0.12) 0%,transparent 70%);pointer-events:none">
+        </div>
+        <div
+            style="position:absolute;bottom:-80px;right:-80px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(16,185,129,0.08) 0%,transparent 70%);pointer-events:none">
+        </div>
 
         <div style="background:var(--bg-surface);border:1px solid var(--border-subtle);position:relative;z-index:1"
             class="rounded-[24px] p-[40px] w-full max-w-[440px] mx-6 shadow-2xl">
@@ -362,15 +366,18 @@
             <div class="mb-8">
                 <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
                     <span style="font-size:26px">⬡</span>
-                    <h1 style="font-family:'Syne',sans-serif;font-size:32px;font-weight:800;letter-spacing:-1.5px;color:var(--text-main);line-height:1">
+                    <h1
+                        style="font-family:'Syne',sans-serif;font-size:32px;font-weight:800;letter-spacing:-1.5px;color:var(--text-main);line-height:1">
                         Task<span style="color:var(--brand)">Flow</span>
                     </h1>
                 </div>
-                <p id="auth-subtitle" style="color:var(--text-muted);font-size:14px">Welcome back — sign in to continue</p>
+                <p id="auth-subtitle" style="color:var(--text-muted);font-size:14px">Welcome back — sign in to continue
+                </p>
             </div>
 
             <!-- Tab switcher -->
-            <div style="display:flex;background:var(--bg-element);border:1px solid var(--border-strong);border-radius:14px;padding:4px;margin-bottom:28px;gap:4px">
+            <div
+                style="display:flex;background:var(--bg-element);border:1px solid var(--border-strong);border-radius:14px;padding:4px;margin-bottom:28px;gap:4px">
                 <button id="tab-signin" onclick="switchAuthTab('signin')"
                     style="flex:1;padding:9px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all 0.2s;background:var(--brand);color:white">
                     Sign In
@@ -384,60 +391,84 @@
             <!-- Sign In form -->
             <div id="form-signin">
                 <div style="margin-bottom:14px">
-                    <label style="display:block;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Email</label>
+                    <label
+                        style="display:block;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Email</label>
                     <input id="signin-email" type="email" placeholder="you@example.com" class="tf-input">
                 </div>
                 <div style="margin-bottom:8px">
-                    <label style="display:block;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Password</label>
+                    <label
+                        style="display:block;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Password</label>
                     <div style="position:relative">
-                        <input id="signin-password" type="password" placeholder="Your password..." class="tf-input" style="padding-right:44px">
-                        <button onclick="togglePwd('signin-password',this)" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:16px;line-height:1">👁</button>
+                        <input id="signin-password" type="password" placeholder="Your password..." class="tf-input"
+                            style="padding-right:44px">
+                        <button onclick="togglePwd('signin-password',this)"
+                            style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:16px;line-height:1">👁</button>
                     </div>
                 </div>
-                <p id="signin-error" style="color:var(--status-danger);font-size:12px;margin-bottom:14px;display:none"></p>
+                <p id="signin-error" style="color:var(--status-danger);font-size:12px;margin-bottom:14px;display:none">
+                </p>
                 <button id="signin-btn" onclick="handleSignIn()"
                     style="background:var(--brand);color:white;border-radius:12px;padding:13px;width:100%;font-size:15px;font-weight:600;cursor:pointer;border:none;transition:opacity 0.2s;margin-top:4px">
                     Sign In →
                 </button>
                 <p style="text-align:center;font-size:13px;color:var(--text-muted);margin-top:18px">
                     Don't have an account?
-                    <span onclick="switchAuthTab('signup')" style="color:var(--brand);cursor:pointer;font-weight:600">Sign up free</span>
+                    <span onclick="switchAuthTab('signup')"
+                        style="color:var(--brand);cursor:pointer;font-weight:600">Sign up free</span>
                 </p>
             </div>
 
             <!-- Sign Up form -->
             <div id="form-signup" style="display:none">
                 <div style="margin-bottom:14px">
-                    <label style="display:block;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Full Name</label>
+                    <label
+                        style="display:block;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Full
+                        Name</label>
                     <input id="signup-name" type="text" placeholder="Your name..." class="tf-input">
                 </div>
                 <div style="margin-bottom:14px">
-                    <label style="display:block;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Email</label>
+                    <label
+                        style="display:block;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Email</label>
                     <input id="signup-email" type="email" placeholder="you@example.com" class="tf-input">
                 </div>
                 <div style="margin-bottom:8px">
-                    <label style="display:block;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Password <span style="color:var(--text-muted);font-weight:400;text-transform:none;letter-spacing:0">(min. 6 chars)</span></label>
+                    <label
+                        style="display:block;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Password
+                        <span style="color:var(--text-muted);font-weight:400;text-transform:none;letter-spacing:0">(min.
+                            6 chars)</span></label>
                     <div style="position:relative">
-                        <input id="signup-password" type="password" placeholder="Create a password..." class="tf-input" style="padding-right:44px" oninput="updateStrength(this.value)">
-                        <button onclick="togglePwd('signup-password',this)" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:16px;line-height:1">👁</button>
+                        <input id="signup-password" type="password" placeholder="Create a password..." class="tf-input"
+                            style="padding-right:44px" oninput="updateStrength(this.value)">
+                        <button onclick="togglePwd('signup-password',this)"
+                            style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:16px;line-height:1">👁</button>
                     </div>
                     <!-- Password strength bar -->
                     <div style="margin-top:8px;display:flex;gap:4px" id="strength-bars">
-                        <div class="strength-bar" style="flex:1;height:3px;border-radius:99px;background:var(--border-strong);transition:background 0.3s"></div>
-                        <div class="strength-bar" style="flex:1;height:3px;border-radius:99px;background:var(--border-strong);transition:background 0.3s"></div>
-                        <div class="strength-bar" style="flex:1;height:3px;border-radius:99px;background:var(--border-strong);transition:background 0.3s"></div>
-                        <div class="strength-bar" style="flex:1;height:3px;border-radius:99px;background:var(--border-strong);transition:background 0.3s"></div>
+                        <div class="strength-bar"
+                            style="flex:1;height:3px;border-radius:99px;background:var(--border-strong);transition:background 0.3s">
+                        </div>
+                        <div class="strength-bar"
+                            style="flex:1;height:3px;border-radius:99px;background:var(--border-strong);transition:background 0.3s">
+                        </div>
+                        <div class="strength-bar"
+                            style="flex:1;height:3px;border-radius:99px;background:var(--border-strong);transition:background 0.3s">
+                        </div>
+                        <div class="strength-bar"
+                            style="flex:1;height:3px;border-radius:99px;background:var(--border-strong);transition:background 0.3s">
+                        </div>
                     </div>
                     <p id="strength-label" style="font-size:11px;color:var(--text-muted);margin-top:4px"></p>
                 </div>
-                <p id="signup-error" style="color:var(--status-danger);font-size:12px;margin-bottom:14px;display:none"></p>
+                <p id="signup-error" style="color:var(--status-danger);font-size:12px;margin-bottom:14px;display:none">
+                </p>
                 <button id="signup-btn" onclick="handleSignUp()"
                     style="background:var(--brand);color:white;border-radius:12px;padding:13px;width:100%;font-size:15px;font-weight:600;cursor:pointer;border:none;transition:opacity 0.2s;margin-top:4px">
                     Create Account →
                 </button>
                 <p style="text-align:center;font-size:13px;color:var(--text-muted);margin-top:18px">
                     Already have an account?
-                    <span onclick="switchAuthTab('signin')" style="color:var(--brand);cursor:pointer;font-weight:600">Sign in</span>
+                    <span onclick="switchAuthTab('signin')"
+                        style="color:var(--brand);cursor:pointer;font-weight:600">Sign in</span>
                 </p>
                 <p style="text-align:center;font-size:11px;color:var(--text-muted);margin-top:10px;opacity:0.7">
                     🛡 The first account created becomes the workspace admin
@@ -454,15 +485,19 @@
         <div
             style="background:var(--bg-surface);border:1px solid var(--border-subtle);width:100%;max-width:400px;border-radius:24px;padding:32px;display:flex;flex-direction:column;gap:20px;max-height:90vh;overflow-y:auto">
             <div class="flex items-center justify-between">
-                <h3 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--text-main)">Team Members</h3>
+                <h3 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--text-main)">Team
+                    Members</h3>
                 <button onclick="closeMembersPanel()"
-                    style="color:var(--text-muted);font-size:20px;cursor:pointer;background:none;border:none;line-height:1;transition:color 0.18s" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'">✕</button>
+                    style="color:var(--text-muted);font-size:20px;cursor:pointer;background:none;border:none;line-height:1;transition:color 0.18s"
+                    onmouseover="this.style.color='var(--text-main)'"
+                    onmouseout="this.style.color='var(--text-muted)'">✕</button>
             </div>
             <div class="flex gap-2">
                 <input id="new-member-input" type="text" placeholder="Member name..." class="tf-input"
                     style="border-radius:10px;padding:10px 14px">
                 <button onclick="addMember()"
-                    style="background:var(--brand);color:white;border-radius:10px;padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer;border:none;white-space:nowrap;transition:opacity 0.2s" onmouseover="this.style.opacity=0.85" onmouseout="this.style.opacity=1">Add</button>
+                    style="background:var(--brand);color:white;border-radius:10px;padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer;border:none;white-space:nowrap;transition:opacity 0.2s"
+                    onmouseover="this.style.opacity=0.85" onmouseout="this.style.opacity=1">Add</button>
             </div>
             <div id="members-list" class="flex flex-col gap-2"></div>
         </div>
@@ -475,7 +510,8 @@
         <div
             style="background:var(--bg-surface);border-left:1px solid var(--border-subtle);width:100%;max-width:340px;height:100%;padding:32px;display:flex;flex-direction:column;gap:20px;overflow-y:auto">
             <div class="flex items-center justify-between">
-                <h3 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--text-main)">Projects</h3>
+                <h3 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--text-main)">Projects
+                </h3>
                 <button onclick="closeProjectsPanel()"
                     style="color:var(--text-muted);font-size:20px;cursor:pointer;background:none;border:none;line-height:1">✕</button>
             </div>
@@ -523,11 +559,11 @@
                         Menu</p>
                     <div class="nav-item active" data-view="dashboard" onclick="switchView('dashboard')"
                         title="Dashboard">
-                        <span class="nav-icon">⬡</span>
+                        <span class="nav-icon"><img src="./assets/Icon (3).png" alt=""></span>
                         <span class="sidebar-label">Dashboard</span>
                     </div>
                     <div class="nav-item" data-view="kanban" onclick="switchView('kanban')" title="Kanban Board">
-                        <span class="nav-icon">⊞</span>
+                        <span class="nav-icon"><img src="./assets/Icon (4).png" alt=""></span>
                         <span class="sidebar-label">Task Board</span>
                     </div>
                     <div class="sidebar-section-label"
@@ -536,14 +572,15 @@
                         style="font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-muted);padding:0 8px;margin-bottom:8px">
                         Actions</p>
                     <div class="nav-item" onclick="openMembersPanel()" title="Team Members">
-                        <span class="nav-icon"></span>
+                        <span class="nav-icon"><img src="./assets/team icon.png" alt=""></span>
                         <span class="sidebar-label">Team Members</span>
                     </div>
                     <div class="nav-item" onclick="openProjectsPanel()" title="Projects">
-                        <span class="nav-icon"></span>
+                        <span class="nav-icon"><img src="./assets/projects.png" alt=""></span>
                         <span class="sidebar-label">Projects</span>
                     </div>
-                    <div id="nav-settings" class="nav-item" data-view="settings" onclick="switchView('settings')" title="Settings" style="display:none">
+                    <div id="nav-settings" class="nav-item" data-view="settings" onclick="switchView('settings')"
+                        title="Settings" style="display:none">
                         <span class="nav-icon">⚙</span>
                         <span class="sidebar-label">Settings</span>
                     </div>
@@ -553,13 +590,24 @@
                 <div class="sidebar-bottom-full"
                     style="padding:14px 16px 22px;border-top:1px solid var(--border-subtle)">
                     <!-- User card -->
-                    <div id="user-card" onclick="openAccountModal()" title="Account Settings" style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg-element);border:1px solid var(--border-strong);border-radius:12px;margin-bottom:12px;cursor:pointer;transition:border-color 0.18s" onmouseover="this.style.borderColor='var(--brand)'" onmouseout="this.style.borderColor='var(--border-strong)'">
-                        <div id="user-avatar" style="width:34px;height:34px;border-radius:50%;background:var(--brand-dim);border:1px solid rgba(108,143,255,0.3);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--brand);flex-shrink:0">?</div>
+                    <div id="user-card" onclick="openAccountModal()" title="Account Settings"
+                        style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg-element);border:1px solid var(--border-strong);border-radius:12px;margin-bottom:12px;cursor:pointer;transition:border-color 0.18s"
+                        onmouseover="this.style.borderColor='var(--brand)'"
+                        onmouseout="this.style.borderColor='var(--border-strong)'">
+                        <div id="user-avatar"
+                            style="width:34px;height:34px;border-radius:50%;background:var(--brand-dim);border:1px solid rgba(108,143,255,0.3);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--brand);flex-shrink:0">
+                            ?</div>
                         <div style="min-width:0">
-                            <div id="user-name" style="font-size:13px;font-weight:600;color:var(--text-main);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">—</div>
-                            <div id="user-email" style="font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+                            <div id="user-name"
+                                style="font-size:13px;font-weight:600;color:var(--text-main);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+                                —</div>
+                            <div id="user-email"
+                                style="font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+                            </div>
                         </div>
-                        <div id="user-role-badge" style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;padding:2px 6px;border-radius:5px;background:var(--brand-dim);color:var(--brand);flex-shrink:0;display:none">Admin</div>
+                        <div id="user-role-badge"
+                            style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;padding:2px 6px;border-radius:5px;background:var(--brand-dim);color:var(--brand);flex-shrink:0;display:none">
+                            Admin</div>
                     </div>
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
                         <span style="font-size:12px;color:var(--text-muted)" id="theme-label"> Dark mode</span>
@@ -579,7 +627,9 @@
                 <!-- Bottom — collapsed (icons only) -->
                 <div class="sidebar-bottom-mini" style="border-top:1px solid var(--border-subtle);padding-top:14px">
                     <!-- Mini avatar -->
-                    <div id="user-avatar-mini" style="width:32px;height:32px;border-radius:50%;background:var(--brand-dim);border:1px solid rgba(108,143,255,0.3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--brand)">?</div>
+                    <div id="user-avatar-mini"
+                        style="width:32px;height:32px;border-radius:50%;background:var(--brand-dim);border:1px solid rgba(108,143,255,0.3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--brand)">
+                        ?</div>
                     <button
                         onclick="toggleTheme(!document.getElementById('theme-check').checked); document.getElementById('theme-check').checked = !document.getElementById('theme-check').checked"
                         title="Toggle theme"
@@ -656,7 +706,8 @@
                     <div class="mobile-nav-item" onclick="openProjectsPanel();closeMobileMenu()">
                         Projects
                     </div>
-                    <div id="mob-nav-settings" class="mobile-nav-item" onclick="switchView('settings');closeMobileMenu()" style="display:none">
+                    <div id="mob-nav-settings" class="mobile-nav-item"
+                        onclick="switchView('settings');closeMobileMenu()" style="display:none">
                         ⚙ Settings
                     </div>
                     <div class="mobile-nav-divider"></div>
@@ -787,8 +838,10 @@
                                 <div id="overdue-list" style="display:flex;flex-direction:column;gap:8px"></div>
                             </div>
                             <div class="stat-card fade-up delay-2">
-                                <div style="font-size:12px;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin-bottom:12px">
-                                    <i class="fi fi-rr-clock-three"></i> Recent Activity</div>
+                                <div
+                                    style="font-size:12px;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin-bottom:12px">
+                                    <i class="fi fi-rr-clock-three"></i> Recent Activity
+                                </div>
                                 <div id="recent-list" style="display:flex;flex-direction:column;gap:10px"></div>
                             </div>
                         </div>
@@ -799,126 +852,164 @@
                 <div id="view-kanban" class="view" data-board-mode="list">
                     <div class="kanban-shell">
 
-                    <div class="board-header">
-                        <h2 class="board-title">Task Board</h2>
-                        <div class="board-actions">
-                            <div class="view-switch" aria-label="Board view">
-                                <button id="board-mode-list" class="active" type="button" onclick="setBoardMode('list')">List</button>
-                                <button id="board-mode-kanban" type="button" onclick="setBoardMode('kanban')">Kanban</button>
-                            </div>
-                            <button class="primary-action" onclick="openTaskModal()">
-                                <i class="fi fi-rr-plus"></i>
-                                New Task
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Hidden selects still needed for JS compatibility -->
-                    <select id="member-select" style="display:none"><option value="">Assign to...</option></select>
-                    <select id="project-select" style="display:none"><option value="">No project...</option></select>
-                    <select id="status-select" style="display:none"><option>To Do</option><option>In Progress</option><option>Done</option></select>
-                    <select id="priority-select" style="display:none"><option>Low</option><option selected>Medium</option><option>High</option></select>
-                    <input id="title-input" type="text" style="display:none">
-                    <input id="due-date-input" type="date" style="display:none">
-                    <textarea id="desc-input" style="display:none"></textarea>
-                    <button id="add-btn" style="display:none"></button>
-
-                    <!-- Project Filter Tabs + Search -->
-                    <div class="board-controls">
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <div id="project-filters" class="flex items-center gap-2 flex-wrap"></div>
-                        </div>
-                        <div class="board-search">
-                            <i class="fi fi-rr-search"></i>
-                            <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none">🔍</span>
-                            <input id="search-input" type="text" placeholder="Search tasks..." class="tf-input">
-                        </div>
-                    </div>
-
-                    <div id="kanban-list-view">
-                        <div class="task-table-wrap">
-                            <table class="task-table" aria-label="Task list">
-                                <colgroup>
-                                    <col style="width:22%">
-                                    <col style="width:13%">
-                                    <col style="width:12%">
-                                    <col style="width:17%">
-                                    <col style="width:17%">
-                                    <col style="width:14%">
-                                    <col style="width:9%">
-                                </colgroup>
-                                <thead>
-                                    <tr>
-                                        <th>Task</th>
-                                        <th>Status</th>
-                                        <th>Priority</th>
-                                        <th>Member</th>
-                                        <th>Project</th>
-                                        <th>Due Date</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="task-table-body"></tbody>
-                            </table>
-                        </div>
-                        <div class="board-footer">
-                            <span id="task-summary">Showing 0 tasks</span>
-                            <div class="pagination" aria-label="Pagination">
-                                <button class="page-btn" type="button"><i class="fi fi-rr-angle-small-left"></i></button>
-                                <button class="page-btn active" type="button">1</button>
-                                <button class="page-btn" type="button">2</button>
-                                <button class="page-btn" type="button">3</button>
-                                <button class="page-btn" type="button"><i class="fi fi-rr-angle-small-right"></i></button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Kanban columns -->
-                    <div id="kanban-columns-view" class="grid grid-cols-1 lg:grid-cols-3 gap-5 items-start">
-                        <!-- To Do -->
-                        <div
-                            style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:16px;padding:24px;min-height:400px;display:flex;flex-direction:column">
-                            <div class="flex items-center justify-between mb-5">
-                                <div style="display:flex;align-items:center;gap:8px">
-                                    <span style="width:9px;height:9px;border-radius:50%;background:var(--status-todo);flex-shrink:0"></span>
-                                    <h3 style="color:var(--text-main);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px">To Do</h3>
-                                    <span id="todo-count" style="min-width:22px;height:22px;background:var(--bg-element);border:1px solid var(--border-strong);border-radius:99px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text-muted);padding:0 5px">0</span>
+                        <div class="board-header">
+                            <h2 class="board-title">Task Board</h2>
+                            <div class="board-actions">
+                                <div class="view-switch" aria-label="Board view">
+                                    <button id="board-mode-list" class="active" type="button"
+                                        onclick="setBoardMode('list')">List</button>
+                                    <button id="board-mode-kanban" type="button"
+                                        onclick="setBoardMode('kanban')">Kanban</button>
                                 </div>
-                                <button onclick="openTaskModal('To Do')" style="width:26px;height:26px;background:none;border:1px solid var(--border-strong);border-radius:8px;cursor:pointer;color:var(--text-muted);font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.18s" onmouseover="this.style.borderColor='var(--brand)';this.style.color='var(--brand)'" onmouseout="this.style.borderColor='var(--border-strong)';this.style.color='var(--text-muted)'">+</button>
+                                <button class="primary-action" onclick="openTaskModal()">
+                                    <i class="fi fi-rr-plus"></i>
+                                    New Task
+                                </button>
                             </div>
-                            <div id="todo-container" data-status="To Do"
-                                class="drop-zone flex-1 flex flex-col gap-4 min-h-[80px]"></div>
                         </div>
-                        <!-- In Progress -->
-                        <div
-                            style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:16px;padding:24px;min-height:400px;display:flex;flex-direction:column">
-                            <div class="flex items-center justify-between mb-5">
-                                <div style="display:flex;align-items:center;gap:8px">
-                                    <span style="width:9px;height:9px;border-radius:50%;background:var(--status-prog);flex-shrink:0"></span>
-                                    <h3 style="color:var(--text-main);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px">In Progress</h3>
-                                    <span id="inprogress-count" style="min-width:22px;height:22px;background:var(--bg-element);border:1px solid var(--border-strong);border-radius:99px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text-muted);padding:0 5px">0</span>
-                                </div>
-                                <button onclick="openTaskModal('In Progress')" style="width:26px;height:26px;background:none;border:1px solid var(--border-strong);border-radius:8px;cursor:pointer;color:var(--text-muted);font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.18s" onmouseover="this.style.borderColor='var(--brand)';this.style.color='var(--brand)'" onmouseout="this.style.borderColor='var(--border-strong)';this.style.color='var(--text-muted)'">+</button>
+
+                        <!-- Hidden selects still needed for JS compatibility -->
+                        <select id="member-select" style="display:none">
+                            <option value="">Assign to...</option>
+                        </select>
+                        <select id="project-select" style="display:none">
+                            <option value="">No project...</option>
+                        </select>
+                        <select id="status-select" style="display:none">
+                            <option>To Do</option>
+                            <option>In Progress</option>
+                            <option>Done</option>
+                        </select>
+                        <select id="priority-select" style="display:none">
+                            <option>Low</option>
+                            <option selected>Medium</option>
+                            <option>High</option>
+                        </select>
+                        <input id="title-input" type="text" style="display:none">
+                        <input id="due-date-input" type="date" style="display:none">
+                        <textarea id="desc-input" style="display:none"></textarea>
+                        <button id="add-btn" style="display:none"></button>
+
+                        <!-- Project Filter Tabs + Search -->
+                        <div class="board-controls">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <div id="project-filters" class="flex items-center gap-2 flex-wrap"></div>
                             </div>
-                            <div id="inprogress-container" data-status="In Progress"
-                                class="drop-zone flex-1 flex flex-col gap-4 min-h-[80px]"></div>
+                            <div class="board-search">
+                                <i class="fi fi-rr-search"></i>
+                                <span
+                                    style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none">🔍</span>
+                                <input id="search-input" type="text" placeholder="Search tasks..." class="tf-input">
+                            </div>
                         </div>
-                        <!-- Done -->
-                        <div
-                            style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:16px;padding:24px;min-height:400px;display:flex;flex-direction:column">
-                            <div class="flex items-center justify-between mb-5">
-                                <div style="display:flex;align-items:center;gap:8px">
-                                    <span style="width:9px;height:9px;border-radius:50%;background:var(--status-done);flex-shrink:0"></span>
-                                    <h3 style="color:var(--text-main);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px">Done</h3>
-                                    <span id="done-count" style="min-width:22px;height:22px;background:var(--bg-element);border:1px solid var(--border-strong);border-radius:99px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text-muted);padding:0 5px">0</span>
-                                </div>
-                                <button onclick="openTaskModal('Done')" style="width:26px;height:26px;background:none;border:1px solid var(--border-strong);border-radius:8px;cursor:pointer;color:var(--text-muted);font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.18s" onmouseover="this.style.borderColor='var(--brand)';this.style.color='var(--brand)'" onmouseout="this.style.borderColor='var(--border-strong)';this.style.color='var(--text-muted)'">+</button>
+
+                        <div id="kanban-list-view">
+                            <div class="task-table-wrap">
+                                <table class="task-table" aria-label="Task list">
+                                    <colgroup>
+                                        <col style="width:22%">
+                                        <col style="width:13%">
+                                        <col style="width:12%">
+                                        <col style="width:17%">
+                                        <col style="width:17%">
+                                        <col style="width:14%">
+                                        <col style="width:9%">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th>Task</th>
+                                            <th>Status</th>
+                                            <th>Priority</th>
+                                            <th>Member</th>
+                                            <th>Project</th>
+                                            <th>Due Date</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="task-table-body"></tbody>
+                                </table>
                             </div>
-                            <div id="done-container" data-status="Done"
-                                class="drop-zone flex-1 flex flex-col gap-4 min-h-[80px]"></div>
+                            <div class="board-footer">
+                                <span id="task-summary">Showing 0 tasks</span>
+                                <div class="pagination" aria-label="Pagination">
+                                    <button class="page-btn" type="button"><i
+                                            class="fi fi-rr-angle-small-left"></i></button>
+                                    <button class="page-btn active" type="button">1</button>
+                                    <button class="page-btn" type="button">2</button>
+                                    <button class="page-btn" type="button">3</button>
+                                    <button class="page-btn" type="button"><i
+                                            class="fi fi-rr-angle-small-right"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Kanban columns -->
+                        <div id="kanban-columns-view" class="grid grid-cols-1 lg:grid-cols-3 gap-5 items-start">
+                            <!-- To Do -->
+                            <div
+                                style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:16px;padding:24px;min-height:400px;display:flex;flex-direction:column">
+                                <div class="flex items-center justify-between mb-5">
+                                    <div style="display:flex;align-items:center;gap:8px">
+                                        <span
+                                            style="width:9px;height:9px;border-radius:50%;background:var(--status-todo);flex-shrink:0"></span>
+                                        <h3
+                                            style="color:var(--text-main);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px">
+                                            To Do</h3>
+                                        <span id="todo-count"
+                                            style="min-width:22px;height:22px;background:var(--bg-element);border:1px solid var(--border-strong);border-radius:99px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text-muted);padding:0 5px">0</span>
+                                    </div>
+                                    <button onclick="openTaskModal('To Do')"
+                                        style="width:26px;height:26px;background:none;border:1px solid var(--border-strong);border-radius:8px;cursor:pointer;color:var(--text-muted);font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.18s"
+                                        onmouseover="this.style.borderColor='var(--brand)';this.style.color='var(--brand)'"
+                                        onmouseout="this.style.borderColor='var(--border-strong)';this.style.color='var(--text-muted)'">+</button>
+                                </div>
+                                <div id="todo-container" data-status="To Do"
+                                    class="drop-zone flex-1 flex flex-col gap-4 min-h-[80px]"></div>
+                            </div>
+                            <!-- In Progress -->
+                            <div
+                                style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:16px;padding:24px;min-height:400px;display:flex;flex-direction:column">
+                                <div class="flex items-center justify-between mb-5">
+                                    <div style="display:flex;align-items:center;gap:8px">
+                                        <span
+                                            style="width:9px;height:9px;border-radius:50%;background:var(--status-prog);flex-shrink:0"></span>
+                                        <h3
+                                            style="color:var(--text-main);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px">
+                                            In Progress</h3>
+                                        <span id="inprogress-count"
+                                            style="min-width:22px;height:22px;background:var(--bg-element);border:1px solid var(--border-strong);border-radius:99px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text-muted);padding:0 5px">0</span>
+                                    </div>
+                                    <button onclick="openTaskModal('In Progress')"
+                                        style="width:26px;height:26px;background:none;border:1px solid var(--border-strong);border-radius:8px;cursor:pointer;color:var(--text-muted);font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.18s"
+                                        onmouseover="this.style.borderColor='var(--brand)';this.style.color='var(--brand)'"
+                                        onmouseout="this.style.borderColor='var(--border-strong)';this.style.color='var(--text-muted)'">+</button>
+                                </div>
+                                <div id="inprogress-container" data-status="In Progress"
+                                    class="drop-zone flex-1 flex flex-col gap-4 min-h-[80px]"></div>
+                            </div>
+                            <!-- Done -->
+                            <div
+                                style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:16px;padding:24px;min-height:400px;display:flex;flex-direction:column">
+                                <div class="flex items-center justify-between mb-5">
+                                    <div style="display:flex;align-items:center;gap:8px">
+                                        <span
+                                            style="width:9px;height:9px;border-radius:50%;background:var(--status-done);flex-shrink:0"></span>
+                                        <h3
+                                            style="color:var(--text-main);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px">
+                                            Done</h3>
+                                        <span id="done-count"
+                                            style="min-width:22px;height:22px;background:var(--bg-element);border:1px solid var(--border-strong);border-radius:99px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text-muted);padding:0 5px">0</span>
+                                    </div>
+                                    <button onclick="openTaskModal('Done')"
+                                        style="width:26px;height:26px;background:none;border:1px solid var(--border-strong);border-radius:8px;cursor:pointer;color:var(--text-muted);font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.18s"
+                                        onmouseover="this.style.borderColor='var(--brand)';this.style.color='var(--brand)'"
+                                        onmouseout="this.style.borderColor='var(--border-strong)';this.style.color='var(--text-muted)'">+</button>
+                                </div>
+                                <div id="done-container" data-status="Done"
+                                    class="drop-zone flex-1 flex flex-col gap-4 min-h-[80px]"></div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
                 </div>
 
@@ -926,10 +1017,13 @@
                 <div id="view-settings" class="view">
 
                     <!-- Access guard — shown to non-admins -->
-                    <div id="settings-locked" style="display:none;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:16px;text-align:center">
+                    <div id="settings-locked"
+                        style="display:none;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:16px;text-align:center">
                         <div style="font-size:48px">🔒</div>
-                        <h2 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--text-main)">Admin Access Only</h2>
-                        <p style="color:var(--text-muted);font-size:14px;max-width:320px">This page is restricted to workspace administrators. Contact your admin if you need access.</p>
+                        <h2 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--text-main)">
+                            Admin Access Only</h2>
+                        <p style="color:var(--text-muted);font-size:14px;max-width:320px">This page is restricted to
+                            workspace administrators. Contact your admin if you need access.</p>
                     </div>
 
                     <!-- Admin content -->
@@ -937,102 +1031,150 @@
 
                         <!-- ── Section: Workspace Info ── -->
                         <div style="margin-bottom:32px">
-                            <h2 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--text-main);margin-bottom:4px">⚙ Settings</h2>
-                            <p style="color:var(--text-muted);font-size:13px">Manage users, roles and workspace configuration</p>
+                            <h2
+                                style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--text-main);margin-bottom:4px">
+                                ⚙ Settings</h2>
+                            <p style="color:var(--text-muted);font-size:13px">Manage users, roles and workspace
+                                configuration</p>
                         </div>
 
                         <!-- ── Section: My Account ── -->
-                        <div style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:16px;padding:24px;margin-bottom:20px">
-                            <h3 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:20px">My Account</h3>
+                        <div
+                            style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:16px;padding:24px;margin-bottom:20px">
+                            <h3
+                                style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:20px">
+                                My Account</h3>
                             <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
                                 <div>
-                                    <label style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Display Name</label>
+                                    <label
+                                        style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Display
+                                        Name</label>
                                     <input id="settings-name" type="text" class="tf-input" placeholder="Your name...">
                                 </div>
                                 <div>
-                                    <label style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Email</label>
-                                    <input id="settings-email" type="email" class="tf-input" placeholder="your@email.com">
+                                    <label
+                                        style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Email</label>
+                                    <input id="settings-email" type="email" class="tf-input"
+                                        placeholder="your@email.com">
                                 </div>
                             </div>
                             <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
                                 <div>
-                                    <label style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">New Password <span style="font-weight:400;text-transform:none">(leave blank to keep)</span></label>
+                                    <label
+                                        style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">New
+                                        Password <span style="font-weight:400;text-transform:none">(leave blank to
+                                            keep)</span></label>
                                     <div style="position:relative">
-                                        <input id="settings-newpwd" type="password" class="tf-input" placeholder="New password..." style="padding-right:44px">
-                                        <button onclick="togglePwd('settings-newpwd',this)" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:15px">👁</button>
+                                        <input id="settings-newpwd" type="password" class="tf-input"
+                                            placeholder="New password..." style="padding-right:44px">
+                                        <button onclick="togglePwd('settings-newpwd',this)"
+                                            style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:15px">👁</button>
                                     </div>
                                 </div>
                                 <div>
-                                    <label style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Current Password <span style="font-weight:400;text-transform:none">(required to save)</span></label>
+                                    <label
+                                        style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Current
+                                        Password <span style="font-weight:400;text-transform:none">(required to
+                                            save)</span></label>
                                     <div style="position:relative">
-                                        <input id="settings-curpwd" type="password" class="tf-input" placeholder="Current password..." style="padding-right:44px">
-                                        <button onclick="togglePwd('settings-curpwd',this)" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:15px">👁</button>
+                                        <input id="settings-curpwd" type="password" class="tf-input"
+                                            placeholder="Current password..." style="padding-right:44px">
+                                        <button onclick="togglePwd('settings-curpwd',this)"
+                                            style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:15px">👁</button>
                                     </div>
                                 </div>
                             </div>
                             <div style="display:flex;align-items:center;gap:12px">
                                 <button onclick="saveMyAccount()"
                                     style="background:var(--brand);color:white;border:none;border-radius:10px;padding:10px 24px;font-size:14px;font-weight:600;cursor:pointer;transition:opacity 0.2s"
-                                    onmouseover="this.style.opacity=.85" onmouseout="this.style.opacity=1">Save Changes</button>
-                                <p id="settings-account-msg" style="font-size:13px;color:var(--status-done);display:none"></p>
+                                    onmouseover="this.style.opacity=.85" onmouseout="this.style.opacity=1">Save
+                                    Changes</button>
+                                <p id="settings-account-msg"
+                                    style="font-size:13px;color:var(--status-done);display:none"></p>
                             </div>
                         </div>
 
                         <!-- ── Section: User Management ── -->
-                        <div style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:16px;padding:24px;margin-bottom:20px">
-                            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
-                                <h3 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted)">User Management</h3>
-                                <span id="users-count-badge" style="font-size:12px;font-weight:700;padding:3px 10px;background:var(--bg-element);border:1px solid var(--border-strong);border-radius:99px;color:var(--text-muted)">0 users</span>
+                        <div
+                            style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:16px;padding:24px;margin-bottom:20px">
+                            <div
+                                style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+                                <h3
+                                    style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted)">
+                                    User Management</h3>
+                                <span id="users-count-badge"
+                                    style="font-size:12px;font-weight:700;padding:3px 10px;background:var(--bg-element);border:1px solid var(--border-strong);border-radius:99px;color:var(--text-muted)">0
+                                    users</span>
                             </div>
                             <!-- Users table -->
                             <div id="users-table" style="display:flex;flex-direction:column;gap:10px"></div>
                         </div>
 
                         <!-- ── Section: Invite / Add User ── -->
-                        <div style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:16px;padding:24px;margin-bottom:20px">
-                            <h3 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:20px">Add User Manually</h3>
+                        <div
+                            style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:16px;padding:24px;margin-bottom:20px">
+                            <h3
+                                style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:20px">
+                                Add User Manually</h3>
                             <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:12px;align-items:end">
                                 <div>
-                                    <label style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Name</label>
+                                    <label
+                                        style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Name</label>
                                     <input id="add-user-name" type="text" class="tf-input" placeholder="Full name...">
                                 </div>
                                 <div>
-                                    <label style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Email</label>
-                                    <input id="add-user-email" type="email" class="tf-input" placeholder="email@example.com">
+                                    <label
+                                        style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Email</label>
+                                    <input id="add-user-email" type="email" class="tf-input"
+                                        placeholder="email@example.com">
                                 </div>
                                 <div>
-                                    <label style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Temp Password</label>
-                                    <input id="add-user-pwd" type="text" class="tf-input" placeholder="Set a password...">
+                                    <label
+                                        style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Temp
+                                        Password</label>
+                                    <input id="add-user-pwd" type="text" class="tf-input"
+                                        placeholder="Set a password...">
                                 </div>
                                 <button onclick="adminAddUser()"
                                     style="background:var(--brand);color:white;border:none;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;transition:opacity 0.2s"
-                                    onmouseover="this.style.opacity=.85" onmouseout="this.style.opacity=1">+ Add</button>
+                                    onmouseover="this.style.opacity=.85" onmouseout="this.style.opacity=1">+
+                                    Add</button>
                             </div>
                             <p id="add-user-msg" style="font-size:13px;margin-top:10px;display:none"></p>
                         </div>
 
                         <!-- ── Section: Danger Zone ── -->
-                        <div style="background:rgba(239,68,68,0.04);border:1px solid rgba(239,68,68,0.2);border-radius:16px;padding:24px">
-                            <h3 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--status-danger);margin-bottom:16px">⚠ Danger Zone</h3>
-                            <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(239,68,68,0.15)">
+                        <div
+                            style="background:rgba(239,68,68,0.04);border:1px solid rgba(239,68,68,0.2);border-radius:16px;padding:24px">
+                            <h3
+                                style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--status-danger);margin-bottom:16px">
+                                ⚠ Danger Zone</h3>
+                            <div
+                                style="display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(239,68,68,0.15)">
                                 <div>
-                                    <div style="font-size:14px;font-weight:600;color:var(--text-main)">Clear all tasks</div>
-                                    <div style="font-size:12px;color:var(--text-muted);margin-top:2px">Permanently delete every task in the workspace</div>
+                                    <div style="font-size:14px;font-weight:600;color:var(--text-main)">Clear all tasks
+                                    </div>
+                                    <div style="font-size:12px;color:var(--text-muted);margin-top:2px">Permanently
+                                        delete every task in the workspace</div>
                                 </div>
                                 <button onclick="adminClearTasks()"
                                     style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:var(--status-danger);border-radius:10px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;white-space:nowrap"
-                                    onmouseover="this.style.background='rgba(239,68,68,0.2)'" onmouseout="this.style.background='rgba(239,68,68,0.1)'">
+                                    onmouseover="this.style.background='rgba(239,68,68,0.2)'"
+                                    onmouseout="this.style.background='rgba(239,68,68,0.1)'">
                                     Clear Tasks
                                 </button>
                             </div>
                             <div style="display:flex;align-items:center;justify-content:space-between;padding-top:14px">
                                 <div>
-                                    <div style="font-size:14px;font-weight:600;color:var(--text-main)">Reset workspace</div>
-                                    <div style="font-size:12px;color:var(--text-muted);margin-top:2px">Delete all tasks, members and projects (users kept)</div>
+                                    <div style="font-size:14px;font-weight:600;color:var(--text-main)">Reset workspace
+                                    </div>
+                                    <div style="font-size:12px;color:var(--text-muted);margin-top:2px">Delete all tasks,
+                                        members and projects (users kept)</div>
                                 </div>
                                 <button onclick="adminResetWorkspace()"
                                     style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:var(--status-danger);border-radius:10px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;white-space:nowrap"
-                                    onmouseover="this.style.background='rgba(239,68,68,0.2)'" onmouseout="this.style.background='rgba(239,68,68,0.1)'">
+                                    onmouseover="this.style.background='rgba(239,68,68,0.2)'"
+                                    onmouseout="this.style.background='rgba(239,68,68,0.1)'">
                                     Reset All
                                 </button>
                             </div>
@@ -1049,82 +1191,112 @@
      NEW TASK MODAL
 ════════════════════════════════════════════════════════ -->
     <div id="task-modal" class="fixed inset-0 modal-bg flex items-center justify-center z-50 hidden">
-        <div style="background:var(--bg-surface);border:1px solid var(--border-subtle);width:100%;max-width:520px;border-radius:24px;overflow:hidden;margin:16px" class="shadow-2xl">
+        <div style="background:var(--bg-surface);border:1px solid var(--border-subtle);width:100%;max-width:520px;border-radius:24px;overflow:hidden;margin:16px"
+            class="shadow-2xl">
             <!-- Header -->
             <div style="padding:28px 28px 0;display:flex;align-items:center;justify-content:space-between">
-                <h2 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--text-main)" id="task-modal-title">New Task</h2>
-                <button onclick="closeTaskModal()" style="background:var(--bg-element);border:1px solid var(--border-strong);color:var(--text-muted);border-radius:10px;padding:8px 12px;cursor:pointer;font-size:15px;line-height:1;transition:all 0.18s" onmouseover="this.style.borderColor='var(--brand)';this.style.color='var(--brand)'" onmouseout="this.style.borderColor='var(--border-strong)';this.style.color='var(--text-muted)'">✕</button>
+                <h2 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--text-main)"
+                    id="task-modal-title">New Task</h2>
+                <button onclick="closeTaskModal()"
+                    style="background:var(--bg-element);border:1px solid var(--border-strong);color:var(--text-muted);border-radius:10px;padding:8px 12px;cursor:pointer;font-size:15px;line-height:1;transition:all 0.18s"
+                    onmouseover="this.style.borderColor='var(--brand)';this.style.color='var(--brand)'"
+                    onmouseout="this.style.borderColor='var(--border-strong)';this.style.color='var(--text-muted)'">✕</button>
             </div>
             <!-- Body -->
             <div style="padding:24px 28px 28px">
                 <!-- Title -->
                 <div style="margin-bottom:16px">
-                    <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px">Title</label>
+                    <label
+                        style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px">Title</label>
                     <input id="modal-title-input" type="text" class="tf-input" placeholder="What needs to be done?">
                 </div>
                 <!-- Description -->
                 <div style="margin-bottom:16px">
-                    <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px">Description</label>
-                    <textarea id="modal-desc-input" class="tf-input" placeholder="Add some details..." style="resize:none;height:90px"></textarea>
+                    <label
+                        style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px">Description</label>
+                    <textarea id="modal-desc-input" class="tf-input" placeholder="Add some details..."
+                        style="resize:none;height:90px"></textarea>
                 </div>
                 <!-- Status + Priority -->
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
                     <div>
-                        <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px">Status</label>
+                        <label
+                            style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px">Status</label>
                         <div style="position:relative">
                             <select id="modal-status-select" class="tf-input" style="cursor:pointer;padding-right:36px">
                                 <option>To Do</option>
                                 <option>In Progress</option>
                                 <option>Done</option>
                             </select>
-                            <div style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted);font-size:11px">▼</div>
+                            <div
+                                style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted);font-size:11px">
+                                ▼</div>
                         </div>
                     </div>
                     <div>
-                        <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px">Priority</label>
+                        <label
+                            style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px">Priority</label>
                         <div style="position:relative">
-                            <select id="modal-priority-select" class="tf-input" style="cursor:pointer;padding-right:36px">
+                            <select id="modal-priority-select" class="tf-input"
+                                style="cursor:pointer;padding-right:36px">
                                 <option>Low</option>
                                 <option selected>Medium</option>
                                 <option>High</option>
                             </select>
-                            <div style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted);font-size:11px">▼</div>
+                            <div
+                                style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted);font-size:11px">
+                                ▼</div>
                         </div>
                     </div>
                 </div>
                 <!-- Assignee + Project -->
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
                     <div>
-                        <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px">Assignee</label>
+                        <label
+                            style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px">Assignee</label>
                         <div style="position:relative">
                             <select id="modal-member-select" class="tf-input" style="cursor:pointer;padding-right:36px">
                                 <option value="">Assign to...</option>
                             </select>
-                            <div style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted);font-size:11px">▼</div>
+                            <div
+                                style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted);font-size:11px">
+                                ▼</div>
                         </div>
                     </div>
                     <div>
-                        <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px">Project</label>
+                        <label
+                            style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px">Project</label>
                         <div style="position:relative">
-                            <select id="modal-project-select" class="tf-input" style="cursor:pointer;padding-right:36px">
+                            <select id="modal-project-select" class="tf-input"
+                                style="cursor:pointer;padding-right:36px">
                                 <option value="">No project...</option>
                             </select>
-                            <div style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted);font-size:11px">▼</div>
+                            <div
+                                style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted);font-size:11px">
+                                ▼</div>
                         </div>
                     </div>
                 </div>
                 <!-- Due Date -->
                 <div style="margin-bottom:24px">
-                    <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px">Due Date</label>
+                    <label
+                        style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px">Due
+                        Date</label>
                     <div style="position:relative">
                         <input id="modal-due-date" type="date" class="tf-input" style="padding-right:44px">
-                        <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;font-size:15px">📅</span>
+                        <span
+                            style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;font-size:15px">📅</span>
                     </div>
                 </div>
                 <!-- Actions -->
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-                    <button onclick="closeTaskModal()" style="background:var(--bg-element);border:1px solid var(--border-strong);color:var(--text-main);border-radius:14px;padding:13px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.18s" onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background='var(--bg-element)'">Cancel</button>
-                    <button id="modal-submit-btn" onclick="handleModalSubmit()" style="background:var(--brand);color:white;border:none;border-radius:14px;padding:13px;font-size:14px;font-weight:600;cursor:pointer;transition:opacity 0.2s" onmouseover="this.style.opacity=0.85" onmouseout="this.style.opacity=1">Create Task</button>
+                    <button onclick="closeTaskModal()"
+                        style="background:var(--bg-element);border:1px solid var(--border-strong);color:var(--text-main);border-radius:14px;padding:13px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.18s"
+                        onmouseover="this.style.background='var(--bg-hover)'"
+                        onmouseout="this.style.background='var(--bg-element)'">Cancel</button>
+                    <button id="modal-submit-btn" onclick="handleModalSubmit()"
+                        style="background:var(--brand);color:white;border:none;border-radius:14px;padding:13px;font-size:14px;font-weight:600;cursor:pointer;transition:opacity 0.2s"
+                        onmouseover="this.style.opacity=0.85" onmouseout="this.style.opacity=1">Create Task</button>
                 </div>
             </div>
         </div>
@@ -1134,13 +1306,18 @@
      DANGER CONFIRM MODAL (generic)
 ════════════════════════════════════════════════════════ -->
     <div id="danger-modal" class="fixed inset-0 modal-bg flex items-center justify-center z-50 hidden">
-        <div style="background:var(--bg-surface);border:1px solid var(--border-subtle)" class="rounded-[20px] p-8 w-full max-w-[380px] mx-6">
+        <div style="background:var(--bg-surface);border:1px solid var(--border-subtle)"
+            class="rounded-[20px] p-8 w-full max-w-[380px] mx-6">
             <div style="font-size:32px;margin-bottom:12px" id="danger-icon">⚠️</div>
-            <h3 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--text-main)" id="danger-title">Are you sure?</h3>
-            <p style="color:var(--text-muted);font-size:14px;margin-top:6px;margin-bottom:24px" id="danger-desc">This action cannot be undone.</p>
+            <h3 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--text-main)"
+                id="danger-title">Are you sure?</h3>
+            <p style="color:var(--text-muted);font-size:14px;margin-top:6px;margin-bottom:24px" id="danger-desc">This
+                action cannot be undone.</p>
             <div class="flex gap-3">
-                <button onclick="closeDangerModal()" style="flex:1;background:var(--bg-element);border:1px solid var(--border-strong);color:var(--text-main);border-radius:12px;padding:10px;font-size:14px;cursor:pointer;font-weight:500">Cancel</button>
-                <button id="danger-confirm-btn" style="flex:1;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:var(--status-danger);border-radius:12px;padding:10px;font-size:14px;cursor:pointer;font-weight:500">Confirm</button>
+                <button onclick="closeDangerModal()"
+                    style="flex:1;background:var(--bg-element);border:1px solid var(--border-strong);color:var(--text-main);border-radius:12px;padding:10px;font-size:14px;cursor:pointer;font-weight:500">Cancel</button>
+                <button id="danger-confirm-btn"
+                    style="flex:1;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:var(--status-danger);border-radius:12px;padding:10px;font-size:14px;cursor:pointer;font-weight:500">Confirm</button>
             </div>
         </div>
     </div>
@@ -1160,32 +1337,49 @@
      ACCOUNT SETTINGS MODAL
 ════════════════════════════════════════════════════════ -->
     <div id="account-modal" class="fixed inset-0 modal-bg flex items-center justify-center z-50 hidden">
-        <div style="background:var(--bg-surface);border:1px solid var(--border-subtle);width:100%;max-width:480px;border-radius:24px;overflow:hidden;margin:16px" class="shadow-2xl">
+        <div style="background:var(--bg-surface);border:1px solid var(--border-subtle);width:100%;max-width:480px;border-radius:24px;overflow:hidden;margin:16px"
+            class="shadow-2xl">
 
             <!-- Header -->
             <div style="padding:28px 28px 0;display:flex;align-items:flex-start;justify-content:space-between">
                 <div>
                     <!-- Avatar big -->
-                    <div id="acct-avatar-big" style="width:60px;height:60px;border-radius:50%;background:var(--brand-dim);border:2px solid rgba(108,143,255,0.35);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:var(--brand);margin-bottom:14px">?</div>
-                    <h2 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--text-main)" id="acct-header-name">My Account</h2>
+                    <div id="acct-avatar-big"
+                        style="width:60px;height:60px;border-radius:50%;background:var(--brand-dim);border:2px solid rgba(108,143,255,0.35);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:var(--brand);margin-bottom:14px">
+                        ?</div>
+                    <h2 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--text-main)"
+                        id="acct-header-name">My Account</h2>
                     <p style="font-size:13px;color:var(--text-muted);margin-top:2px" id="acct-header-role">Member</p>
                 </div>
-                <button onclick="closeAccountModal()" style="background:var(--bg-element);border:1px solid var(--border-strong);color:var(--text-muted);border-radius:10px;padding:8px 12px;cursor:pointer;font-size:15px;line-height:1;transition:all 0.18s" onmouseover="this.style.borderColor='var(--brand)';this.style.color='var(--brand)'" onmouseout="this.style.borderColor='var(--border-strong)';this.style.color='var(--text-muted)'">✕</button>
+                <button onclick="closeAccountModal()"
+                    style="background:var(--bg-element);border:1px solid var(--border-strong);color:var(--text-muted);border-radius:10px;padding:8px 12px;cursor:pointer;font-size:15px;line-height:1;transition:all 0.18s"
+                    onmouseover="this.style.borderColor='var(--brand)';this.style.color='var(--brand)'"
+                    onmouseout="this.style.borderColor='var(--border-strong)';this.style.color='var(--text-muted)'">✕</button>
             </div>
 
             <!-- Tabs -->
-            <div style="display:flex;gap:0;padding:20px 28px 0;border-bottom:1px solid var(--border-subtle);margin-top:20px">
+            <div
+                style="display:flex;gap:0;padding:20px 28px 0;border-bottom:1px solid var(--border-subtle);margin-top:20px">
                 <button onclick="switchAccountTab('profile')" id="acct-tab-profile"
-                    style="padding:10px 18px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:none;border-bottom:2px solid var(--brand);color:var(--brand);transition:all 0.18s">
-                    👤 Profile
+                    class="flex items-center justify-center px-4 py-2 text-[13px] font-semibold border-b-2 border-blue-500 text-blue-500 transition-all duration-200">
+                    <span class="flex items-center gap-2">
+                        <img class="w-[14px] h-[14px]" src="./assets/User(2).png" alt="">
+                        <span>Profile</span>
+                    </span>
                 </button>
                 <button onclick="switchAccountTab('security')" id="acct-tab-security"
                     style="padding:10px 18px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;color:var(--text-muted);transition:all 0.18s">
-                    🔒 Security
+                    <span class="flex items-center gap-2">
+                        <img class="w-[14px] h-[14px]" src="./assets/Lock.png" alt="">
+                        <span>Security</span>
+                    </span>
                 </button>
                 <button onclick="switchAccountTab('preferences')" id="acct-tab-preferences"
                     style="padding:10px 18px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;color:var(--text-muted);transition:all 0.18s">
-                    🎨 Preferences
+                    <span class="flex items-center gap-2">
+                        <img class="w-[14px] h-[14px]" src="./assets/Prefrences.png" alt="">
+                        <span>Preferences</span>
+                    </span>
                 </button>
             </div>
 
@@ -1195,15 +1389,22 @@
                 <!-- ── Profile Tab ── -->
                 <div id="acct-panel-profile">
                     <div style="margin-bottom:16px">
-                        <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px">Display Name</label>
+                        <label
+                            style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px">Display
+                            Name</label>
                         <input id="acct-name" type="text" class="tf-input" placeholder="Your name...">
                     </div>
                     <div style="margin-bottom:24px">
-                        <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px">Email Address</label>
+                        <label
+                            style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px">Email
+                            Address</label>
                         <input id="acct-email" type="email" class="tf-input" placeholder="your@email.com">
                     </div>
-                    <div style="background:var(--bg-element);border:1px solid var(--border-strong);border-radius:12px;padding:14px 16px;margin-bottom:20px">
-                        <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px">Account Info</div>
+                    <div
+                        style="background:var(--bg-element);border:1px solid var(--border-strong);border-radius:12px;padding:14px 16px;margin-bottom:20px">
+                        <div
+                            style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px">
+                            Account Info</div>
                         <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px">
                             <span style="color:var(--text-muted)">Role</span>
                             <span id="acct-info-role" style="color:var(--brand);font-weight:600">—</span>
@@ -1213,7 +1414,8 @@
                             <span id="acct-info-joined" style="color:var(--text-main);font-weight:500">—</span>
                         </div>
                     </div>
-                    <p id="acct-profile-msg" style="font-size:13px;margin-bottom:12px;display:none;padding:10px 14px;border-radius:10px"></p>
+                    <p id="acct-profile-msg"
+                        style="font-size:13px;margin-bottom:12px;display:none;padding:10px 14px;border-radius:10px"></p>
                     <button onclick="saveProfile()"
                         style="background:var(--brand);color:white;border:none;border-radius:12px;padding:12px;width:100%;font-size:14px;font-weight:600;cursor:pointer;transition:opacity 0.2s"
                         onmouseover="this.style.opacity=.85" onmouseout="this.style.opacity=1">
@@ -1223,38 +1425,60 @@
 
                 <!-- ── Security Tab ── -->
                 <div id="acct-panel-security" style="display:none">
-                    <div style="background:var(--bg-element);border:1px solid var(--border-strong);border-radius:12px;padding:16px;margin-bottom:20px">
+                    <div
+                        style="background:var(--bg-element);border:1px solid var(--border-strong);border-radius:12px;padding:16px;margin-bottom:20px">
                         <div style="font-size:13px;color:var(--text-muted);line-height:1.6">
-                            🔐 To change your password, enter your current password first, then set a new one.
+                            To change your password, enter your current password first, then set a new one.
                         </div>
                     </div>
                     <div style="margin-bottom:16px">
-                        <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px">Current Password</label>
+                        <label
+                            style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px">Current
+                            Password</label>
                         <div style="position:relative">
-                            <input id="acct-cur-pwd" type="password" class="tf-input" placeholder="Enter current password..." style="padding-right:44px">
-                            <button onclick="togglePwd('acct-cur-pwd',this)" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:15px">👁</button>
+                            <input id="acct-cur-pwd" type="password" class="tf-input"
+                                placeholder="Enter current password..." style="padding-right:44px">
+                            <button onclick="togglePwd('acct-cur-pwd',this)"
+                                style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:15px">👁</button>
                         </div>
                     </div>
                     <div style="margin-bottom:8px">
-                        <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px">New Password</label>
+                        <label
+                            style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px">New
+                            Password</label>
                         <div style="position:relative">
-                            <input id="acct-new-pwd" type="password" class="tf-input" placeholder="New password (min. 6 chars)..." style="padding-right:44px" oninput="updateStrength(this.value)">
-                            <button onclick="togglePwd('acct-new-pwd',this)" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:15px">👁</button>
+                            <input id="acct-new-pwd" type="password" class="tf-input"
+                                placeholder="New password (min. 6 chars)..." style="padding-right:44px"
+                                oninput="updateStrength(this.value)">
+                            <button onclick="togglePwd('acct-new-pwd',this)"
+                                style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:15px">👁</button>
                         </div>
                         <!-- Strength bars -->
                         <div style="margin-top:8px;display:flex;gap:4px" id="strength-bars">
-                            <div class="strength-bar" style="flex:1;height:3px;border-radius:99px;background:var(--border-strong);transition:background 0.3s"></div>
-                            <div class="strength-bar" style="flex:1;height:3px;border-radius:99px;background:var(--border-strong);transition:background 0.3s"></div>
-                            <div class="strength-bar" style="flex:1;height:3px;border-radius:99px;background:var(--border-strong);transition:background 0.3s"></div>
-                            <div class="strength-bar" style="flex:1;height:3px;border-radius:99px;background:var(--border-strong);transition:background 0.3s"></div>
+                            <div class="strength-bar"
+                                style="flex:1;height:3px;border-radius:99px;background:var(--border-strong);transition:background 0.3s">
+                            </div>
+                            <div class="strength-bar"
+                                style="flex:1;height:3px;border-radius:99px;background:var(--border-strong);transition:background 0.3s">
+                            </div>
+                            <div class="strength-bar"
+                                style="flex:1;height:3px;border-radius:99px;background:var(--border-strong);transition:background 0.3s">
+                            </div>
+                            <div class="strength-bar"
+                                style="flex:1;height:3px;border-radius:99px;background:var(--border-strong);transition:background 0.3s">
+                            </div>
                         </div>
                         <p id="strength-label" style="font-size:11px;color:var(--text-muted);margin-top:4px"></p>
                     </div>
                     <div style="margin-bottom:24px">
-                        <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px">Confirm New Password</label>
-                        <input id="acct-confirm-pwd" type="password" class="tf-input" placeholder="Repeat new password...">
+                        <label
+                            style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px">Confirm
+                            New Password</label>
+                        <input id="acct-confirm-pwd" type="password" class="tf-input"
+                            placeholder="Repeat new password...">
                     </div>
-                    <p id="acct-security-msg" style="font-size:13px;margin-bottom:12px;display:none;padding:10px 14px;border-radius:10px"></p>
+                    <p id="acct-security-msg"
+                        style="font-size:13px;margin-bottom:12px;display:none;padding:10px 14px;border-radius:10px"></p>
                     <button onclick="savePassword()"
                         style="background:var(--brand);color:white;border:none;border-radius:12px;padding:12px;width:100%;font-size:14px;font-weight:600;cursor:pointer;transition:opacity 0.2s"
                         onmouseover="this.style.opacity=.85" onmouseout="this.style.opacity=1">
@@ -1265,41 +1489,52 @@
                 <!-- ── Preferences Tab ── -->
                 <div id="acct-panel-preferences" style="display:none">
                     <!-- Theme -->
-                    <div style="background:var(--bg-element);border:1px solid var(--border-strong);border-radius:12px;padding:16px;margin-bottom:12px">
+                    <div
+                        style="background:var(--bg-element);border:1px solid var(--border-strong);border-radius:12px;padding:16px;margin-bottom:12px">
                         <div style="display:flex;align-items:center;justify-content:space-between">
                             <div>
-                                <div style="font-size:14px;font-weight:600;color:var(--text-main)">🌙 Dark Mode</div>
-                                <div style="font-size:12px;color:var(--text-muted);margin-top:2px">Switch between dark and light theme</div>
+                                <div style="font-size:14px;font-weight:600;color:var(--text-main)"><span>Dark Mode</span> </div>
+                                <div style="font-size:12px;color:var(--text-muted);margin-top:2px">Switch between dark
+                                    and light theme</div>
                             </div>
                             <label style="position:relative;width:48px;height:26px;flex-shrink:0">
-                                <input type="checkbox" id="acct-theme-check" onchange="toggleTheme(this.checked);document.getElementById('theme-check').checked=this.checked" style="opacity:0;width:0;height:0">
+                                <input type="checkbox" id="acct-theme-check"
+                                    onchange="toggleTheme(this.checked);document.getElementById('theme-check').checked=this.checked"
+                                    style="opacity:0;width:0;height:0">
                                 <span class="toggle-track" style="position:absolute;inset:0"></span>
                             </label>
                         </div>
                     </div>
                     <!-- Sidebar -->
-                    <div style="background:var(--bg-element);border:1px solid var(--border-strong);border-radius:12px;padding:16px;margin-bottom:12px">
+                    <div
+                        style="background:var(--bg-element);border:1px solid var(--border-strong);border-radius:12px;padding:16px;margin-bottom:12px">
                         <div style="display:flex;align-items:center;justify-content:space-between">
                             <div>
-                                <div style="font-size:14px;font-weight:600;color:var(--text-main)">◀ Collapsed Sidebar</div>
-                                <div style="font-size:12px;color:var(--text-muted);margin-top:2px">Start with the sidebar minimized</div>
+                                <div style="font-size:14px;font-weight:600;color:var(--text-main)">Collapsed Sidebar
+                                </div>
+                                <div style="font-size:12px;color:var(--text-muted);margin-top:2px">Start with the
+                                    sidebar minimized</div>
                             </div>
                             <label style="position:relative;width:48px;height:26px;flex-shrink:0">
-                                <input type="checkbox" id="acct-sidebar-check" onchange="setPrefSidebar(this.checked)" style="opacity:0;width:0;height:0">
+                                <input type="checkbox" id="acct-sidebar-check" onchange="setPrefSidebar(this.checked)"
+                                    style="opacity:0;width:0;height:0">
                                 <span class="toggle-track" style="position:absolute;inset:0"></span>
                             </label>
                         </div>
                     </div>
                     <!-- Sign out -->
-                    <div style="background:rgba(239,68,68,0.04);border:1px solid rgba(239,68,68,0.2);border-radius:12px;padding:16px;margin-top:20px">
+                    <div
+                        style="background:rgba(239,68,68,0.04);border:1px solid rgba(239,68,68,0.2);border-radius:12px;padding:16px;margin-top:20px">
                         <div style="display:flex;align-items:center;justify-content:space-between">
                             <div>
                                 <div style="font-size:14px;font-weight:600;color:var(--status-danger)">⏻ Sign Out</div>
-                                <div style="font-size:12px;color:var(--text-muted);margin-top:2px">End your current session</div>
+                                <div style="font-size:12px;color:var(--text-muted);margin-top:2px">End your current
+                                    session</div>
                             </div>
                             <button onclick="logout()"
                                 style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:var(--status-danger);border-radius:10px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s"
-                                onmouseover="this.style.background='rgba(239,68,68,0.2)'" onmouseout="this.style.background='rgba(239,68,68,0.1)'">
+                                onmouseover="this.style.background='rgba(239,68,68,0.2)'"
+                                onmouseout="this.style.background='rgba(239,68,68,0.1)'">
                                 Sign Out
                             </button>
                         </div>
