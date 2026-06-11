@@ -103,5 +103,13 @@
     }
   ],
   "users": [
+    {
+      "id": 1781105486895,
+      "name": "hafid",
+      "email": "hafid12@gmail.com",
+      "password": "$2b$12$ELSBQ1T5PSzFLR/VlWqi4OZxoFZGEDTvefpSKPgiy5C9OfmlJdOyS",
+      "role": "admin",
+      "createdAt": "2026-06-10T15:31:26.895Z"
+    }
   ]
 }
