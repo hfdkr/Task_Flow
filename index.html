@@ -655,7 +655,7 @@
                         style="width:32px;height:32px;border-radius:50%;background:var(--brand-dim);border:1px solid rgba(108,143,255,0.3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--brand)">
                         ?</div>
                     <button
-                        onclick="toggleTheme(!document.getElementById('theme-check').checked); document.getElementById('theme-check').checked = !document.getElementById('theme-check').checked"
+                        onclick="const cur=document.documentElement.getAttribute('data-theme');toggleTheme(cur==='light');"
                         title="Toggle theme"
                         style="background:none;border:none;font-size:18px;cursor:pointer;padding:6px;border-radius:8px;color:var(--text-muted);transition:background 0.18s"
                         onmouseover="this.style.background='var(--bg-element)'"
@@ -709,7 +709,7 @@
                 <!-- Theme toggle (mobile) -->
                 <label id="theme-toggle-mobile" style="position:relative;width:42px;height:24px;flex-shrink:0">
                     <input type="checkbox" id="theme-check-mobile"
-                        onchange="toggleTheme(this.checked);document.getElementById('theme-check').checked=this.checked"
+                        onchange="toggleTheme(this.checked)"
                         style="opacity:0;width:0;height:0">
                     <span class="toggle-track" style="position:absolute;inset:0"></span>
                 </label>
@@ -1307,11 +1307,11 @@
                         style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px">Due
                         Date</label>
                     <div style="position:relative">
-                        <input id="modal-due-date" type="date" class="tf-input" style="padding-right:44px">
-                        <span
-                            style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;font-size:15px">📅</span>
+                        <input id="modal-due-date" type="date" class="tf-input">
                     </div>
                 </div>
+                <!-- Inline error -->
+                <p id="modal-error-msg" style="font-size:13px;color:var(--status-danger);background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:10px;padding:9px 14px;margin-bottom:14px;display:none"></p>
                 <!-- Actions -->
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
                     <button onclick="closeTaskModal()"
@@ -1524,7 +1524,7 @@
                             </div>
                             <label style="position:relative;width:48px;height:26px;flex-shrink:0">
                                 <input type="checkbox" id="acct-theme-check"
-                                    onchange="toggleTheme(this.checked);document.getElementById('theme-check').checked=this.checked"
+                                    onchange="toggleTheme(this.checked)"
                                     style="opacity:0;width:0;height:0">
                                 <span class="toggle-track" style="position:absolute;inset:0"></span>
                             </label>

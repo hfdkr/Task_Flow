@@ -72,6 +72,11 @@ function toggleTheme(isDark) {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('tf-theme', theme);
     updateThemeLabel(theme);
+    // Sync all theme checkboxes
+    ['theme-check', 'theme-check-mobile', 'acct-theme-check'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.checked = isDark;
+    });
 }
 
 function updateThemeLabel(theme) {
@@ -504,11 +509,18 @@ function askDeleteConfirmation(id) {
 
 // ─── Task Form ────────────────────────────────────────────────────────────────
 
+function showModalError(msg) {
+    const el = document.getElementById('modal-error-msg');
+    if (!el) return;
+    el.textContent = msg;
+    el.style.display = msg ? 'block' : 'none';
+}
+
 async function handleModalSubmit() {
     const title = (document.getElementById('modal-title-input')?.value || '').trim();
     const member = (document.getElementById('modal-member-select')?.value || '').trim();
-    if (!title || !member) { showError('Please fill in the task title and assign a member'); return; }
-    hideError();
+    if (!title || !member) { showModalError('Please fill in the task title and assign a member.'); return; }
+    showModalError('');
 
     const payload = {
         title,
@@ -592,6 +604,7 @@ function closeTaskModal() {
     const modal = document.getElementById('task-modal');
     if (modal) modal.classList.add('hidden');
     clearForm();
+    showModalError('');
 }
 
 document.addEventListener('click', e => {
@@ -611,8 +624,49 @@ async function changeStatus(id, newStatus) {
 }
 
 
+// ─── Pagination ───────────────────────────────────────────────────────────────
+let currentPage = 1;
+const PAGE_SIZE = 10;
+
+function setPage(page) {
+    currentPage = page;
+    renderTasks();
+}
+
+function renderPagination(total) {
+    const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+    if (currentPage > totalPages) currentPage = totalPages;
+    const pagination = document.querySelector('.pagination');
+    if (!pagination) return;
+
+    const prevBtn = pagination.children[0];
+    const nextBtn = pagination.children[pagination.children.length - 1];
+
+    // Remove existing page number buttons (all except prev/next)
+    while (pagination.children.length > 2) {
+        pagination.removeChild(pagination.children[1]);
+    }
+
+    // Insert page buttons between prev and next
+    for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'page-btn' + (i === currentPage ? ' active' : '');
+        btn.textContent = i;
+        btn.onclick = () => setPage(i);
+        pagination.insertBefore(btn, nextBtn);
+    }
+
+    prevBtn.onclick = () => { if (currentPage > 1) setPage(currentPage - 1); };
+    nextBtn.onclick = () => { if (currentPage < totalPages) setPage(currentPage + 1); };
+    prevBtn.disabled = currentPage <= 1;
+    nextBtn.disabled = currentPage >= totalPages;
+    prevBtn.style.opacity = currentPage <= 1 ? '0.4' : '';
+    nextBtn.style.opacity = currentPage >= totalPages ? '0.4' : '';
+}
+
 // ─── Search + Filter ──────────────────────────────────────────────────────────
-if (searchInput) searchInput.addEventListener('input', () => { searchQuery = searchInput.value.toLowerCase().trim(); renderTasks(); });
+if (searchInput) searchInput.addEventListener('input', () => { searchQuery = searchInput.value.toLowerCase().trim(); currentPage = 1; renderTasks(); });
 
 function setBoardMode(mode) {
     boardMode = mode === 'kanban' ? 'kanban' : 'list';
@@ -624,6 +678,7 @@ function setBoardMode(mode) {
 
 function setFilter(project) {
     activeFilter = project;
+    currentPage = 1;
     document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.classList.toggle('active-filter', btn.dataset.project === project);
     });
@@ -729,16 +784,25 @@ function statusStyle(status) {
 
 function renderTaskTable(tasks, allTasks) {
     if (!taskTableBody) return;
-    if (!tasks.length) {
+    const totalFiltered = tasks.length;
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const pageSlice = tasks.slice(start, start + PAGE_SIZE);
+
+    if (!totalFiltered) {
         taskTableBody.innerHTML = `<tr><td class="empty-row" colspan="7">No tasks match this view.</td></tr>`;
     } else {
-        taskTableBody.innerHTML = tasks.map(createTaskRow).join('');
+        taskTableBody.innerHTML = pageSlice.map(createTaskRow).join('');
     }
+
+    renderPagination(totalFiltered);
 
     if (taskSummary) {
         const projectCount = new Set(allTasks.map(t => t.project).filter(Boolean)).size;
         const totalLabel = `${allTasks.length} total task${allTasks.length === 1 ? '' : 's'}`;
-        taskSummary.textContent = `Showing ${tasks.length} task${tasks.length === 1 ? '' : 's'} of ${totalLabel} across ${projectCount} project${projectCount === 1 ? '' : 's'}`;
+        const end = Math.min(start + PAGE_SIZE, totalFiltered);
+        taskSummary.textContent = totalFiltered
+            ? `Showing ${start + 1}–${end} of ${totalFiltered} task${totalFiltered === 1 ? '' : 's'} across ${projectCount} project${projectCount === 1 ? '' : 's'}`
+            : `Showing 0 tasks of ${totalLabel}`;
     }
 }
 
