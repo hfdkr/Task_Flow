@@ -1,18 +1,6 @@
 {
   "tasks": [
     {
-      "id": 1780515215626,
-      "title": "Window",
-      "member": "Hamza",
-      "project": "Door",
-      "description": "Create",
-      "dueDate": "2026-06-04",
-      "status": "To Do",
-      "priority": "High",
-      "createdAt": "2026-06-03T19:33:35.626Z",
-      "updatedAt": "2026-06-09T21:39:47.326Z"
-    },
-    {
       "id": 1780347390364,
       "title": "add login",
       "member": "hassan",
@@ -37,28 +25,16 @@
       "updatedAt": "2026-06-07T14:41:45.558Z"
     },
     {
-      "id": 1780353224799,
-      "title": "hello",
-      "member": "hafid",
-      "project": "hiii",
-      "description": "hafid hhads",
-      "dueDate": "",
-      "status": "In Progress",
-      "priority": "Low",
-      "createdAt": "2026-06-01T22:33:44.800Z",
-      "updatedAt": "2026-06-10T15:23:42.161Z"
-    },
-    {
       "id": 1780677031004,
       "title": "add icons",
       "member": "Hamza",
       "project": "task flow",
       "description": "",
-      "dueDate": "2026-06-08",
-      "status": "To Do",
+      "dueDate": "2026-06-13",
+      "status": "In Progress",
       "priority": "Low",
       "createdAt": "2026-06-05T16:30:31.004Z",
-      "updatedAt": "2026-06-05T16:30:43.650Z"
+      "updatedAt": "2026-06-11T13:26:51.252Z"
     },
     {
       "id": 1781041245897,
@@ -72,6 +48,294 @@
       "createdBy": 1781041172713,
       "createdAt": "2026-06-09T21:40:45.897Z",
       "updatedAt": "2026-06-10T15:23:43.804Z"
+    },
+    {
+      "title": "Wireframes + maquettes Figma (kanban, dashboard)",
+      "member": "ilyass",
+      "project": "task flow",
+      "description": "UI/UX — Figma · charte graphique · expérience utilisateur",
+      "dueDate": "2026-05-24",
+      "priority": "High",
+      "id": 1781200000000,
+      "status": "Done",
+      "createdAt": "2026-06-11T12:00:00.000Z",
+      "updatedAt": "2026-06-11T12:00:00.000Z"
+    },
+    {
+      "title": "Charte graphique (couleurs, typo, composants)",
+      "member": "ilyass",
+      "project": "task flow",
+      "description": "UI/UX — Figma · charte graphique · expérience utilisateur",
+      "dueDate": "2026-05-24",
+      "priority": "Medium",
+      "id": 1781200000001,
+      "status": "Done",
+      "createdAt": "2026-06-11T12:00:00.000Z",
+      "updatedAt": "2026-06-11T12:00:00.000Z"
+    },
+    {
+      "title": "Prototype cliquable pour les statuts",
+      "member": "ilyass",
+      "project": "task flow",
+      "description": "UI/UX — Figma · charte graphique · expérience utilisateur",
+      "dueDate": "2026-05-24",
+      "priority": "Medium",
+      "id": 1781200000002,
+      "status": "Done",
+      "createdAt": "2026-06-11T12:00:00.000Z",
+      "updatedAt": "2026-06-11T12:00:00.000Z"
+    },
+    {
+      "title": "Maquettes du quiz (accueil, question, score)",
+      "member": "ilyass",
+      "project": "code arena",
+      "description": "UI/UX — Figma · charte graphique · expérience utilisateur",
+      "dueDate": "2026-05-24",
+      "priority": "High",
+      "id": 1781200000003,
+      "status": "Done",
+      "createdAt": "2026-06-11T12:00:00.000Z",
+      "updatedAt": "2026-06-11T12:00:00.000Z"
+    },
+    {
+      "title": "Design des niveaux Facile / Moyen",
+      "member": "ilyass",
+      "project": "code arena",
+      "description": "UI/UX — Figma · charte graphique · expérience utilisateur",
+      "dueDate": "2026-05-24",
+      "priority": "Medium",
+      "id": 1781200000004,
+      "status": "Done",
+      "createdAt": "2026-06-11T12:00:00.000Z",
+      "updatedAt": "2026-06-11T12:00:00.000Z"
+    },
+    {
+      "title": "Cohérence visuelle avec TaskFlow",
+      "member": "ilyass",
+      "project": "code arena",
+      "description": "UI/UX — Figma · charte graphique · expérience utilisateur",
+      "dueDate": "2026-05-24",
+      "priority": "Medium",
+      "id": 1781200000005,
+      "status": "Done",
+      "createdAt": "2026-06-11T12:00:00.000Z",
+      "updatedAt": "2026-06-11T12:00:00.000Z"
+    },
+    {
+      "title": "Intégration des maquettes en HTML/CSS",
+      "member": "Hamza",
+      "project": "task flow",
+      "description": "Front-End (avec hassan) — HTML · CSS · JavaScript",
+      "dueDate": "2026-05-30",
+      "priority": "High",
+      "id": 1781200000006,
+      "status": "Done",
+      "createdAt": "2026-06-11T12:00:00.000Z",
+      "updatedAt": "2026-06-11T12:00:00.000Z"
+    },
+    {
+      "title": "Kanban interactif (drag ou boutons JS)",
+      "member": "Hamza",
+      "project": "task flow",
+      "description": "Front-End (avec hassan) — HTML · CSS · JavaScript",
+      "dueDate": "2026-05-30",
+      "priority": "High",
+      "id": 1781200000007,
+      "status": "Done",
+      "createdAt": "2026-06-11T12:00:00.000Z",
+      "updatedAt": "2026-06-11T12:00:00.000Z"
+    },
+    {
+      "title": "Responsive + dark mode (bonus)",
+      "member": "hassan",
+      "project": "task flow",
+      "description": "Front-End (avec Hamza) — bonus",
+      "dueDate": "2026-05-30",
+      "priority": "Low",
+      "id": 1781200000008,
+      "status": "Done",
+      "createdAt": "2026-06-11T12:00:00.000Z",
+      "updatedAt": "2026-06-11T12:00:00.000Z"
+    },
+    {
+      "title": "Interface du quiz : questions, choix, timer",
+      "member": "Hamza",
+      "project": "code arena",
+      "description": "Front-End (avec hassan) — HTML · CSS · JavaScript",
+      "dueDate": "2026-05-30",
+      "priority": "High",
+      "id": 1781200000009,
+      "status": "Done",
+      "createdAt": "2026-06-11T12:00:00.000Z",
+      "updatedAt": "2026-06-11T12:00:00.000Z"
+    },
+    {
+      "title": "Affichage du score final",
+      "member": "hassan",
+      "project": "code arena",
+      "description": "Front-End (avec Hamza)",
+      "dueDate": "2026-05-30",
+      "priority": "Medium",
+      "id": 1781200000010,
+      "status": "Done",
+      "createdAt": "2026-06-11T12:00:00.000Z",
+      "updatedAt": "2026-06-11T12:00:00.000Z"
+    },
+    {
+      "title": "Classement de session (bonus)",
+      "member": "hassan",
+      "project": "code arena",
+      "description": "Front-End (avec Hamza) — bonus",
+      "dueDate": "2026-05-30",
+      "priority": "Low",
+      "id": 1781200000011,
+      "status": "Done",
+      "createdAt": "2026-06-11T12:00:00.000Z",
+      "updatedAt": "2026-06-11T12:00:00.000Z"
+    },
+    {
+      "title": "Routes Flask : créer, modifier, supprimer tâche",
+      "member": "hafid",
+      "project": "task flow",
+      "description": "Back-End (avec ilyass) — Flask · logique métier · JSON",
+      "dueDate": "2026-06-05",
+      "priority": "High",
+      "id": 1781200000012,
+      "status": "Done",
+      "createdAt": "2026-06-11T12:00:00.000Z",
+      "updatedAt": "2026-06-11T12:00:00.000Z"
+    },
+    {
+      "title": "Gestion des statuts et assignations en JSON",
+      "member": "hafid",
+      "project": "task flow",
+      "description": "Back-End (avec ilyass) — Flask · logique métier · JSON",
+      "dueDate": "2026-06-05",
+      "priority": "High",
+      "id": 1781200000013,
+      "status": "Done",
+      "createdAt": "2026-06-11T12:00:00.000Z",
+      "updatedAt": "2026-06-11T12:00:00.000Z"
+    },
+    {
+      "title": "API pour le front (endpoints)",
+      "member": "hafid",
+      "project": "task flow",
+      "description": "Back-End (avec hafid) — Flask · logique métier · JSON",
+      "dueDate": "2026-06-05",
+      "priority": "High",
+      "id": 1781200000014,
+      "status": "Done",
+      "createdAt": "2026-06-11T12:00:00.000Z",
+      "updatedAt": "2026-06-11T13:20:43.047Z"
+    },
+    {
+      "title": "Banque de questions Python/Algo en JSON",
+      "member": "hafid",
+      "project": "code arena",
+      "description": "Back-End (avec ilyass) — Flask · logique métier · JSON",
+      "dueDate": "2026-06-05",
+      "priority": "High",
+      "id": 1781200000015,
+      "status": "To Do",
+      "createdAt": "2026-06-11T12:00:00.000Z",
+      "updatedAt": "2026-06-11T12:00:00.000Z"
+    },
+    {
+      "title": "Logique de score et niveaux de difficulté",
+      "member": "ilyass",
+      "project": "code arena",
+      "description": "Back-End (avec hafid) — Flask · logique métier · JSON",
+      "dueDate": "2026-06-05",
+      "priority": "Medium",
+      "id": 1781200000016,
+      "status": "To Do",
+      "createdAt": "2026-06-11T12:00:00.000Z",
+      "updatedAt": "2026-06-11T12:00:00.000Z"
+    },
+    {
+      "title": "Timer côté serveur + mode challenge (bonus)",
+      "member": "ilyass",
+      "project": "code arena",
+      "description": "Back-End (avec hafid) — bonus",
+      "dueDate": "2026-06-05",
+      "priority": "Low",
+      "id": 1781200000017,
+      "status": "To Do",
+      "createdAt": "2026-06-11T12:00:00.000Z",
+      "updatedAt": "2026-06-11T12:00:00.000Z"
+    },
+    {
+      "title": "Tests fonctionnels (ajout, statuts, assignation)",
+      "member": "All",
+      "project": "task flow",
+      "description": "Tests &amp; Intégration — équipe entière",
+      "dueDate": "2026-06-15",
+      "priority": "High",
+      "id": 1781200000018,
+      "status": "Done",
+      "createdAt": "2026-06-11T12:00:00.000Z",
+      "updatedAt": "2026-06-11T13:21:19.928Z"
+    },
+    {
+      "title": "Gestion des branches GitHub + merges",
+      "member": "hafid",
+      "project": "task flow",
+      "description": "Tests & Intégration — équipe entière (Member 4 assure les merges et la revue de code)",
+      "dueDate": "2026-06-15",
+      "priority": "High",
+      "id": 1781200000019,
+      "status": "In Progress",
+      "createdAt": "2026-06-11T12:00:00.000Z",
+      "updatedAt": "2026-06-11T13:19:11.034Z"
+    },
+    {
+      "title": "README initial du projet",
+      "member": "hassan",
+      "project": "task flow",
+      "description": "Tests & Intégration — équipe entière",
+      "dueDate": "2026-06-15",
+      "priority": "Medium",
+      "id": 1781200000020,
+      "status": "In Progress",
+      "createdAt": "2026-06-11T12:00:00.000Z",
+      "updatedAt": "2026-06-11T13:19:13.298Z"
+    },
+    {
+      "title": "Tests quiz (timer, score, niveaux)",
+      "member": "ilyass",
+      "project": "code arena",
+      "description": "Tests & Intégration — équipe entière",
+      "dueDate": "2026-06-15",
+      "priority": "High",
+      "id": 1781200000021,
+      "status": "To Do",
+      "createdAt": "2026-06-11T12:00:00.000Z",
+      "updatedAt": "2026-06-11T12:00:00.000Z"
+    },
+    {
+      "title": "Bugfix final + merge main branch",
+      "member": "hafid",
+      "project": "code arena",
+      "description": "Tests & Intégration — équipe entière",
+      "dueDate": "2026-06-15",
+      "priority": "High",
+      "id": 1781200000022,
+      "status": "To Do",
+      "createdAt": "2026-06-11T12:00:00.000Z",
+      "updatedAt": "2026-06-11T12:00:00.000Z"
+    },
+    {
+      "title": "README final + captures d'écran démo",
+      "member": "Hamza",
+      "project": "code arena",
+      "description": "Tests & Intégration — équipe entière",
+      "dueDate": "2026-06-15",
+      "priority": "Medium",
+      "id": 1781200000023,
+      "status": "To Do",
+      "createdAt": "2026-06-11T12:00:00.000Z",
+      "updatedAt": "2026-06-11T12:00:00.000Z"
     }
   ],
   "members": [
@@ -90,6 +354,10 @@
     {
       "id": 1780348156408,
       "name": "ilyass"
+    },
+    {
+      "id": 1781184071228,
+      "name": "All"
     }
   ],
   "projects": [
