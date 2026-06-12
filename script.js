@@ -510,8 +510,7 @@ async function deleteProject(id) {
 // ─── Delete Modal ─────────────────────────────────────────────────────────────
 function askDeleteConfirmation(id) {
     pendingDeleteId = id;
-    showDangerModal('🗑', 'Delete Task?', 'This task will be permanently deleted. This cannot be undone.', async () => {
-        const result = await removeTask(pendingDeleteId);
+    showDangerModal('<i class="fi fi-rr-trash"></i>', 'Delete Task?', 'This task will be permanently deleted. This cannot be undone.', async () => {       const result = await removeTask(pendingDeleteId);
         pendingDeleteId = null;
         if (!result.success) { showError('Failed to delete task'); return; }
         await renderTasks();
@@ -779,7 +778,7 @@ function formatDate(dueDate, status) {
     const overdue = isOverdue(dueDate, status);
     const label = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     const color = overdue ? 'var(--status-danger)' : 'var(--text-muted)';
-    const icon = overdue ? '⚠ ' : '📅 ';
+    const icon = overdue ? '<i class="fi fi-rr-triangle-warning"></i> ' : '<i class="fi fi-rr-calendar-day"></i> ';
     return `<span style="font-size:11px;color:${color}">${icon}${label}${overdue ? ' · Overdue' : ''}</span>`;
 }
 
@@ -885,8 +884,8 @@ function createTaskElement(task) {
         <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
             <span style="${priorityStyle(task.priority)};font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;padding:3px 9px;border-radius:99px;flex-shrink:0">${task.priority}</span>
             <div style="display:flex;gap:4px;margin-left:auto">
-                <button onclick="editTask(${task.id})" title="Edit" style="padding:5px 7px;border:1px solid var(--border-strong);border-radius:7px;cursor:pointer;background:none;color:var(--text-muted);font-size:13px;transition:all 0.18s;line-height:1" onmouseover="this.style.background='var(--bg-hover)';this.style.color='var(--brand)'" onmouseout="this.style.background='none';this.style.color='var(--text-muted)'">✏</button>
-                <button onclick="askDeleteConfirmation(${task.id})" title="Delete" style="padding:5px 7px;border:1px solid var(--border-strong);border-radius:7px;cursor:pointer;background:none;color:var(--text-muted);font-size:13px;transition:all 0.18s;line-height:1" onmouseover="this.style.background='rgba(239,68,68,0.12)';this.style.color='var(--status-danger)'" onmouseout="this.style.background='none';this.style.color='var(--text-muted)'">🗑</button>
+                <button onclick="editTask(${task.id})" title="Edit" style="padding:5px 7px;border:1px solid var(--border-strong);border-radius:7px;cursor:pointer;background:none;color:var(--text-muted);font-size:13px;transition:all 0.18s;line-height:1" onmouseover="this.style.background='var(--bg-hover)';this.style.color='var(--brand)'" onmouseout="this.style.background='none';this.style.color='var(--text-muted)'"><i class="fi fi-rr-pen-clip"></i></button>
+                <button onclick="askDeleteConfirmation(${task.id})" title="Delete" style="padding:5px 7px;border:1px solid var(--border-strong);border-radius:7px;cursor:pointer;background:none;color:var(--text-muted);font-size:13px;transition:all 0.18s;line-height:1" onmouseover="this.style.background='rgba(239,68,68,0.12)';this.style.color='var(--status-danger)'" onmouseout="this.style.background='none';this.style.color='var(--text-muted)'"><i class="fi fi-rr-trash"></i></button>
             </div>
         </div>
         <div>
@@ -905,7 +904,9 @@ function createTaskElement(task) {
 
 function emptyState() {
     return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 0;color:var(--text-muted)">
-        <div style="width:44px;height:44px;border:2px dashed var(--border-strong);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;font-size:18px">·</div>
+        <div class="w-11 h-11 border-2 border-dashed rounded-xl flex items-center justify-center mb-2.5">
+    <i class="fi fi-rr-calendar-minus text-[18px] leading-none"></i>
+</div>
         <p style="font-size:14px">Empty</p>
     </div>`;
 }
