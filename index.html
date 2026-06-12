@@ -426,7 +426,9 @@
                         <input id="signin-password" type="password" placeholder="Your password..." class="tf-input"
                             style="padding-right:44px">
                         <button onclick="togglePwd('signin-password',this)"
-                            style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:16px;line-height:1">👁</button>
+                            style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:16px;line-height:1">
+                            <i class="fi fi-rr-eye"></i>
+                        </button>
                     </div>
                 </div>
                 <p id="signin-error" style="color:var(--status-danger);font-size:12px;margin-bottom:14px;display:none">
@@ -464,7 +466,9 @@
                         <input id="signup-password" type="password" placeholder="Create a password..." class="tf-input"
                             style="padding-right:44px" oninput="updateStrength(this.value)">
                         <button onclick="togglePwd('signup-password',this)"
-                            style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:16px;line-height:1">👁</button>
+                            style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:16px;line-height:1">
+                            <i class="fi fi-rr-eye"></i>
+                        </button>
                     </div>
                     <!-- Password strength bar -->
                     <div style="margin-top:8px;display:flex;gap:4px" id="strength-bars">
@@ -1093,7 +1097,7 @@
                                         <input id="settings-newpwd" type="password" class="tf-input"
                                             placeholder="New password..." style="padding-right:44px">
                                         <button onclick="togglePwd('settings-newpwd',this)"
-                                            style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:15px">👁</button>
+                                            style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:15px"><i class="fi fi-rr-eye"></i></button>
                                     </div>
                                 </div>
                                 <div>
@@ -1105,7 +1109,7 @@
                                         <input id="settings-curpwd" type="password" class="tf-input"
                                             placeholder="Current password..." style="padding-right:44px">
                                         <button onclick="togglePwd('settings-curpwd',this)"
-                                            style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:15px">👁</button>
+                                            style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:15px"><i class="fi fi-rr-eye"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -1464,7 +1468,7 @@
                             <input id="acct-cur-pwd" type="password" class="tf-input"
                                 placeholder="Enter current password..." style="padding-right:44px">
                             <button onclick="togglePwd('acct-cur-pwd',this)"
-                                style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:15px">👁</button>
+                                style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:15px"><i class="fi fi-rr-eye"></i></button>
                         </div>
                     </div>
                     <div style="margin-bottom:8px">
@@ -1476,7 +1480,7 @@
                                 placeholder="New password (min. 6 chars)..." style="padding-right:44px"
                                 oninput="updateStrength(this.value)">
                             <button onclick="togglePwd('acct-new-pwd',this)"
-                                style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:15px">👁</button>
+                                style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:15px"><i class="fi fi-rr-eye"></i></button>
                         </div>
                         <!-- Strength bars -->
                         <div style="margin-top:8px;display:flex;gap:4px" id="strength-bars">

@@ -206,7 +206,9 @@ function togglePwd(inputId, btn) {
     if (!inp) return;
     const isHidden = inp.type === 'password';
     inp.type = isHidden ? 'text' : 'password';
-    btn.textContent = isHidden ? '🙈' : '👁';
+    btn.innerHTML = isHidden
+    ? '<i class="fi fi-rr-eye-crossed"></i>'
+    : '<i class="fi fi-rr-eye"></i>';
 }
 
 // Password strength meter
