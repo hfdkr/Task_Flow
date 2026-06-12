@@ -1317,7 +1317,11 @@ function openAccountModal() {
     const headerName = document.getElementById('acct-header-name');
     if (headerName) headerName.textContent = currentUser.name;
     const headerRole = document.getElementById('acct-header-role');
-    if (headerRole) headerRole.textContent = currentUser.role === 'admin' ? '⭐ Admin' : 'Member';
+    if (headerRole) {
+    headerRole.innerHTML = currentUser.role === 'admin'
+        ? '<span class="flex items-center gap-1.5"><i class="fi fi-br-star" style="color:#FFD700;"></i> Admin</span>'
+        : '<span class="flex items-center gap-1.5"><img class="w-[14px] h-[14px]" src="./assets/Icon (2).png" alt=""> Member</span>';
+}
 
     // Fill profile tab
     const nameEl = document.getElementById('acct-name');
