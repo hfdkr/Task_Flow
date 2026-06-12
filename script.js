@@ -81,15 +81,21 @@ function toggleTheme(isDark) {
 
 function updateThemeLabel(theme) {
     const labelEl = document.querySelector('#sidebar nav ~ div span:first-child');
+
     if (labelEl) {
-        labelEl.innerHTML = theme === 'dark' ? '
-            < span class="theme-label flex items-center gap-2" >
-                <img class="theme-icon h-[12px] w-[12px]" src="./assets/Icon (5).png" alt="Dark Mode"> Dark mode
+        labelEl.innerHTML = theme === 'dark'
+            ? `
+                <span class="theme-label flex items-center gap-2">
+                    <img class="theme-icon h-[12px] w-[12px]" src="./assets/Icon (5).png" alt="Dark Mode">
+                    Dark mode
                 </span>
-        ' : '
-            < span class="theme-label flex items-center gap-2" >
-                <img class="theme-icon h-[12px] w-[12px]" src="./assets/Icon.svg" alt="Light Mode"> Light mode
-                </span>';
+              `
+            : `
+                <span class="theme-label flex items-center gap-2">
+                    <img class="theme-icon h-[12px] w-[12px]" src="./assets/Icon.svg" alt="Light Mode">
+                    Light mode
+                </span>
+              `;
     }
 }
 
