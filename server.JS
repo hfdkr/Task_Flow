@@ -108,11 +108,13 @@ async function bootstrapAdmin() {
 // POST /api/register
 app.post('/api/register', async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, securityQuestion, securityAnswer } = req.body;
 
         if (!name || !name.trim())           return res.status(400).json({ success: false, message: 'Name is required' });
         if (!email || !isValidEmail(email))  return res.status(400).json({ success: false, message: 'Valid email is required' });
         if (!password || password.length < 6) return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
+        if (!securityQuestion)               return res.status(400).json({ success: false, message: 'Security question is required' });
+        if (!securityAnswer || !securityAnswer.trim()) return res.status(400).json({ success: false, message: 'Security answer is required' });
 
         const users = readUsers();
         const emailLower = email.toLowerCase().trim();
@@ -123,12 +125,14 @@ app.post('/api/register', async (req, res) => {
 
         const hash = await bcrypt.hash(password, SALT_ROUNDS);
         const user = {
-            id:        Date.now(),
-            name:      sanitize(name.trim()),
-            email:     emailLower,
-            password:  hash,
-            role:      users.length === 0 ? 'admin' : 'member', // first user is admin
-            createdAt: new Date().toISOString()
+            id:               Date.now(),
+            name:             sanitize(name.trim()),
+            email:            emailLower,
+            password:         hash,
+            securityQuestion: sanitize(securityQuestion.trim()),
+            securityAnswer:   sanitize(securityAnswer.trim().toLowerCase()),
+            role:             users.length === 0 ? 'admin' : 'member', // first user is admin
+            createdAt:        new Date().toISOString()
         };
 
         users.push(user);
@@ -209,6 +213,52 @@ app.get('/api/me', (req, res) => {
         });
     } else {
         res.json({ authenticated: false });
+    }
+});
+
+// ─── Forgot Password ──────────────────────────────────────────────────────────
+
+// POST /api/forgot-password/question — return the security question for an email
+app.post('/api/forgot-password/question', (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) return res.status(400).json({ success: false, message: 'Email is required' });
+        const users = readUsers();
+        const user  = users.find(u => u.email === email.toLowerCase().trim());
+        if (!user) return res.status(404).json({ success: false, message: 'No account found with this email' });
+        if (!user.securityQuestion) return res.status(400).json({ success: false, message: 'This account has no security question set' });
+        res.json({ success: true, question: user.securityQuestion });
+    } catch (err) {
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+});
+
+// POST /api/forgot-password/verify — verify answer and reset password
+app.post('/api/forgot-password/verify', async (req, res) => {
+    try {
+        const { email, securityAnswer, newPassword } = req.body;
+        if (!email || !securityAnswer || !newPassword) {
+            return res.status(400).json({ success: false, message: 'All fields are required' });
+        }
+        if (newPassword.length < 6) {
+            return res.status(400).json({ success: false, message: 'New password must be at least 6 characters' });
+        }
+        const users = readUsers();
+        const idx   = users.findIndex(u => u.email === email.toLowerCase().trim());
+        if (idx === -1) return res.status(404).json({ success: false, message: 'Account not found' });
+
+        const stored = (users[idx].securityAnswer || '').toLowerCase().trim();
+        const given  = securityAnswer.toLowerCase().trim();
+        if (stored !== given) {
+            return res.status(401).json({ success: false, message: 'Incorrect answer — please try again' });
+        }
+
+        users[idx].password = await bcrypt.hash(newPassword, SALT_ROUNDS);
+        writeUsers(users);
+        res.json({ success: true, message: 'Password reset successfully' });
+    } catch (err) {
+        console.error('forgot-password/verify error:', err);
+        res.status(500).json({ success: false, message: 'Server error' });
     }
 });
 
