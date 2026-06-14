@@ -391,11 +391,11 @@
       "id": 1781195855241,
       "name": "hassan",
       "email": "hassan@gmail.com",
-      "password": "$2b$12$ghmma1QULN.CQMIWx/8gau0PrpOyCjtCzynSkI0RLLkoP.UyNJFC2",
+      "password": "$2b$12$0aCgluKr1qLbL3Pnxkd.lO7QfsjtY2UIJY1cpvR3o.LqchGnLs25y",
       "securityQuestion": "What city were you born in?",
       "securityAnswer": "$2b$12$/H/PO5qN5ePU0iHzi4qqlODAagB.Ov/Qb55F7rbjwEpXQPP8/.TWC",
       "role": "member",
       "createdAt": "2026-06-11T16:37:35.241Z"
-    },
+    }
   ]
 }
