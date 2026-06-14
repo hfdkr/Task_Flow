@@ -1260,7 +1260,6 @@ async function init() {
 
 // ─── Admin Settings ───────────────────────────────────────────────────────────
 function openSettingsView() {
-    switchView('settings');
     if (currentUser?.role === 'admin') {
         document.getElementById('settings-locked').style.display = 'none';
         document.getElementById('settings-content').style.display = 'block';
