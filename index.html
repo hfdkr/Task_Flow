@@ -243,8 +243,10 @@
         #theme-toggle input { opacity: 0; width: 0; height: 0; }
         .toggle-track { position: absolute; inset: 0; border-radius: 99px; background: var(--border-strong); transition: background 0.25s; cursor: pointer; }
         .toggle-track::after { content: ''; position: absolute; left: 3px; top: 3px; width: 20px; height: 20px; border-radius: 50%; background: var(--text-muted); transition: all 0.25s; }
-        #theme-toggle input:checked + .toggle-track { background: var(--brand); }
-        #theme-toggle input:checked + .toggle-track::after { transform: translateX(22px); background: white; }
+        input:checked + .toggle-track { background: var(--brand); }
+        input:checked + .toggle-track::after { transform: translateX(22px); background: white; }
+        /* Mobile theme toggle is narrower (42px) so the knob travels less */
+        #theme-toggle-mobile input:checked + .toggle-track::after { transform: translateX(18px); }
 
         #mobile-nav { display: none; }
 

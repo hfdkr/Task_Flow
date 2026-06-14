@@ -372,6 +372,8 @@
       "name": "hafid",
       "email": "hafid12@gmail.com",
       "password": "$2b$12$ELSBQ1T5PSzFLR/VlWqi4OZxoFZGEDTvefpSKPgiy5C9OfmlJdOyS",
+      "securityQuestion": "What city were you born in?",
+      "securityAnswer": "$2b$12$rm8stWdP0ksY7IOfCuGy7OwQ1OLcPphp26zsESvxBvilNuY.84ECm",
       "role": "admin",
       "createdAt": "2026-06-10T15:31:26.895Z"
     },
@@ -380,6 +382,8 @@
       "name": "Hamza",
       "email": "barihamza73@gmail.com",
       "password": "$2b$12$ZUtaMof2ap281CwDhgwliuq6JX8.bskqve4m6gOtbBD1j70mX1Fl2",
+      "securityQuestion": "What city were you born in?",
+      "securityAnswer": "$2b$12$AUWidglY0V6/aSUVYXhskeCSxY/p7idhtlWqwlNsffTUT9XTM1dWC",
       "role": "member",
       "createdAt": "2026-06-11T15:01:08.182Z"
     },
@@ -387,9 +391,11 @@
       "id": 1781195855241,
       "name": "hassan",
       "email": "hassan@gmail.com",
-      "password": "$2b$12$0aCgluKr1qLbL3Pnxkd.lO7QfsjtY2UIJY1cpvR3o.LqchGnLs25y",
+      "password": "$2b$12$ghmma1QULN.CQMIWx/8gau0PrpOyCjtCzynSkI0RLLkoP.UyNJFC2",
+      "securityQuestion": "What city were you born in?",
+      "securityAnswer": "$2b$12$/H/PO5qN5ePU0iHzi4qqlODAagB.Ov/Qb55F7rbjwEpXQPP8/.TWC",
       "role": "member",
       "createdAt": "2026-06-11T16:37:35.241Z"
-    }
+    },
   ]
 }
