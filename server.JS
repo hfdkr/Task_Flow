@@ -108,11 +108,13 @@ async function bootstrapAdmin() {
 // POST /api/register
 app.post('/api/register', async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, securityQuestion, securityAnswer } = req.body;
 
         if (!name || !name.trim())           return res.status(400).json({ success: false, message: 'Name is required' });
         if (!email || !isValidEmail(email))  return res.status(400).json({ success: false, message: 'Valid email is required' });
         if (!password || password.length < 6) return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
+        if (!securityQuestion || !securityQuestion.trim()) return res.status(400).json({ success: false, message: 'Please choose a security question' });
+        if (!securityAnswer || !securityAnswer.trim())     return res.status(400).json({ success: false, message: 'Please answer your security question' });
 
         const users = readUsers();
         const emailLower = email.toLowerCase().trim();
@@ -121,14 +123,17 @@ app.post('/api/register', async (req, res) => {
             return res.status(409).json({ success: false, message: 'An account with this email already exists' });
         }
 
-        const hash = await bcrypt.hash(password, SALT_ROUNDS);
+        const hash       = await bcrypt.hash(password, SALT_ROUNDS);
+        const answerHash = await bcrypt.hash(securityAnswer.trim().toLowerCase(), SALT_ROUNDS);
         const user = {
-            id:        Date.now(),
-            name:      sanitize(name.trim()),
-            email:     emailLower,
-            password:  hash,
-            role:      users.length === 0 ? 'admin' : 'member', // first user is admin
-            createdAt: new Date().toISOString()
+            id:               Date.now(),
+            name:             sanitize(name.trim()),
+            email:            emailLower,
+            password:         hash,
+            securityQuestion: sanitize(securityQuestion.trim()),
+            securityAnswer:   answerHash,
+            role:             users.length === 0 ? 'admin' : 'member', // first user is admin
+            createdAt:        new Date().toISOString()
         };
 
         users.push(user);
@@ -209,6 +214,105 @@ app.get('/api/me', (req, res) => {
         });
     } else {
         res.json({ authenticated: false });
+    }
+});
+
+// ─── Forgot Password ─────────────────────────────────────────────────────────
+// In-memory store for reset tokens: token -> { userId, expires }
+const resetTokens = new Map();
+const RESET_TOKEN_TTL = 10 * 60 * 1000; // 10 minutes
+
+// GET /api/forgot-password/question?email=...
+app.get('/api/forgot-password/question', (req, res) => {
+    try {
+        const email = (req.query.email || '').toString().toLowerCase().trim();
+        if (!email || !isValidEmail(email)) {
+            return res.status(400).json({ success: false, message: 'Please enter a valid email address.' });
+        }
+
+        const users = readUsers();
+        const user  = users.find(u => u.email === email);
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'No account found with that email.' });
+        }
+
+        if (!user.securityQuestion || !user.securityAnswer) {
+            return res.status(404).json({ success: false, message: 'No security question is set up for this account. Please contact an admin.' });
+        }
+
+        res.json({ success: true, question: user.securityQuestion });
+    } catch (err) {
+        console.error('Forgot-password question error:', err);
+        res.status(500).json({ success: false, message: 'Something went wrong. Please try again.' });
+    }
+});
+
+// POST /api/forgot-password/verify
+app.post('/api/forgot-password/verify', async (req, res) => {
+    try {
+        const email  = (req.body.email || '').toString().toLowerCase().trim();
+        const answer = (req.body.answer || '').toString().trim().toLowerCase();
+
+        if (!email || !answer) {
+            return res.status(400).json({ success: false, message: 'Email and answer are required.' });
+        }
+
+        const users = readUsers();
+        const user  = users.find(u => u.email === email);
+
+        if (!user || !user.securityAnswer) {
+            return res.status(404).json({ success: false, message: 'No account found with that email.' });
+        }
+
+        const match = await bcrypt.compare(answer, user.securityAnswer);
+        if (!match) {
+            return res.status(401).json({ success: false, message: 'Incorrect answer. Please try again.' });
+        }
+
+        // Issue a short-lived reset token
+        const token = require('crypto').randomBytes(32).toString('hex');
+        resetTokens.set(token, { userId: user.id, expires: Date.now() + RESET_TOKEN_TTL });
+
+        res.json({ success: true, token });
+    } catch (err) {
+        console.error('Forgot-password verify error:', err);
+        res.status(500).json({ success: false, message: 'Something went wrong. Please try again.' });
+    }
+});
+
+// POST /api/forgot-password/reset
+app.post('/api/forgot-password/reset', async (req, res) => {
+    try {
+        const { token, newPassword } = req.body;
+
+        if (!token || !newPassword) {
+            return res.status(400).json({ success: false, message: 'Missing token or new password.' });
+        }
+        if (newPassword.length < 6) {
+            return res.status(400).json({ success: false, message: 'Password must be at least 6 characters.' });
+        }
+
+        const entry = resetTokens.get(token);
+        if (!entry || entry.expires < Date.now()) {
+            resetTokens.delete(token);
+            return res.status(400).json({ success: false, message: 'This reset link has expired. Please start over.' });
+        }
+
+        const users = readUsers();
+        const idx   = users.findIndex(u => u.id === entry.userId);
+        if (idx === -1) {
+            return res.status(404).json({ success: false, message: 'Account not found.' });
+        }
+
+        users[idx].password = await bcrypt.hash(newPassword, SALT_ROUNDS);
+        writeUsers(users);
+
+        resetTokens.delete(token);
+        res.json({ success: true });
+    } catch (err) {
+        console.error('Forgot-password reset error:', err);
+        res.status(500).json({ success: false, message: 'Something went wrong. Please try again.' });
     }
 });
 
