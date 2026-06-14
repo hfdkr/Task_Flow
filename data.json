@@ -263,6 +263,16 @@
       "securityAnswer": "$2b$12$/H/PO5qN5ePU0iHzi4qqlODAagB.Ov/Qb55F7rbjwEpXQPP8/.TWC",
       "role": "admin",
       "createdAt": "2026-06-11T16:37:35.241Z"
+    },
+    {
+      "id": 1781466772989,
+      "name": "ilyass",
+      "email": "ilyas12@gmail.com",
+      "password": "$2b$12$46od9HMX/cdeYfY3YtCcRuGkaqf2e0zvsYUDU15zBpmKsUPDWsObK",
+      "securityQuestion": "What is your favorite color?",
+      "securityAnswer": "$2b$12$B1w/hVu7kW17eDjIBP080e7qMm0He3E2asarNNC4qOKeNhW/sanpm",
+      "role": "admin",
+      "createdAt": "2026-06-14T19:52:52.989Z"
     }
   ]
 }
