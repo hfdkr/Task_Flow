@@ -518,7 +518,7 @@ async function renderMembersPanel() {
                 <div>
                     <div style="font-size:14px;font-weight:600;color:var(--text-main)">${m.name}</div>
                     <div style="font-size:12px;color:var(--text-muted);margin-top:1px">
-                        ${memberIsAdmin ? `<span style="color:var(--brand);font-weight:600">⭐ Admin</span>` : `Member`}
+                        ${memberIsAdmin ? `<span class="flex items-center gap-1" style="color:var(--brand);font-weight:600"><img class="w-[14px] h-[14px]" src="./assets/Icon (2).png" alt="Admin"> Admin</span>` : `Member`}
                     </div>
                 </div>
             </div>
@@ -1316,7 +1316,7 @@ function openAccountModal() {
     const headerName = document.getElementById('acct-header-name');
     if (headerName) headerName.textContent = currentUser.name;
     const headerRole = document.getElementById('acct-header-role');
-    if (headerRole) headerRole.textContent = isAdmin() ? '⭐ Admin' : 'Member';
+    if (headerRole) headerRole.innerHTML = isAdmin() ? '<span class="flex items-center gap-1 w-[14px] h-[14px]"><img src="./assets/Icon (2).png" alt="Admin"> Admin</span>' : 'Member';
     const nameEl  = document.getElementById('acct-name');
     const emailEl = document.getElementById('acct-email');
     if (nameEl)  nameEl.value  = currentUser.name  || '';
