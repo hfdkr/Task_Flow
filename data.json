@@ -231,14 +231,14 @@
     {
       "id": 1781400000002,
       "title": "Quiz-Taking Flow",
-      "member": "hassan",
+      "member": "hafid",
       "project": "code arena",
       "description": "Category/difficulty selection, question screen with timer, score submission",
       "dueDate": "2026-06-17",
       "status": "Done",
       "priority": "High",
       "createdAt": "2026-06-16T00:00:00.000Z",
-      "updatedAt": "2026-06-17T00:00:00.000Z"
+      "updatedAt": "2026-06-18T00:00:00.000Z"
     },
     {
       "id": 1781400000003,
@@ -390,11 +390,11 @@
       "member": "ilyass",
       "project": "code arena",
       "description": "Register/Login/Logout, JWT issuing, auth/admin middleware",
-      "dueDate": "2026-06-25",
+      "dueDate": "2026-06-18",
       "status": "To Do",
       "priority": "High",
       "createdAt": "2026-06-16T00:00:00.000Z",
-      "updatedAt": "2026-06-16T00:00:00.000Z"
+      "updatedAt": "2026-06-18T00:00:00.000Z"
     },
     {
       "id": 1781400000016,
@@ -402,11 +402,11 @@
       "member": "ilyass",
       "project": "code arena",
       "description": "Security question verify and reset-token password flow",
-      "dueDate": "2026-06-25",
+      "dueDate": "2026-06-18",
       "status": "Done",
       "priority": "Medium",
       "createdAt": "2026-06-16T00:00:00.000Z",
-      "updatedAt": "2026-06-17T00:00:00.000Z"
+      "updatedAt": "2026-06-18T00:00:00.000Z"
     },
     {
       "id": 1781400000017,
@@ -414,11 +414,11 @@
       "member": "hafid",
       "project": "code arena",
       "description": "Update profile and change password endpoints",
-      "dueDate": "2026-06-26",
+      "dueDate": "2026-06-19",
       "status": "To Do",
       "priority": "Medium",
-      "createdAt": "2026-06-16T00:00:00.000Z",
-      "updatedAt": "2026-06-16T00:00:00.000Z"
+      "createdAt": "2026-06-17T00:00:00.000Z",
+      "updatedAt": "2026-06-18T00:00:00.000Z"
     },
     {
       "id": 1781400000018,
@@ -426,11 +426,11 @@
       "member": "hafid",
       "project": "code arena",
       "description": "Session tracking, online-status calc, heartbeat endpoint",
-      "dueDate": "2026-06-26",
+      "dueDate": "2026-06-19",
       "status": "In Progress",
       "priority": "Low",
-      "createdAt": "2026-06-16T00:00:00.000Z",
-      "updatedAt": "2026-06-17T00:00:00.000Z"
+      "createdAt": "2026-06-17T00:00:00.000Z",
+      "updatedAt": "2026-06-18T00:00:00.000Z"
     },
     {
       "id": 1781400000019,
@@ -438,11 +438,11 @@
       "member": "hafid",
       "project": "code arena",
       "description": "Full CRUD with admin protection and filters",
-      "dueDate": "2026-06-27",
+      "dueDate": "2026-06-20",
       "status": "To Do",
       "priority": "High",
-      "createdAt": "2026-06-16T00:00:00.000Z",
-      "updatedAt": "2026-06-16T00:00:00.000Z"
+      "createdAt": "2026-06-18T00:00:00.000Z",
+      "updatedAt": "2026-06-18T00:00:00.000Z"
     },
     {
       "id": 1781400000020,
@@ -450,11 +450,11 @@
       "member": "hafid",
       "project": "code arena",
       "description": "Randomized question selection, settings-driven count/time, scoring",
-      "dueDate": "2026-06-28",
+      "dueDate": "2026-06-21",
       "status": "To Do",
       "priority": "High",
-      "createdAt": "2026-06-16T00:00:00.000Z",
-      "updatedAt": "2026-06-16T00:00:00.000Z"
+      "createdAt": "2026-06-19T00:00:00.000Z",
+      "updatedAt": "2026-06-18T00:00:00.000Z"
     },
     {
       "id": 1781400000021,
@@ -462,11 +462,11 @@
       "member": "hafid",
       "project": "code arena",
       "description": "Submit score, sorted leaderboard, admin delete single/all",
-      "dueDate": "2026-06-28",
+      "dueDate": "2026-06-21",
       "status": "To Do",
       "priority": "Medium",
-      "createdAt": "2026-06-16T00:00:00.000Z",
-      "updatedAt": "2026-06-16T00:00:00.000Z"
+      "createdAt": "2026-06-19T00:00:00.000Z",
+      "updatedAt": "2026-06-18T00:00:00.000Z"
     },
     {
       "id": 1781400000022,
@@ -474,11 +474,11 @@
       "member": "ilyass",
       "project": "code arena",
       "description": "List users with online flag, role change, delete, settings",
-      "dueDate": "2026-06-29",
+      "dueDate": "2026-06-22",
       "status": "To Do",
       "priority": "Medium",
-      "createdAt": "2026-06-16T00:00:00.000Z",
-      "updatedAt": "2026-06-16T00:00:00.000Z"
+      "createdAt": "2026-06-20T00:00:00.000Z",
+      "updatedAt": "2026-06-18T00:00:00.000Z"
     },
     {
       "id": 1781400000023,
@@ -486,11 +486,11 @@
       "member": "ilyass",
       "project": "code arena",
       "description": "Aggregate totals, averages, category stats, 7-day activity",
-      "dueDate": "2026-06-29",
+      "dueDate": "2026-06-22",
       "status": "To Do",
       "priority": "Medium",
-      "createdAt": "2026-06-16T00:00:00.000Z",
-      "updatedAt": "2026-06-16T00:00:00.000Z"
+      "createdAt": "2026-06-20T00:00:00.000Z",
+      "updatedAt": "2026-06-18T00:00:00.000Z"
     },
     {
       "id": 1781400000024,
@@ -498,11 +498,11 @@
       "member": "hafid",
       "project": "code arena",
       "description": "Centralize read/write, guard race conditions, validate schema, .env secret",
-      "dueDate": "2026-06-30",
+      "dueDate": "2026-06-24",
       "status": "To Do",
       "priority": "High",
-      "createdAt": "2026-06-16T00:00:00.000Z",
-      "updatedAt": "2026-06-16T00:00:00.000Z"
+      "createdAt": "2026-06-22T00:00:00.000Z",
+      "updatedAt": "2026-06-18T00:00:00.000Z"
     }
   ],
   "members": [
