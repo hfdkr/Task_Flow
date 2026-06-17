@@ -211,10 +211,10 @@
       "project": "code arena",
       "description": "Build Register, Login, and Forgot-Password screens wired to the auth API",
       "dueDate": "2026-06-16",
-      "status": "To Do",
+      "status": "Done",
       "priority": "High",
       "createdAt": "2026-06-16T00:00:00.000Z",
-      "updatedAt": "2026-06-16T00:00:00.000Z"
+      "updatedAt": "2026-06-17T00:00:00.000Z"
     },
     {
       "id": 1781400000001,
@@ -235,10 +235,10 @@
       "project": "code arena",
       "description": "Category/difficulty selection, question screen with timer, score submission",
       "dueDate": "2026-06-17",
-      "status": "To Do",
+      "status": "Done",
       "priority": "High",
       "createdAt": "2026-06-16T00:00:00.000Z",
-      "updatedAt": "2026-06-16T00:00:00.000Z"
+      "updatedAt": "2026-06-17T00:00:00.000Z"
     },
     {
       "id": 1781400000003,
@@ -259,10 +259,10 @@
       "project": "code arena",
       "description": "JWT storage, auth header, auto-redirect on 401, heartbeat polling",
       "dueDate": "2026-06-18",
-      "status": "To Do",
+      "status": "Done",
       "priority": "Medium",
       "createdAt": "2026-06-16T00:00:00.000Z",
-      "updatedAt": "2026-06-16T00:00:00.000Z"
+      "updatedAt": "2026-06-17T00:00:00.000Z"
     },
     {
       "id": 1781400000005,
@@ -403,10 +403,10 @@
       "project": "code arena",
       "description": "Security question verify and reset-token password flow",
       "dueDate": "2026-06-25",
-      "status": "To Do",
+      "status": "Done",
       "priority": "Medium",
       "createdAt": "2026-06-16T00:00:00.000Z",
-      "updatedAt": "2026-06-16T00:00:00.000Z"
+      "updatedAt": "2026-06-17T00:00:00.000Z"
     },
     {
       "id": 1781400000017,
@@ -427,10 +427,10 @@
       "project": "code arena",
       "description": "Session tracking, online-status calc, heartbeat endpoint",
       "dueDate": "2026-06-26",
-      "status": "To Do",
+      "status": "In Progress",
       "priority": "Low",
       "createdAt": "2026-06-16T00:00:00.000Z",
-      "updatedAt": "2026-06-16T00:00:00.000Z"
+      "updatedAt": "2026-06-17T00:00:00.000Z"
     },
     {
       "id": 1781400000019,
