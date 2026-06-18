@@ -1,8 +1,8 @@
-#  Task Flow
+# Task Flow
 
 A modern full-stack task management application designed to help teams organize, track, and manage tasks efficiently through an interactive Kanban board and analytics dashboard.
 
-##  Features
+## Features
 
 * 🔐 Secure Authentication System
 * 📋 Kanban Board (To Do, In Progress, Done)
@@ -18,12 +18,12 @@ A modern full-stack task management application designed to help teams organize,
 * ⚡ Real-Time Task Updates
 
 ---
- 
-##  Screenshots
+
+## Screenshots
 
 ### Dashboard
 
-Add your dashboard screenshot here
+![alt text](assets/image.png)
 
 ```md
 ![Dashboard](assets/dashboard.png)
@@ -34,6 +34,15 @@ Add your dashboard screenshot here
 ```md
 ![Kanban](assets/kanban.png)
 ```
+
+---
+
+## Tech Stack
+
+* **Backend:** Node.js, Express
+* **Frontend:** HTML, CSS, JavaScript (Vanilla)
+* **Authentication:** express-session, bcrypt
+* **Data Storage:** JSON file (`data.json`)
 
 ---
 
@@ -54,8 +63,7 @@ Task_Flow/
 
 ---
 
-
-##  Installation
+## Installation
 
 ### Clone the repository
 
@@ -84,7 +92,7 @@ http://localhost:3000
 
 ---
 
-##  Main Functionalities
+## Main Functionalities
 
 ### Task Management
 
@@ -112,8 +120,7 @@ http://localhost:3000
 
 ---
 
-
-##  Security
+## Security
 
 * Session-based Authentication
 * Protected API Routes
@@ -121,7 +128,7 @@ http://localhost:3000
 
 ---
 
-##  Future Improvements
+## Future Improvements
 
 * MySQL Database Integration
 * User Roles & Permissions
@@ -132,7 +139,7 @@ http://localhost:3000
 
 ---
 
-##  Authors
+## Authors
 
 **Hafid kr**
 
@@ -149,11 +156,11 @@ http://localhost:3000
 **Ilyas Assfar**
 
 * GitHub: https://github.com/assfar35-stack
-  
+
 ---
 
-##  Support
+## Support
 
 If you like this project, consider giving it a star on GitHub.
 
- Star the repository to support future development.
+⭐ Star the repository to support future development.
