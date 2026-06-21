@@ -535,10 +535,10 @@
       "project": "code arena",
       "description": "Presence/heartbeat routes and categories CRUD with admin protection",
       "dueDate": "2026-06-19",
-      "status": "In Progress",
+      "status": "Done",
       "priority": "Medium",
       "createdAt": "2026-06-18T00:00:00.000Z",
-      "updatedAt": "2026-06-19T00:00:00.000Z"
+      "updatedAt": "2026-06-21T12:00:21.157Z"
     },
     {
       "id": 1781500000028,
@@ -547,10 +547,10 @@
       "project": "code arena",
       "description": "Questions CRUD and randomized quiz generation endpoint",
       "dueDate": "2026-06-20",
-      "status": "In Progress",
+      "status": "Done",
       "priority": "High",
       "createdAt": "2026-06-19T00:00:00.000Z",
-      "updatedAt": "2026-06-20T00:00:00.000Z"
+      "updatedAt": "2026-06-21T12:00:19.622Z"
     },
     {
       "id": 1781500000029,
@@ -559,10 +559,10 @@
       "project": "code arena",
       "description": "Lessons CRUD routes with admin protection",
       "dueDate": "2026-06-21",
-      "status": "To Do",
+      "status": "Done",
       "priority": "Medium",
       "createdAt": "2026-06-20T00:00:00.000Z",
-      "updatedAt": "2026-06-21T00:00:00.000Z"
+      "updatedAt": "2026-06-21T12:00:29.665Z"
     },
     {
       "id": 1781500000030,
@@ -571,10 +571,10 @@
       "project": "code arena",
       "description": "Score submit, list, delete, and app settings routes",
       "dueDate": "2026-06-22",
-      "status": "To Do",
+      "status": "Done",
       "priority": "Medium",
       "createdAt": "2026-06-21T00:00:00.000Z",
-      "updatedAt": "2026-06-22T00:00:00.000Z"
+      "updatedAt": "2026-06-21T12:00:31.154Z"
     },
     {
       "id": 1781500000031,
@@ -583,10 +583,10 @@
       "project": "code arena",
       "description": "Admin user management, stats endpoint, and end-to-end API testing",
       "dueDate": "2026-06-22",
-      "status": "To Do",
+      "status": "Done",
       "priority": "High",
       "createdAt": "2026-06-22T00:00:00.000Z",
-      "updatedAt": "2026-06-22T00:00:00.000Z"
+      "updatedAt": "2026-06-21T12:00:32.643Z"
     }
   ],
   "members": [
