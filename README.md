@@ -25,10 +25,6 @@ A modern full-stack task management application designed to help teams organize,
 
 ![alt text](assets/image.png)
 
-```md
-![Dashboard](assets/dashboard.png)
-```
-
 ### Kanban Board
 
 ```md

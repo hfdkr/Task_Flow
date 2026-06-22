@@ -199,10 +199,10 @@
       "project": "task flow",
       "description": "Task updates, localization, cleanup, and documentation",
       "dueDate": "2026-06-14",
-      "status": "In Progress",
+      "status": "Done",
       "priority": "Medium",
       "createdAt": "2026-06-14T12:00:00.000Z",
-      "updatedAt": "2026-06-15T13:32:54.358Z"
+      "updatedAt": "2026-06-22T09:58:10.851Z"
     },
     {
       "id": 1781500000000,
@@ -271,10 +271,10 @@
       "project": "code arena",
       "description": "Build admin panel tabs: Questions, Lessons, Categories, Users, Scores, Settings",
       "dueDate": "2026-06-21",
-      "status": "In Progress",
+      "status": "Done",
       "priority": "High",
       "createdAt": "2026-06-20T00:00:00.000Z",
-      "updatedAt": "2026-06-21T00:00:00.000Z"
+      "updatedAt": "2026-06-22T09:58:11.838Z"
     },
     {
       "id": 1781500000006,
@@ -283,10 +283,10 @@
       "project": "code arena",
       "description": "Build shared modals for question, lesson, category, and confirm actions",
       "dueDate": "2026-06-22",
-      "status": "In Progress",
+      "status": "Done",
       "priority": "Medium",
       "createdAt": "2026-06-21T00:00:00.000Z",
-      "updatedAt": "2026-06-22T00:00:00.000Z"
+      "updatedAt": "2026-06-22T09:58:12.900Z"
     },
     {
       "id": 1781500000007,
@@ -295,10 +295,10 @@
       "project": "code arena",
       "description": "Accessibility labels, icon cleanup, and French copy review",
       "dueDate": "2026-06-22",
-      "status": "To Do",
+      "status": "Done",
       "priority": "Low",
       "createdAt": "2026-06-22T00:00:00.000Z",
-      "updatedAt": "2026-06-22T00:00:00.000Z"
+      "updatedAt": "2026-06-22T09:58:16.613Z"
     },
     {
       "id": 1781500000008,
@@ -355,10 +355,10 @@
       "project": "code arena",
       "description": "Style lessons and lesson detail including markdown content rendering",
       "dueDate": "2026-06-20",
-      "status": "In Progress",
+      "status": "Done",
       "priority": "Medium",
       "createdAt": "2026-06-19T00:00:00.000Z",
-      "updatedAt": "2026-06-20T00:00:00.000Z"
+      "updatedAt": "2026-06-22T09:58:13.955Z"
     },
     {
       "id": 1781500000013,
@@ -367,10 +367,10 @@
       "project": "code arena",
       "description": "Style leaderboard table and admin panel tables and forms",
       "dueDate": "2026-06-21",
-      "status": "In Progress",
+      "status": "Done",
       "priority": "Medium",
       "createdAt": "2026-06-20T00:00:00.000Z",
-      "updatedAt": "2026-06-21T00:00:00.000Z"
+      "updatedAt": "2026-06-22T09:58:14.942Z"
     },
     {
       "id": 1781500000014,
@@ -379,10 +379,10 @@
       "project": "code arena",
       "description": "Style all modals and buttons: primary, secondary, danger, and ghost",
       "dueDate": "2026-06-22",
-      "status": "To Do",
+      "status": "Done",
       "priority": "Medium",
       "createdAt": "2026-06-21T00:00:00.000Z",
-      "updatedAt": "2026-06-22T00:00:00.000Z"
+      "updatedAt": "2026-06-22T09:58:18.098Z"
     },
     {
       "id": 1781500000015,
@@ -391,10 +391,10 @@
       "project": "code arena",
       "description": "Cross-browser polish pass and dark theme contrast check",
       "dueDate": "2026-06-22",
-      "status": "To Do",
+      "status": "Done",
       "priority": "Low",
       "createdAt": "2026-06-22T00:00:00.000Z",
-      "updatedAt": "2026-06-22T00:00:00.000Z"
+      "updatedAt": "2026-06-22T09:58:19.519Z"
     },
     {
       "id": 1781500000016,
@@ -439,10 +439,10 @@
       "project": "code arena",
       "description": "Fetch quiz, timer, scoring, and score submission",
       "dueDate": "2026-06-19",
-      "status": "In Progress",
+      "status": "Done",
       "priority": "High",
       "createdAt": "2026-06-18T00:00:00.000Z",
-      "updatedAt": "2026-06-19T00:00:00.000Z"
+      "updatedAt": "2026-06-21T14:05:11.150Z"
     },
     {
       "id": 1781500000020,
@@ -451,10 +451,10 @@
       "project": "code arena",
       "description": "Markdown parsing for lessons and lesson navigation",
       "dueDate": "2026-06-20",
-      "status": "In Progress",
+      "status": "Done",
       "priority": "Medium",
       "createdAt": "2026-06-19T00:00:00.000Z",
-      "updatedAt": "2026-06-20T00:00:00.000Z"
+      "updatedAt": "2026-06-21T14:05:18.600Z"
     },
     {
       "id": 1781500000021,
@@ -463,10 +463,10 @@
       "project": "code arena",
       "description": "Leaderboard rendering and filter controls",
       "dueDate": "2026-06-21",
-      "status": "To Do",
+      "status": "Done",
       "priority": "Medium",
       "createdAt": "2026-06-20T00:00:00.000Z",
-      "updatedAt": "2026-06-21T00:00:00.000Z"
+      "updatedAt": "2026-06-21T14:05:36.050Z"
     },
     {
       "id": 1781500000022,
@@ -475,10 +475,10 @@
       "project": "code arena",
       "description": "Admin panel logic: CRUD for questions, lessons, and categories",
       "dueDate": "2026-06-22",
-      "status": "To Do",
+      "status": "Done",
       "priority": "High",
       "createdAt": "2026-06-21T00:00:00.000Z",
-      "updatedAt": "2026-06-22T00:00:00.000Z"
+      "updatedAt": "2026-06-21T14:05:43.196Z"
     },
     {
       "id": 1781500000023,
@@ -487,10 +487,10 @@
       "project": "code arena",
       "description": "Admin user/score management, settings save, profile and password update",
       "dueDate": "2026-06-22",
-      "status": "To Do",
+      "status": "Done",
       "priority": "High",
       "createdAt": "2026-06-22T00:00:00.000Z",
-      "updatedAt": "2026-06-22T00:00:00.000Z"
+      "updatedAt": "2026-06-21T14:05:47.913Z"
     },
     {
       "id": 1781500000024,
