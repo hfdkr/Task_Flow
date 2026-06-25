@@ -1236,7 +1236,7 @@ async function changeUserRole(userId, newRole) {
 }
 
 async function adminDeleteUser(userId) {
-    showDangerModal('🗑', 'Delete User?', 'This will permanently remove their account. Tasks they created will remain.', async () => {
+    showDangerModal('<i class="fi fi-rr-trash"></i>', 'Delete User?', 'This will permanently remove their account. Tasks they created will remain.', async () => {
         const res = await apiFetch(`${API}/admin/users/${userId}`, { method: 'DELETE' });
         if (!res.success) showError(res.message || 'Failed to delete user');
         else { await renderUsersTable(); await renderMembersPanel(); }
@@ -1270,7 +1270,7 @@ async function saveMyAccount() {
 }
 
 function adminClearTasks() {
-    showDangerModal('🗑', 'Clear All Tasks?', 'Every task in the workspace will be permanently deleted. This cannot be undone.', async () => {
+    showDangerModal('<i class="fi fi-rr-trash"></i>', 'Clear All Tasks?', 'Every task in the workspace will be permanently deleted. This cannot be undone.', async () => {
         const res = await apiFetch(`${API}/admin/clear-tasks`, { method: 'DELETE' });
         if (res.success) { showError('✓ All tasks cleared.'); await renderDashboard(); await renderTasks(); }
         else showError(res.message || 'Failed to clear tasks.');
@@ -1278,7 +1278,7 @@ function adminClearTasks() {
 }
 
 function adminResetWorkspace() {
-    showDangerModal('💥', 'Reset Workspace?', 'All tasks, members and projects will be permanently deleted. User accounts will be kept.', async () => {
+    showDangerModal('<i class="fi fi-rr-trash"></i>', 'Reset Workspace?', 'All tasks, members and projects will be permanently deleted. User accounts will be kept.', async () => {
         const res = await apiFetch(`${API}/admin/reset`, { method: 'DELETE' });
         if (res.success) { showError('✓ Workspace reset.'); await init(); }
         else showError(res.message || 'Failed to reset workspace.');
@@ -1288,7 +1288,7 @@ function adminResetWorkspace() {
 // ─── Danger Modal ─────────────────────────────────────────────────────────────
 let _dangerCallback = null;
 function showDangerModal(icon, title, desc, onConfirm) {
-    document.getElementById('danger-icon').textContent = icon;
+    document.getElementById('danger-icon').innerHTML = icon;
     document.getElementById('danger-title').textContent = title;
     document.getElementById('danger-desc').textContent = desc;
     _dangerCallback = onConfirm;
