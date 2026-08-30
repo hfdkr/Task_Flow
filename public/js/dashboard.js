@@ -1,8 +1,241 @@
+// ─── Dashboard — chart theming helpers ────────────────────────────────────────
+function cssVar(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+function chartFontDefaults() {
+    return { family: "'DM Sans', sans-serif", size: 12 };
+}
+
+function chartTooltipTheme() {
+    return {
+        backgroundColor: cssVar('--bg-element'),
+        borderColor: cssVar('--border-strong'),
+        borderWidth: 1,
+        titleColor: cssVar('--text-main'),
+        bodyColor: cssVar('--text-muted'),
+        padding: 10,
+        cornerRadius: 8,
+        displayColors: true,
+        boxPadding: 4,
+        titleFont: chartFontDefaults(),
+        bodyFont: chartFontDefaults(),
+    };
+}
+
+function chartLegendTheme(extra = {}) {
+    return {
+        position: 'bottom',
+        labels: {
+            color: cssVar('--text-muted'),
+            font: chartFontDefaults(),
+            usePointStyle: true,
+            pointStyle: 'circle',
+            padding: 14,
+            boxWidth: 8,
+            boxHeight: 8,
+        },
+        ...extra,
+    };
+}
+
+function chartGridTheme() {
+    return { color: cssVar('--border-subtle'), drawTicks: false };
+}
+
+function chartTickTheme() {
+    return { color: cssVar('--text-muted'), font: chartFontDefaults() };
+}
+
+// ─── Dashboard — chart instances (destroyed + recreated on every render) ─────
+const dashCharts = {};
+
+function destroyChart(key) {
+    if (dashCharts[key]) { dashCharts[key].destroy(); delete dashCharts[key]; }
+}
+
+function renderStatusChart(todoN, progN, doneN) {
+    const canvas = document.getElementById('status-chart');
+    if (!canvas) return;
+    destroyChart('status');
+    const total = todoN + progN + doneN;
+    dashCharts.status = new Chart(canvas, {
+        type: 'doughnut',
+        data: {
+            labels: ['To Do', 'In Progress', 'Done'],
+            datasets: [{
+                data: [todoN, progN, doneN],
+                backgroundColor: [cssVar('--status-todo'), cssVar('--status-prog'), cssVar('--status-done')],
+                borderColor: cssVar('--bg-surface'),
+                borderWidth: 2,
+                hoverOffset: 6,
+            }],
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false, cutout: '70%',
+            plugins: {
+                legend: chartLegendTheme(),
+                tooltip: { ...chartTooltipTheme(), callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed}` } },
+            },
+        },
+        plugins: [{
+            id: 'centerText',
+            afterDraw(chart) {
+                const { ctx, chartArea } = chart;
+                if (!chartArea) return;
+                const cx = (chartArea.left + chartArea.right) / 2;
+                const cy = (chartArea.top + chartArea.bottom) / 2;
+                ctx.save();
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.font = "800 24px Syne, sans-serif";
+                ctx.fillStyle = cssVar('--text-main');
+                ctx.fillText(String(total), cx, cy - 8);
+                ctx.font = "11px 'DM Sans', sans-serif";
+                ctx.fillStyle = cssVar('--text-muted');
+                ctx.fillText('tasks', cx, cy + 12);
+                ctx.restore();
+            },
+        }],
+    });
+}
+
+function renderPriorityChart(high, medium, low) {
+    const canvas = document.getElementById('priority-chart');
+    if (!canvas) return;
+    destroyChart('priority');
+    dashCharts.priority = new Chart(canvas, {
+        type: 'bar',
+        data: {
+            labels: ['High', 'Medium', 'Low'],
+            datasets: [{
+                data: [high, medium, low],
+                backgroundColor: [cssVar('--status-danger'), cssVar('--status-prog'), cssVar('--status-done')],
+                borderRadius: 6,
+                maxBarThickness: 56,
+            }],
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false }, tooltip: chartTooltipTheme() },
+            scales: {
+                x: { grid: { display: false }, ticks: chartTickTheme() },
+                y: { beginAtZero: true, ticks: { ...chartTickTheme(), precision: 0 }, grid: chartGridTheme() },
+            },
+        },
+    });
+}
+
+function renderMemberChart(byMember) {
+    const canvas = document.getElementById('member-chart');
+    if (!canvas) return;
+    destroyChart('member');
+    const entries = Object.entries(byMember).sort((a, b) => b[1] - a[1]).slice(0, 8);
+    dashCharts.member = new Chart(canvas, {
+        type: 'bar',
+        data: {
+            labels: entries.map(([name]) => name),
+            datasets: [{
+                data: entries.map(([, count]) => count),
+                backgroundColor: cssVar('--brand'),
+                borderRadius: 6,
+                maxBarThickness: 18,
+            }],
+        },
+        options: {
+            indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false }, tooltip: chartTooltipTheme() },
+            scales: {
+                x: { beginAtZero: true, ticks: { ...chartTickTheme(), precision: 0 }, grid: chartGridTheme() },
+                y: { grid: { display: false }, ticks: chartTickTheme() },
+            },
+        },
+    });
+}
+
+function renderProjectChart(byProject) {
+    const canvas = document.getElementById('project-chart');
+    if (!canvas) return;
+    destroyChart('project');
+    const entries = Object.entries(byProject).sort((a, b) => b[1].total - a[1].total).slice(0, 8);
+    dashCharts.project = new Chart(canvas, {
+        type: 'bar',
+        data: {
+            labels: entries.map(([name]) => name),
+            datasets: [
+                { label: 'Done', data: entries.map(([, d]) => d.done), backgroundColor: cssVar('--status-done'), borderRadius: 4, maxBarThickness: 18 },
+                { label: 'Remaining', data: entries.map(([, d]) => d.total - d.done), backgroundColor: cssVar('--border-strong'), borderRadius: 4, maxBarThickness: 18 },
+            ],
+        },
+        options: {
+            indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+            plugins: { legend: chartLegendTheme(), tooltip: chartTooltipTheme() },
+            scales: {
+                x: { stacked: true, beginAtZero: true, ticks: { ...chartTickTheme(), precision: 0 }, grid: chartGridTheme() },
+                y: { stacked: true, grid: { display: false }, ticks: chartTickTheme() },
+            },
+        },
+    });
+}
+
+function buildTrendData(tasks, days = 14) {
+    const dayKey = d => d.toISOString().slice(0, 10);
+    const buckets = new Map();
+    const labels = [];
+    const now = new Date();
+    for (let i = days - 1; i >= 0; i--) {
+        const d = new Date(now);
+        d.setDate(d.getDate() - i);
+        buckets.set(dayKey(d), { created: 0, completed: 0 });
+        labels.push(d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+    }
+    tasks.forEach(t => {
+        if (t.createdAt) {
+            const bucket = buckets.get(dayKey(new Date(t.createdAt)));
+            if (bucket) bucket.created++;
+        }
+        if (t.status === 'Done' && t.updatedAt) {
+            const bucket = buckets.get(dayKey(new Date(t.updatedAt)));
+            if (bucket) bucket.completed++;
+        }
+    });
+    const values = [...buckets.values()];
+    return { labels, created: values.map(v => v.created), completed: values.map(v => v.completed) };
+}
+
+function renderTrendChart(tasks) {
+    const canvas = document.getElementById('trend-chart');
+    if (!canvas) return;
+    destroyChart('trend');
+    const { labels, created, completed } = buildTrendData(tasks);
+    dashCharts.trend = new Chart(canvas, {
+        type: 'line',
+        data: {
+            labels,
+            datasets: [
+                { label: 'Created', data: created, borderColor: cssVar('--brand'), backgroundColor: cssVar('--brand-dim'), fill: true, tension: 0.35, pointRadius: 0, pointHoverRadius: 5, borderWidth: 2 },
+                { label: 'Completed', data: completed, borderColor: cssVar('--status-done'), backgroundColor: 'transparent', fill: false, tension: 0.35, pointRadius: 0, pointHoverRadius: 5, borderWidth: 2 },
+            ],
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: { legend: chartLegendTheme(), tooltip: chartTooltipTheme() },
+            scales: {
+                x: { grid: { display: false }, ticks: { ...chartTickTheme(), maxRotation: 0, autoSkip: true, maxTicksLimit: 7 } },
+                y: { beginAtZero: true, ticks: { ...chartTickTheme(), precision: 0 }, grid: chartGridTheme() },
+            },
+        },
+    });
+}
+
 // ─── Dashboard Render ─────────────────────────────────────────────────────────
 async function renderDashboard() {
-    let tasks;
-    try { tasks = await fetchTasks(); allTasksCache = tasks; }
-    catch { return; }
+    let tasks, members;
+    try {
+        [tasks, members] = await Promise.all([fetchTasks(), fetchMembers()]);
+        allTasksCache = tasks;
+    } catch { return; }
 
     const total  = tasks.length;
     const todoN  = tasks.filter(t => t.status === 'To Do').length;
@@ -12,83 +245,32 @@ async function renderDashboard() {
     const overdue = tasks.filter(t => isOverdue(t.dueDate, t.status));
 
     animateCount('ds-total', total);
-    animateCount('ds-todo', todoN);
-    animateCount('ds-prog', progN);
-    animateCount('ds-done', doneN);
-    setBar('ds-todo-bar', total ? (todoN / total) * 100 : 0);
-    setBar('ds-prog-bar', total ? (progN / total) * 100 : 0);
-    setBar('ds-done-bar', total ? (doneN / total) * 100 : 0);
+    animateCount('ds-rate', pct, '%');
+    animateCount('ds-overdue-count', overdue.length);
+    animateCount('ds-members', members.length);
+    const updatedEl = document.getElementById('ds-updated');
+    if (updatedEl) updatedEl.textContent = `Updated ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
 
-    const circumference = 2 * Math.PI * 54;
-    const filled = (pct / 100) * circumference;
-    const donutFill = document.getElementById('donut-fill');
-    if (donutFill) setTimeout(() => { donutFill.setAttribute('stroke-dasharray', `${filled} ${circumference}`); }, 100);
-    const donutPct = document.getElementById('donut-pct');
-    if (donutPct) animateCount('donut-pct', pct, '%');
+    renderStatusChart(todoN, progN, doneN);
+    renderTrendChart(tasks);
 
     const high = tasks.filter(t => t.priority === 'High').length;
     const medium = tasks.filter(t => t.priority === 'Medium').length;
     const low  = tasks.filter(t => t.priority === 'Low').length;
-    const maxP = Math.max(high, medium, low, 1);
+    renderPriorityChart(high, medium, low);
 
-    const priChart = document.getElementById('priority-chart');
-    if (priChart) {
-        priChart.innerHTML = '';
-        [{ label:'High', val:high, color:'var(--status-danger)' }, { label:'Medium', val:medium, color:'var(--status-prog)' }, { label:'Low', val:low, color:'var(--status-done)' }].forEach(b => {
-            const col = document.createElement('div');
-            col.className = 'bar-col'; col.style.cssText = `background:${b.color};opacity:0.8;height:4px`; col.title = `${b.label}: ${b.val}`;
-            priChart.appendChild(col);
-            setTimeout(() => { col.style.height = `${(b.val / maxP) * 100}%`; }, 100);
-        });
-    }
-    const priLegend = document.getElementById('priority-legend');
-    if (priLegend) priLegend.innerHTML = [
-        { label:'High', val:high, c:'var(--status-danger)' },
-        { label:'Med',  val:medium, c:'var(--status-prog)' },
-        { label:'Low',  val:low,  c:'var(--status-done)' },
-    ].map(b => `<span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${b.c};margin-right:4px"></span>${b.label}: ${b.val}</span>`).join('');
+    const byMember = {};
+    tasks.forEach(t => { byMember[t.member] = (byMember[t.member] || 0) + 1; });
+    renderMemberChart(byMember);
 
-    const memberLoad = document.getElementById('member-load');
-    if (memberLoad) {
-        const byMember = {};
-        tasks.forEach(t => { byMember[t.member] = (byMember[t.member] || 0) + 1; });
-        const maxLoad = Math.max(...Object.values(byMember), 1);
-        memberLoad.innerHTML = Object.entries(byMember).sort((a,b) => b[1]-a[1]).map(([name, count]) => `
-            <div>
-                <div style="display:flex;justify-content:space-between;margin-bottom:5px">
-                    <span style="font-size:13px;color:var(--text-main);font-weight:500">${escapeHtml(name)}</span>
-                    <span style="font-size:12px;color:var(--text-muted)">${count} task${count !== 1 ? 's' : ''}</span>
-                </div>
-                <div style="height:5px;border-radius:99px;background:var(--border-subtle);overflow:hidden">
-                    <div style="height:100%;border-radius:99px;background:var(--brand);width:0%;transition:width 0.7s cubic-bezier(.22,1,.36,1)" data-target="${(count/maxLoad)*100}"></div>
-                </div>
-            </div>`).join('') || `<p style="font-size:13px;color:var(--text-muted)">No tasks yet</p>`;
-        setTimeout(() => memberLoad.querySelectorAll('[data-target]').forEach(el => el.style.width = el.dataset.target + '%'), 100);
-    }
-
-    const projectBreakdown = document.getElementById('project-breakdown');
-    if (projectBreakdown) {
-        const byProject = {};
-        tasks.forEach(t => {
-            const key = t.project || '(no project)';
-            if (!byProject[key]) byProject[key] = { total:0, done:0 };
-            byProject[key].total++;
-            if (t.status === 'Done') byProject[key].done++;
-        });
-        projectBreakdown.innerHTML = Object.entries(byProject).sort((a,b) => b[1].total-a[1].total).map(([proj, data]) => {
-            const pPct = Math.round((data.done / data.total) * 100);
-            return `<div>
-                <div style="display:flex;justify-content:space-between;margin-bottom:5px">
-                    <span style="font-size:13px;color:var(--text-main);font-weight:500">${escapeHtml(proj)}</span>
-                    <span style="font-size:12px;color:var(--text-muted)">${data.done}/${data.total} · ${pPct}%</span>
-                </div>
-                <div style="height:5px;border-radius:99px;background:var(--border-subtle);overflow:hidden">
-                    <div style="height:100%;border-radius:99px;background:var(--status-done);width:0%;transition:width 0.7s cubic-bezier(.22,1,.36,1)" data-target="${pPct}"></div>
-                </div>
-            </div>`;
-        }).join('') || `<p style="font-size:13px;color:var(--text-muted)">No projects yet</p>`;
-        setTimeout(() => projectBreakdown.querySelectorAll('[data-target]').forEach(el => el.style.width = el.dataset.target + '%'), 100);
-    }
+    const byProject = {};
+    tasks.forEach(t => {
+        const key = t.project || '(no project)';
+        if (!byProject[key]) byProject[key] = { total: 0, done: 0 };
+        byProject[key].total++;
+        if (t.status === 'Done') byProject[key].done++;
+    });
+    renderProjectChart(byProject);
 
     const overdueList = document.getElementById('overdue-list');
     if (overdueList) {
@@ -133,8 +315,6 @@ function animateCount(id, target, suffix = '') {
     }
     requestAnimationFrame(step);
 }
-
-function setBar(id, pct) { const el = document.getElementById(id); if (el) setTimeout(() => el.style.width = pct + '%', 100); }
 
 function relativeTime(iso) {
     if (!iso) return '';

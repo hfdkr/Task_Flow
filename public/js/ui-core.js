@@ -73,6 +73,11 @@ function toggleTheme(isDark) {
         const el = document.getElementById(id);
         if (el) el.checked = isDark;
     });
+    // Chart.js reads colors from CSS variables at creation time, so charts need
+    // to be rebuilt when the theme (and therefore those variables) changes.
+    if (document.getElementById('view-dashboard')?.classList.contains('active')) {
+        renderDashboard();
+    }
 }
 
 function updateThemeLabel(theme) {
