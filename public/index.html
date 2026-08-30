@@ -147,6 +147,13 @@
         .drop-zone.drag-over { outline: 2px dashed var(--brand); outline-offset: 6px; background: var(--brand-dim); border-radius: 14px; }
         .overdue-card { border-color: rgba(239,68,68,0.5) !important; }
 
+        .kanban-col-header { cursor: grab; }
+        .kanban-col-header:active { cursor: grabbing; }
+        .kanban-column.col-dragging { opacity: 0.45; }
+        .kanban-column.col-drag-over { outline: 2px dashed var(--brand); outline-offset: 4px; border-radius: 16px; }
+        .col-drag-handle { width: 12px; height: 14px; flex-shrink: 0; opacity: 0.35; transition: opacity 0.18s; margin-right: 2px; background-image: radial-gradient(circle, var(--text-muted) 1px, transparent 1.4px); background-size: 4px 4px; background-position: 0 0, 0 5px, 0 10px, 5px 0, 5px 5px, 5px 10px; background-repeat: repeat; }
+        .kanban-col-header:hover .col-drag-handle { opacity: 0.8; }
+
         .kanban-shell { max-width: 1340px; margin: 0 auto; }
         .board-header { display:flex; align-items:flex-start; justify-content:space-between; gap:20px; margin-bottom:30px; }
         .board-title { font-family:"Syne",sans-serif; font-size:34px; font-weight:800; color:var(--text-main); line-height:1; }
@@ -758,9 +765,10 @@
                     </div>
                     <div id="kanban-columns-view" class="grid grid-cols-1 lg:grid-cols-3 gap-5 items-start">
                         <!-- To Do -->
-                        <div style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:16px;padding:24px;min-height:400px;display:flex;flex-direction:column">
-                            <div class="flex items-center justify-between mb-5">
+                        <div class="kanban-column" data-col-status="To Do" ondragover="onColumnDragOver(event)" ondragleave="onColumnDragLeave(event)" ondrop="onColumnDrop(event, 'To Do')" style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:16px;padding:24px;min-height:400px;display:flex;flex-direction:column">
+                            <div class="kanban-col-header flex items-center justify-between mb-5" draggable="true" ondragstart="onColumnDragStart(event, 'To Do')" ondragend="onColumnDragEnd()" title="Drag to reorder columns">
                                 <div style="display:flex;align-items:center;gap:8px">
+                                    <span class="col-drag-handle"></span>
                                     <span style="width:9px;height:9px;border-radius:50%;background:var(--status-todo);flex-shrink:0"></span>
                                     <h3 style="color:var(--text-main);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px">To Do</h3>
                                     <span id="todo-count" style="min-width:22px;height:22px;background:var(--bg-element);border:1px solid var(--border-strong);border-radius:99px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text-muted);padding:0 5px">0</span>
@@ -770,9 +778,10 @@
                             <div id="todo-container" data-status="To Do" class="drop-zone flex-1 flex flex-col gap-4 min-h-[80px]"></div>
                         </div>
                         <!-- In Progress -->
-                        <div style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:16px;padding:24px;min-height:400px;display:flex;flex-direction:column">
-                            <div class="flex items-center justify-between mb-5">
+                        <div class="kanban-column" data-col-status="In Progress" ondragover="onColumnDragOver(event)" ondragleave="onColumnDragLeave(event)" ondrop="onColumnDrop(event, 'In Progress')" style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:16px;padding:24px;min-height:400px;display:flex;flex-direction:column">
+                            <div class="kanban-col-header flex items-center justify-between mb-5" draggable="true" ondragstart="onColumnDragStart(event, 'In Progress')" ondragend="onColumnDragEnd()" title="Drag to reorder columns">
                                 <div style="display:flex;align-items:center;gap:8px">
+                                    <span class="col-drag-handle"></span>
                                     <span style="width:9px;height:9px;border-radius:50%;background:var(--status-prog);flex-shrink:0"></span>
                                     <h3 style="color:var(--text-main);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px">In Progress</h3>
                                     <span id="inprogress-count" style="min-width:22px;height:22px;background:var(--bg-element);border:1px solid var(--border-strong);border-radius:99px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text-muted);padding:0 5px">0</span>
@@ -782,9 +791,10 @@
                             <div id="inprogress-container" data-status="In Progress" class="drop-zone flex-1 flex flex-col gap-4 min-h-[80px]"></div>
                         </div>
                         <!-- Done -->
-                        <div style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:16px;padding:24px;min-height:400px;display:flex;flex-direction:column">
-                            <div class="flex items-center justify-between mb-5">
+                        <div class="kanban-column" data-col-status="Done" ondragover="onColumnDragOver(event)" ondragleave="onColumnDragLeave(event)" ondrop="onColumnDrop(event, 'Done')" style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:16px;padding:24px;min-height:400px;display:flex;flex-direction:column">
+                            <div class="kanban-col-header flex items-center justify-between mb-5" draggable="true" ondragstart="onColumnDragStart(event, 'Done')" ondragend="onColumnDragEnd()" title="Drag to reorder columns">
                                 <div style="display:flex;align-items:center;gap:8px">
+                                    <span class="col-drag-handle"></span>
                                     <span style="width:9px;height:9px;border-radius:50%;background:var(--status-done);flex-shrink:0"></span>
                                     <h3 style="color:var(--text-main);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px">Done</h3>
                                     <span id="done-count" style="min-width:22px;height:22px;background:var(--bg-element);border:1px solid var(--border-strong);border-radius:99px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text-muted);padding:0 5px">0</span>
