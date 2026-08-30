@@ -1,31 +1,36 @@
 {
   "name": "task_flow",
-  "version": "1.0.0",
-  "description": "",
-  "main": "script.js",
+  "version": "2.0.0",
+  "description": "A task management app with a Kanban board and analytics dashboard, backed by JSON-file storage.",
+  "main": "src/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "node --test"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hfdkr/Task.git"
+    "url": "git+https://github.com/hfdkr/Task_Flow.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/hfdkr/Task/issues"
+    "url": "https://github.com/hfdkr/Task_Flow/issues"
   },
-  "homepage": "https://github.com/hfdkr/Task#readme",
+  "homepage": "https://github.com/hfdkr/Task_Flow#readme",
   "dependencies": {
     "bcrypt": "^5.1.1",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "express-rate-limit": "^7.4.1",
     "express-session": "^1.19.0",
-    "mysql2": "^3.22.3",
-    "nodemon": "^3.1.14"
+    "helmet": "^8.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14",
+    "supertest": "^7.0.0"
   }
-  
 }

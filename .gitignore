@@ -1,8 +1,11 @@
 # Node modules
 node_modules/
 
-# Environment variables (store your APP_PASSWORD here)
+# Environment variables (SESSION_SECRET, ADMIN_* etc. go here)
 .env
+
+# Local JSON-file data store (contains real user accounts/tasks — never commit)
+data/
 
 # OS files
 .DS_Store
