@@ -202,6 +202,74 @@ document.querySelectorAll('.drop-zone').forEach(zone => {
     });
 });
 
+// ─── Kanban Column Reordering — any signed-in user, saved per-browser ─────────
+const COLUMN_ORDER_KEY = 'tf-column-order';
+const DEFAULT_COLUMN_ORDER = ['To Do', 'In Progress', 'Done'];
+let draggedColumnStatus = null;
+
+function getColumnEl(status) {
+    return document.querySelector(`.kanban-column[data-col-status="${status}"]`);
+}
+
+function applyColumnOrder(order) {
+    const container = document.getElementById('kanban-columns-view');
+    if (!container) return;
+    order.forEach(status => {
+        const el = getColumnEl(status);
+        if (el) container.appendChild(el);
+    });
+}
+
+function loadColumnOrder() {
+    let order;
+    try { order = JSON.parse(localStorage.getItem(COLUMN_ORDER_KEY)); } catch { order = null; }
+    const isValid = Array.isArray(order) && order.length === DEFAULT_COLUMN_ORDER.length
+        && DEFAULT_COLUMN_ORDER.every(s => order.includes(s));
+    applyColumnOrder(isValid ? order : DEFAULT_COLUMN_ORDER);
+}
+
+function saveColumnOrder() {
+    const order = [...document.querySelectorAll('.kanban-column')].map(el => el.dataset.colStatus);
+    localStorage.setItem(COLUMN_ORDER_KEY, JSON.stringify(order));
+}
+
+function onColumnDragStart(e, status) {
+    draggedColumnStatus = status;
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', status);
+    getColumnEl(status)?.classList.add('col-dragging');
+}
+
+function onColumnDragOver(e) {
+    if (!draggedColumnStatus) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    e.currentTarget.classList.add('col-drag-over');
+}
+
+function onColumnDragLeave(e) {
+    if (!e.currentTarget.contains(e.relatedTarget)) e.currentTarget.classList.remove('col-drag-over');
+}
+
+function onColumnDrop(e, targetStatus) {
+    e.preventDefault();
+    e.currentTarget.classList.remove('col-drag-over');
+    if (!draggedColumnStatus || draggedColumnStatus === targetStatus) return;
+    const container = document.getElementById('kanban-columns-view');
+    const draggedEl = getColumnEl(draggedColumnStatus);
+    const targetEl  = getColumnEl(targetStatus);
+    if (!container || !draggedEl || !targetEl) return;
+    const columns   = [...container.children];
+    const fromAfter = columns.indexOf(draggedEl) < columns.indexOf(targetEl);
+    container.insertBefore(draggedEl, fromAfter ? targetEl.nextSibling : targetEl);
+    saveColumnOrder();
+}
+
+function onColumnDragEnd() {
+    document.querySelectorAll('.kanban-column').forEach(el => el.classList.remove('col-dragging', 'col-drag-over'));
+    draggedColumnStatus = null;
+}
+
 // ─── Kanban Render ────────────────────────────────────────────────────────────
 function showLoadingSkeleton() {
     const sk = `<div class="skeleton" style="height:140px;width:100%"></div>`;

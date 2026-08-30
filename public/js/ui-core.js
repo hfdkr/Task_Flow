@@ -54,6 +54,7 @@ function initSidebar() {
 // ─── Theme ────────────────────────────────────────────────────────────────────
 function initTheme() {
     initSidebar();
+    loadColumnOrder();
     const saved = localStorage.getItem('tf-theme') || 'dark';
     document.documentElement.setAttribute('data-theme', saved);
     const chk = document.getElementById('theme-check');
