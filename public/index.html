@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TaskFlow</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Syne:wght@400..800&display=swap" rel="stylesheet">
@@ -132,14 +133,28 @@
         .stat-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 16px; padding: 24px; }
         .stat-value { font-family: "Syne", sans-serif; font-size: 36px; font-weight: 800; line-height: 1; }
         .stat-label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); margin-top: 6px; }
-        .stat-bar { height: 4px; border-radius: 99px; background: var(--border-subtle); margin-top: 16px; overflow: hidden; }
-        .stat-bar-fill { height: 100%; border-radius: 99px; transition: width 0.8s cubic-bezier(.22,1,.36,1); }
 
-        .bar-wrap { display: flex; align-items: flex-end; gap: 4px; height: 48px; }
-        .bar-col { flex: 1; border-radius: 4px 4px 0 0; min-height: 4px; transition: height 0.6s cubic-bezier(.22,1,.36,1); cursor: default; }
-        .bar-col:hover { filter: brightness(1.2); }
+        /* ─── Dashboard ─── */
+        .dash-header { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 22px; flex-wrap: wrap; }
+        .dash-title { font-family: "Syne", sans-serif; font-size: 26px; font-weight: 800; color: var(--text-main); line-height: 1.1; }
+        .dash-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+        .dash-updated { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+        .dash-updated .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--status-done); flex-shrink: 0; box-shadow: 0 0 0 3px rgba(16,185,129,0.18); }
 
-        #donut-svg circle { transition: stroke-dasharray 0.8s cubic-bezier(.22,1,.36,1); }
+        .kpi-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 16px; padding: 20px; display: flex; align-items: center; gap: 14px; transition: border-color 0.2s, transform 0.2s; }
+        .kpi-card:hover { border-color: var(--border-strong); transform: translateY(-1px); }
+        .kpi-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+        .kpi-label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+        .kpi-value { font-family: "Syne", sans-serif; font-size: 26px; font-weight: 800; color: var(--text-main); line-height: 1.25; }
+
+        .chart-card-title { font-size: 13px; font-weight: 700; color: var(--text-main); }
+        .chart-card-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+        .chart-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+        .chart-canvas-wrap { position: relative; width: 100%; }
+        .chart-legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--text-muted); margin-top: 14px; }
+        .chart-legend span { display: inline-flex; align-items: center; gap: 6px; }
+        .chart-legend i { width: 8px; height: 8px; border-radius: 2px; display: inline-block; flex-shrink: 0; }
+        .chart-empty { display: flex; align-items: center; justify-content: center; height: 100%; color: var(--text-muted); font-size: 13px; }
 
         .task-card { background: var(--bg-element); border: 1px solid var(--border-strong); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 12px; cursor: grab; transition: all 0.25s; }
         .task-card:hover { border-color: var(--brand); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
@@ -644,60 +659,88 @@
 
             <!-- DASHBOARD VIEW -->
             <div id="view-dashboard" class="view active">
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <div class="dash-header fade-up">
+                    <div>
+                        <h2 class="dash-title">Overview</h2>
+                        <p class="dash-subtitle">Your workspace at a glance</p>
+                    </div>
+                    <span class="dash-updated"><span class="dot"></span><span id="ds-updated">—</span></span>
+                </div>
+
+                <!-- KPI row -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
+                    <div class="kpi-card fade-up">
+                        <div class="kpi-icon" style="background:var(--brand-dim);color:var(--brand)"><i class="fi fi-rr-list-check"></i></div>
+                        <div>
+                            <div class="kpi-label">Total Tasks</div>
+                            <div class="kpi-value" id="ds-total">0</div>
+                        </div>
+                    </div>
+                    <div class="kpi-card fade-up delay-1">
+                        <div class="kpi-icon" style="background:rgba(16,185,129,0.12);color:var(--status-done)"><i class="fi fi-rr-check-circle"></i></div>
+                        <div>
+                            <div class="kpi-label">Completion Rate</div>
+                            <div class="kpi-value" id="ds-rate">0%</div>
+                        </div>
+                    </div>
+                    <div class="kpi-card fade-up delay-2">
+                        <div class="kpi-icon" style="background:rgba(239,68,68,0.12);color:var(--status-danger)"><i class="fi fi-rr-triangle-warning"></i></div>
+                        <div>
+                            <div class="kpi-label">Overdue</div>
+                            <div class="kpi-value" id="ds-overdue-count">0</div>
+                        </div>
+                    </div>
+                    <div class="kpi-card fade-up delay-3">
+                        <div class="kpi-icon" style="background:var(--brand-dim);color:var(--brand)"><i class="fi fi-rr-users-alt"></i></div>
+                        <div>
+                            <div class="kpi-label">Active Members</div>
+                            <div class="kpi-value" id="ds-members">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trend chart -->
+                <div class="stat-card fade-up mb-5">
+                    <div class="chart-card-head">
+                        <div>
+                            <div class="chart-card-title">Activity Trend</div>
+                            <div class="chart-card-sub">Tasks created vs. completed — last 14 days</div>
+                        </div>
+                    </div>
+                    <div class="chart-canvas-wrap" style="height:220px">
+                        <canvas id="trend-chart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Status / Priority / Member load -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-5">
                     <div class="stat-card fade-up">
-                        <div style="color:var(--text-muted);font-size:12px;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px">Total Tasks</div>
-                        <div class="stat-value" style="color:var(--text-main)" id="ds-total">0</div>
-                        <div class="stat-bar"><div id="ds-total-bar" class="stat-bar-fill" style="background:var(--brand);width:100%"></div></div>
-                    </div>
-                    <div class="stat-card fade-up delay-1">
-                        <div style="color:var(--text-muted);font-size:12px;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px">To Do</div>
-                        <div class="stat-value" style="color:var(--status-todo)" id="ds-todo">0</div>
-                        <div class="stat-bar"><div id="ds-todo-bar" class="stat-bar-fill" style="background:var(--status-todo);width:0%"></div></div>
-                    </div>
-                    <div class="stat-card fade-up delay-2">
-                        <div style="color:var(--text-muted);font-size:12px;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px">In Progress</div>
-                        <div class="stat-value" style="color:var(--status-prog)" id="ds-prog">0</div>
-                        <div class="stat-bar"><div id="ds-prog-bar" class="stat-bar-fill" style="background:var(--status-prog);width:0%"></div></div>
-                    </div>
-                    <div class="stat-card fade-up delay-3">
-                        <div style="color:var(--text-muted);font-size:12px;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px">Done</div>
-                        <div class="stat-value" style="color:var(--status-done)" id="ds-done">0</div>
-                        <div class="stat-bar"><div id="ds-done-bar" class="stat-bar-fill" style="background:var(--status-done);width:0%"></div></div>
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-                    <div class="stat-card fade-up" style="display:flex;flex-direction:column;align-items:center;justify-content:center">
-                        <div style="font-size:12px;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin-bottom:20px;align-self:flex-start">Completion Rate</div>
-                        <div style="position:relative;width:140px;height:140px">
-                            <svg id="donut-svg" width="140" height="140" viewBox="0 0 140 140" style="transform:rotate(-90deg)">
-                                <circle class="ring-bg" cx="70" cy="70" r="54" fill="none" stroke-width="14"/>
-                                <circle id="donut-fill" class="ring-fill" cx="70" cy="70" r="54" fill="none" stroke-width="14" stroke-dasharray="0 339.3"/>
-                            </svg>
-                            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
-                                <span id="donut-pct" style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--text-main)">0%</span>
-                                <span style="font-size:11px;color:var(--text-muted)">complete</span>
-                            </div>
-                        </div>
-                        <div style="display:flex;gap:16px;margin-top:20px;font-size:12px;color:var(--text-muted)">
-                            <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--status-done);margin-right:4px"></span>Done</span>
-                            <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--border-strong);margin-right:4px"></span>Remaining</span>
+                        <div class="chart-card-title mb-3">Task Status</div>
+                        <div class="chart-canvas-wrap" style="height:180px">
+                            <canvas id="status-chart"></canvas>
                         </div>
                     </div>
                     <div class="stat-card fade-up delay-1">
-                        <div style="font-size:12px;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin-bottom:20px">By Priority</div>
-                        <div id="priority-chart" class="bar-wrap mb-3"></div>
-                        <div id="priority-legend" style="display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--text-muted)"></div>
+                        <div class="chart-card-title mb-3">By Priority</div>
+                        <div class="chart-canvas-wrap" style="height:180px">
+                            <canvas id="priority-chart"></canvas>
+                        </div>
                     </div>
                     <div class="stat-card fade-up delay-2">
-                        <div style="font-size:12px;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin-bottom:16px">Member Load</div>
-                        <div id="member-load" class="flex flex-col gap-3"></div>
+                        <div class="chart-card-title mb-3">Member Load</div>
+                        <div class="chart-canvas-wrap" style="height:180px">
+                            <canvas id="member-chart"></canvas>
+                        </div>
                     </div>
                 </div>
+
+                <!-- Projects / Overdue / Recent -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     <div class="stat-card fade-up">
-                        <div style="font-size:12px;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin-bottom:16px">Projects</div>
-                        <div id="project-breakdown" class="flex flex-col gap-3"></div>
+                        <div class="chart-card-title mb-3">Projects</div>
+                        <div class="chart-canvas-wrap" style="height:200px">
+                            <canvas id="project-chart"></canvas>
+                        </div>
                     </div>
                     <div class="flex flex-col gap-4">
                         <div class="stat-card fade-up delay-1">
