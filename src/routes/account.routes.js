@@ -12,7 +12,7 @@ router.put('/profile', requireAuth, async (req, res) => {
         const { name, email } = req.body;
         if (!name || !name.trim())          return res.status(400).json({ success: false, message: 'Name is required' });
         if (!email || !isValidEmail(email)) return res.status(400).json({ success: false, message: 'Valid email is required' });
-        const users      = readUsers();
+        const users      = await readUsers();
         const idx        = users.findIndex(u => u.id === req.session.userId);
         if (idx === -1)  return res.status(404).json({ success: false, message: 'User not found' });
         const emailLower = email.toLowerCase().trim();
@@ -20,7 +20,7 @@ router.put('/profile', requireAuth, async (req, res) => {
             return res.status(409).json({ success: false, message: 'Email already used by another account' });
         users[idx].name  = sanitize(name.trim());
         users[idx].email = emailLower;
-        writeUsers(users);
+        await writeUsers(users);
         req.session.userName  = users[idx].name;
         req.session.userEmail = users[idx].email;
         res.json({ success: true, user: { id: users[idx].id, name: users[idx].name, email: users[idx].email, role: users[idx].role, createdAt: users[idx].createdAt } });
@@ -32,13 +32,13 @@ router.put('/password', requireAuth, async (req, res) => {
         const { currentPassword, newPassword } = req.body;
         if (!currentPassword) return res.status(400).json({ success: false, message: 'Current password is required' });
         if (!newPassword || newPassword.length < 6) return res.status(400).json({ success: false, message: 'New password must be at least 6 characters' });
-        const users = readUsers();
+        const users = await readUsers();
         const idx   = users.findIndex(u => u.id === req.session.userId);
         if (idx === -1) return res.status(404).json({ success: false, message: 'User not found' });
         const match = await bcrypt.compare(currentPassword, users[idx].password);
         if (!match) return res.status(401).json({ success: false, message: 'Current password is incorrect' });
         users[idx].password = await bcrypt.hash(newPassword, env.SALT_ROUNDS);
-        writeUsers(users);
+        await writeUsers(users);
         res.json({ success: true });
     } catch (err) { res.status(500).json({ success: false, message: 'Failed to change password' }); }
 });
@@ -49,7 +49,7 @@ router.put('/', requireAuth, async (req, res) => {
         if (!name || !name.trim())          return res.status(400).json({ success: false, message: 'Name is required' });
         if (!email || !isValidEmail(email)) return res.status(400).json({ success: false, message: 'Valid email is required' });
         if (!currentPassword)               return res.status(400).json({ success: false, message: 'Current password is required' });
-        const users = readUsers();
+        const users = await readUsers();
         const idx   = users.findIndex(u => u.id === req.session.userId);
         if (idx === -1) return res.status(404).json({ success: false, message: 'User not found' });
         const match = await bcrypt.compare(currentPassword, users[idx].password);
@@ -63,7 +63,7 @@ router.put('/', requireAuth, async (req, res) => {
             if (newPassword.length < 6) return res.status(400).json({ success: false, message: 'New password must be at least 6 characters' });
             users[idx].password = await bcrypt.hash(newPassword, env.SALT_ROUNDS);
         }
-        writeUsers(users);
+        await writeUsers(users);
         req.session.userName  = users[idx].name;
         req.session.userEmail = users[idx].email;
         res.json({ success: true, user: { id: users[idx].id, name: users[idx].name, email: users[idx].email, role: users[idx].role } });

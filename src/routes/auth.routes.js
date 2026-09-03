@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const rateLimit = require('express-rate-limit');
+const { kv } = require('../store/kvClient');
 const env = require('../config/env');
 const { sanitize, isValidEmail } = require('../utils/sanitize');
 const { readUsers, writeUsers, readMembers, writeMembers } = require('../store/jsonStore');
@@ -25,7 +26,7 @@ router.post('/register', authLimiter, async (req, res) => {
         if (!securityQuestion || !securityQuestion.trim()) return res.status(400).json({ success: false, message: 'Please choose a security question' });
         if (!securityAnswer   || !securityAnswer.trim())   return res.status(400).json({ success: false, message: 'Please answer your security question' });
 
-        const users      = readUsers();
+        const users      = await readUsers();
         const emailLower = email.toLowerCase().trim();
         if (users.some(u => u.email === emailLower))
             return res.status(409).json({ success: false, message: 'An account with this email already exists' });
@@ -40,12 +41,12 @@ router.post('/register', authLimiter, async (req, res) => {
             createdAt: new Date().toISOString()
         };
         users.push(user);
-        writeUsers(users);
+        await writeUsers(users);
 
-        const members = readMembers();
+        const members = await readMembers();
         if (!members.some(m => m.name.toLowerCase().trim() === user.name.toLowerCase().trim())) {
             members.push({ id: Date.now() + 1, name: user.name });
-            writeMembers(members);
+            await writeMembers(members);
         }
 
         req.session.userId    = user.id;
@@ -64,7 +65,7 @@ router.post('/login', authLimiter, async (req, res) => {
     try {
         const { email, password } = req.body;
         if (!email || !password) return res.status(400).json({ success: false, message: 'Email and password are required' });
-        const users      = readUsers();
+        const users      = await readUsers();
         const emailLower = email.toLowerCase().trim();
         const user       = users.find(u => u.email === emailLower);
         if (!user) return res.status(401).json({ success: false, message: 'No account found with this email' });
@@ -92,14 +93,18 @@ router.get('/me', (req, res) => {
 });
 
 // ─── Forgot Password ──────────────────────────────────────────────────────────
-const resetTokens = new Map();
-const RESET_TOKEN_TTL = 10 * 60 * 1000;
+// Reset tokens used to live in an in-memory Map. On Vercel each request can
+// hit a different function instance, so anything kept only in RAM can vanish
+// before the next request arrives — these now live in Vercel KV with a TTL
+// instead, which every instance can read.
+const RESET_TOKEN_TTL_SECONDS = 10 * 60;
+const resetTokenKey = token => `resettoken:${token}`;
 
-router.get('/forgot-password/question', authLimiter, (req, res) => {
+router.get('/forgot-password/question', authLimiter, async (req, res) => {
     try {
         const email = (req.query.email || '').toString().toLowerCase().trim();
         if (!email || !isValidEmail(email)) return res.status(400).json({ success: false, message: 'Please enter a valid email address.' });
-        const user = readUsers().find(u => u.email === email);
+        const user = (await readUsers()).find(u => u.email === email);
         if (!user) return res.status(404).json({ success: false, message: 'No account found with that email.' });
         if (!user.securityQuestion || !user.securityAnswer) return res.status(404).json({ success: false, message: 'No security question set for this account.' });
         res.json({ success: true, question: user.securityQuestion });
@@ -111,12 +116,12 @@ router.post('/forgot-password/verify', authLimiter, async (req, res) => {
         const email  = (req.body.email  || '').toString().toLowerCase().trim();
         const answer = (req.body.answer || '').toString().trim().toLowerCase();
         if (!email || !answer) return res.status(400).json({ success: false, message: 'Email and answer are required.' });
-        const user = readUsers().find(u => u.email === email);
+        const user = (await readUsers()).find(u => u.email === email);
         if (!user || !user.securityAnswer) return res.status(404).json({ success: false, message: 'No account found with that email.' });
         const match = await bcrypt.compare(answer, user.securityAnswer);
         if (!match) return res.status(401).json({ success: false, message: 'Incorrect answer. Please try again.' });
         const token = crypto.randomBytes(32).toString('hex');
-        resetTokens.set(token, { userId: user.id, expires: Date.now() + RESET_TOKEN_TTL });
+        await kv.set(resetTokenKey(token), { userId: user.id }, { ex: RESET_TOKEN_TTL_SECONDS });
         res.json({ success: true, token });
     } catch (err) { res.status(500).json({ success: false, message: 'Something went wrong.' }); }
 });
@@ -126,14 +131,14 @@ router.post('/forgot-password/reset', authLimiter, async (req, res) => {
         const { token, newPassword } = req.body;
         if (!token || !newPassword) return res.status(400).json({ success: false, message: 'Missing token or new password.' });
         if (newPassword.length < 6)  return res.status(400).json({ success: false, message: 'Password must be at least 6 characters.' });
-        const entry = resetTokens.get(token);
-        if (!entry || entry.expires < Date.now()) { resetTokens.delete(token); return res.status(400).json({ success: false, message: 'Reset link expired. Please start over.' }); }
-        const users = readUsers();
+        const entry = await kv.get(resetTokenKey(token));
+        if (!entry) { return res.status(400).json({ success: false, message: 'Reset link expired. Please start over.' }); }
+        const users = await readUsers();
         const idx   = users.findIndex(u => u.id === entry.userId);
         if (idx === -1) return res.status(404).json({ success: false, message: 'Account not found.' });
         users[idx].password = await bcrypt.hash(newPassword, env.SALT_ROUNDS);
-        writeUsers(users);
-        resetTokens.delete(token);
+        await writeUsers(users);
+        await kv.del(resetTokenKey(token));
         res.json({ success: true });
     } catch (err) { res.status(500).json({ success: false, message: 'Something went wrong.' }); }
 });
