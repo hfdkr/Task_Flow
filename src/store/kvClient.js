@@ -19,7 +19,12 @@ const path = require('path');
 function createFileKv() {
     // Honors DATA_DIR (as the old file store did) so tests can point it at
     // an isolated tmp dir instead of sharing state between test files.
-    const dataDir = process.env.DATA_DIR || path.join(__dirname, '..', '..', 'data');
+    // On Vercel, only /tmp is writable — everything else in the deployed
+    // bundle is read-only — so default there instead of the package dir.
+    // This path should only ever be hit on Vercel when no Redis database is
+    // connected yet; data will not persist across cold starts until one is.
+    const defaultDir = process.env.VERCEL ? '/tmp' : path.join(__dirname, '..', '..', 'data');
+    const dataDir = process.env.DATA_DIR || defaultDir;
     const file = path.join(dataDir, 'kv-dev.json');
 
     function load() {
