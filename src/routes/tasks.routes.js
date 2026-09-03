@@ -5,16 +5,16 @@ const { readTasks, writeTasks } = require('../store/jsonStore');
 
 const router = express.Router();
 
-router.get('/', requireAuth, (req, res) => {
-    try { res.json({ success: true, tasks: readTasks() }); }
+router.get('/', requireAuth, async (req, res) => {
+    try { res.json({ success: true, tasks: await readTasks() }); }
     catch (err) { res.status(500).json({ success: false, message: 'Failed to load tasks' }); }
 });
 
-router.post('/', requireAuth, requireAdmin, (req, res) => {
+router.post('/', requireAuth, requireAdmin, async (req, res) => {
     try {
         const { title, member, project, status, priority, description, dueDate } = req.body;
         if (!title || !member) return res.status(400).json({ success: false, message: 'Title and member are required' });
-        const tasks   = readTasks();
+        const tasks   = await readTasks();
         const newTask = {
             id: Date.now(), title: sanitize(title), member: sanitize(member),
             project: sanitize(project || ''), description: sanitize(description || ''),
@@ -22,16 +22,16 @@ router.post('/', requireAuth, requireAdmin, (req, res) => {
             createdBy: req.session.userId, createdAt: new Date().toISOString()
         };
         tasks.push(newTask);
-        writeTasks(tasks);
+        await writeTasks(tasks);
         res.status(201).json({ success: true, task: newTask });
     } catch (err) { res.status(500).json({ success: false, message: 'Failed to create task' }); }
 });
 
-router.put('/:id', requireAuth, requireAdmin, (req, res) => {
+router.put('/:id', requireAuth, requireAdmin, async (req, res) => {
     try {
         const id    = parseInt(req.params.id);
         const { title, member, project, status, priority, description, dueDate } = req.body;
-        const tasks = readTasks();
+        const tasks = await readTasks();
         const index = tasks.findIndex(t => t.id === id);
         if (index === -1) return res.status(404).json({ success: false, message: 'Task not found' });
         tasks[index] = {
@@ -45,17 +45,17 @@ router.put('/:id', requireAuth, requireAdmin, (req, res) => {
             ...(priority    !== undefined && { priority }),
             updatedAt: new Date().toISOString()
         };
-        writeTasks(tasks);
+        await writeTasks(tasks);
         res.json({ success: true, task: tasks[index] });
     } catch (err) { res.status(500).json({ success: false, message: 'Failed to update task' }); }
 });
 
-router.delete('/:id', requireAuth, requireAdmin, (req, res) => {
+router.delete('/:id', requireAuth, requireAdmin, async (req, res) => {
     try {
         const id = parseInt(req.params.id);
-        const tasks = readTasks();
+        const tasks = await readTasks();
         if (!tasks.some(t => t.id === id)) return res.status(404).json({ success: false, message: 'Task not found' });
-        writeTasks(tasks.filter(t => t.id !== id));
+        await writeTasks(tasks.filter(t => t.id !== id));
         res.json({ success: true });
     } catch (err) { res.status(500).json({ success: false, message: 'Failed to delete task' }); }
 });

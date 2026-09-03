@@ -1,39 +1,46 @@
-const fs = require('fs');
-const path = require('path');
+// Data store — backed by Vercel KV (Upstash Redis under the hood).
+//
+// Vercel serverless functions have no writable/persistent local disk (every
+// invocation can run on a fresh container, and /tmp is wiped between them),
+// so this can no longer be a JSON file on disk. Instead the whole dataset is
+// kept as one JSON document in Vercel KV. Every function call in this file
+// is now async — callers must `await` them.
+//
+// Locally (outside Vercel) this still works as long as KV_REST_API_URL /
+// KV_REST_API_TOKEN are set in your .env (see .env.example) — `vercel env
+// pull` writes them for you.
 
-const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '..', '..', 'data');
-const DATA_FILE = path.join(DATA_DIR, 'data.json');
+const { kv } = require('./kvClient');
 
-function readData() {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-    if (!fs.existsSync(DATA_FILE)) {
-        fs.writeFileSync(DATA_FILE, JSON.stringify({ tasks: [], members: [], projects: [], users: [] }, null, 2));
+const DATA_KEY = 'taskflow:data';
+
+async function readData() {
+    let data = await kv.get(DATA_KEY);
+    if (!data) {
+        data = { tasks: [], members: [], projects: [], users: [] };
+        await kv.set(DATA_KEY, data);
     }
-    const raw  = fs.readFileSync(DATA_FILE, 'utf-8');
-    const data = JSON.parse(raw);
     if (!data.members)  data.members  = [];
     if (!data.projects) data.projects = [];
     if (!data.users)    data.users    = [];
     return data;
 }
 
-function writeData(data) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+async function writeData(data) {
+    await kv.set(DATA_KEY, data);
 }
 
-const readTasks    = () => readData().tasks;
-const readMembers  = () => readData().members;
-const readProjects = () => readData().projects || [];
-const readUsers    = () => readData().users || [];
+const readTasks    = async () => (await readData()).tasks;
+const readMembers  = async () => (await readData()).members;
+const readProjects = async () => (await readData()).projects || [];
+const readUsers    = async () => (await readData()).users || [];
 
-function writeTasks(tasks)       { const d = readData(); d.tasks    = tasks;    writeData(d); }
-function writeMembers(members)   { const d = readData(); d.members  = members;  writeData(d); }
-function writeProjects(projects) { const d = readData(); d.projects = projects; writeData(d); }
-function writeUsers(users)       { const d = readData(); d.users    = users;    writeData(d); }
+async function writeTasks(tasks)       { const d = await readData(); d.tasks    = tasks;    await writeData(d); }
+async function writeMembers(members)   { const d = await readData(); d.members  = members;  await writeData(d); }
+async function writeProjects(projects) { const d = await readData(); d.projects = projects; await writeData(d); }
+async function writeUsers(users)       { const d = await readData(); d.users    = users;    await writeData(d); }
 
 module.exports = {
-    DATA_FILE,
     readData, writeData,
     readTasks, readMembers, readProjects, readUsers,
     writeTasks, writeMembers, writeProjects, writeUsers,

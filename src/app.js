@@ -4,6 +4,7 @@ const path = require('path');
 const session = require('express-session');
 const helmet = require('helmet');
 const env = require('./config/env');
+const KVSessionStore = require('./store/kvSessionStore');
 
 const authRoutes = require('./routes/auth.routes');
 const taskRoutes = require('./routes/tasks.routes');
@@ -17,7 +18,7 @@ const PUBLIC_DIR = path.join(__dirname, '..', 'public');
 function createApp() {
     const app = express();
 
-    // Railway (and most PaaS hosts) sit behind a reverse proxy — required for
+    // Vercel (and most PaaS hosts) sit behind a reverse proxy — required for
     // secure cookies and correct client IPs to work.
     app.set('trust proxy', 1);
 
@@ -25,6 +26,7 @@ function createApp() {
     app.use(cors({ origin: true, credentials: true }));
     app.use(express.json());
     app.use(session({
+        store: new KVSessionStore(),
         secret: env.SESSION_SECRET,
         resave: false,
         saveUninitialized: false,
