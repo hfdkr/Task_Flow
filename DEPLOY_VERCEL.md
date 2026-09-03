@@ -4,17 +4,19 @@
 
 Vercel runs your backend as **serverless functions**: stateless, short-lived, with no writable/persistent disk. Task Flow's backend (`src/store/jsonStore.js`) wrote to `data/data.json` on disk, and `express-session` kept logins in server RAM. Both assumptions break on Vercel — different requests can hit different, disposable function instances, so the JSON file and in-memory sessions don't survive between requests. That's the "he not read my backend / my data" problem: the API routes exist, but any data they wrote (or any session they created) could vanish before the next request.
 
-This version fixes that by moving both the data store and the session store to **Vercel KV** — a key-value store built into your Vercel project (Storage tab, one click to add, no external account, not MySQL). Locally, with no KV connected, everything falls back automatically to a JSON file in `data/`, so `npm run dev` still works with zero setup, exactly like before.
+This version fixes that by moving both the data store and the session store to a small Redis database attached to your Vercel project (Marketplace tab, one click to add, no external account, not MySQL). Locally, with no Redis connected, everything falls back automatically to a JSON file in `data/`, so `npm run dev` still works with zero setup, exactly like before.
+
+> **Note:** Vercel's old "KV" product (Storage tab → Create Database → KV) is deprecated. Redis databases on Vercel now come from the **Marketplace** tab instead (an Upstash Redis integration under the hood) — see step 3 below.
 
 ## What changed
 
-- `src/store/kvClient.js` — new. Picks real Vercel KV when `KV_REST_API_URL`/`KV_REST_API_TOKEN` are set, otherwise a local JSON-file mock for dev.
-- `src/store/jsonStore.js` — same read/write API, but now backed by KV and fully `async`.
-- `src/store/kvSessionStore.js` — new. An `express-session` store backed by KV, replacing the default in-memory store.
-- `src/routes/*.js`, `src/bootstrapAdmin.js` — updated to `await` the now-async store calls. Reset tokens (forgot-password) moved from an in-memory `Map` to KV with the same 10-minute TTL.
+- `src/store/kvClient.js` — new. Connects to Redis using whichever env var names Vercel's integration actually sets (it checks several known naming conventions), otherwise a local JSON-file mock for dev.
+- `src/store/jsonStore.js` — same read/write API, but now backed by Redis and fully `async`.
+- `src/store/kvSessionStore.js` — new. An `express-session` store backed by Redis, replacing the default in-memory store.
+- `src/routes/*.js`, `src/bootstrapAdmin.js` — updated to `await` the now-async store calls. Reset tokens (forgot-password) moved from an in-memory `Map` to Redis with the same 10-minute TTL.
 - `api/index.js` — new. The Vercel entry point; wraps the existing Express app.
 - `vercel.json` — new. Routes every request to `api/index.js` and bundles `public/` into the function.
-- `package.json` — added the `@vercel/kv` dependency.
+- `package.json` — added the `@upstash/redis` dependency.
 
 Nothing about the app's features, routes, or frontend changed — only how data and sessions are stored.
 
@@ -25,8 +27,8 @@ Nothing about the app's features, routes, or frontend changed — only how data 
 2. **Import the project in Vercel**
    Go to vercel.com → Add New → Project → import your repo. Framework preset: "Other". Leave build/output settings default (there's no build step).
 
-3. **Add a KV database** (this replaces "MySQL" — it's a Vercel-native store, no separate signup)
-   In your new Vercel project → **Storage** tab → **Create Database** → **KV** → create it, then **Connect** it to this project. Vercel automatically adds `KV_REST_API_URL` and `KV_REST_API_TOKEN` (and a couple other `KV_*` vars) to your project's environment variables — you don't type these in yourself.
+3. **Add a Redis database** (this replaces "MySQL" — it's added from inside the Vercel dashboard, no separate signup)
+   In your Vercel project → **Storage** tab (or **Marketplace** tab, naming varies) → look for **Upstash** / **Redis** → create a database → **Connect** it to this project. Vercel then adds the connection env vars automatically — you don't type these in yourself. **After connecting, open Settings → Environment Variables and note the exact var names it added** (commonly `KV_REST_API_URL`/`KV_REST_API_TOKEN` or `UPSTASH_REDIS_REST_URL`/`UPSTASH_REDIS_REST_TOKEN`) — `kvClient.js` checks for both, but if yours uses something different, tell Claude the exact names so it can be added.
 
 4. **Set the remaining environment variables**
    Project → Settings → Environment Variables, add for Production (and Preview if you want):
