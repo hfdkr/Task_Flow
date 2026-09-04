@@ -1,15 +1,17 @@
 // Thin key/value client used by jsonStore.js, kvSessionStore.js, and the
 // forgot-password reset tokens in auth.routes.js.
 //
-// In production on Vercel, add a KV database to your project (Storage tab →
-// Create Database → KV) and Vercel injects KV_REST_API_URL / KV_REST_API_TOKEN
-// automatically — this then talks to real Vercel KV.
+// Vercel's old "KV" product is deprecated — new Redis databases on Vercel
+// now come from the Marketplace (an Upstash Redis integration) instead, and
+// depending on how you connect it, it can inject different env var names.
+// This checks every naming convention Vercel is known to use, in order,
+// and talks to whichever one it finds via @upstash/redis's REST client
+// (the same thing @vercel/kv used underneath — not deprecated).
 //
-// Locally, with no KV database connected, those env vars won't be set, so
-// this falls back to a tiny JSON-file-backed store (data/kv-dev.json) that
-// implements the same get/set/del/expire shape. That keeps `npm run dev`
-// and `npm test` working with zero setup, exactly like before — the real
-// KV store only comes into play once you deploy.
+// Locally, with no Redis integration connected, none of those env vars are
+// set, so this falls back to a tiny JSON-file-backed store (data/kv-dev.json)
+// that implements the same get/set/del/expire shape. That keeps `npm run dev`
+// and `npm test` working with zero setup, exactly like before.
 
 const fs = require('fs');
 const path = require('path');
@@ -17,7 +19,12 @@ const path = require('path');
 function createFileKv() {
     // Honors DATA_DIR (as the old file store did) so tests can point it at
     // an isolated tmp dir instead of sharing state between test files.
-    const dataDir = process.env.DATA_DIR || path.join(__dirname, '..', '..', 'data');
+    // On Vercel, only /tmp is writable — everything else in the deployed
+    // bundle is read-only — so default there instead of the package dir.
+    // This path should only ever be hit on Vercel when no Redis database is
+    // connected yet; data will not persist across cold starts until one is.
+    const defaultDir = process.env.VERCEL ? '/tmp' : path.join(__dirname, '..', '..', 'data');
+    const dataDir = process.env.DATA_DIR || defaultDir;
     const file = path.join(dataDir, 'kv-dev.json');
 
     function load() {
@@ -54,12 +61,40 @@ function createFileKv() {
     };
 }
 
-const useRealKv = !!(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
+// Every env var pair Vercel is known to use for a connected Redis database,
+// newest/most-likely first. We use whichever pair is actually present.
+const CANDIDATE_ENV_PAIRS = [
+    ['KV_REST_API_URL', 'KV_REST_API_TOKEN'],                   // legacy Vercel KV / some Marketplace connections mirror this
+    ['UPSTASH_REDIS_REST_URL', 'UPSTASH_REDIS_REST_TOKEN'],     // standard Upstash naming
+    ['REDIS_KV_REST_API_URL', 'REDIS_KV_REST_API_TOKEN'],       // integration named "redis" can prefix vars this way
+];
 
-const kv = useRealKv ? require('@vercel/kv').kv : createFileKv();
+function findRedisEnv() {
+    for (const [urlKey, tokenKey] of CANDIDATE_ENV_PAIRS) {
+        if (process.env[urlKey] && process.env[tokenKey]) {
+            return { url: process.env[urlKey], token: process.env[tokenKey], urlKey };
+        }
+    }
+    return null;
+}
 
-if (!useRealKv && process.env.NODE_ENV !== 'test') {
-    console.warn('[TaskFlow] ⚠ KV_REST_API_URL not set — using a local JSON-file store (data/kv-dev.json) for development only. Add Vercel KV before deploying.');
+const redisEnv = findRedisEnv();
+
+let kv;
+if (redisEnv) {
+    const { Redis } = require('@upstash/redis');
+    kv = new Redis({ url: redisEnv.url, token: redisEnv.token });
+} else {
+    kv = createFileKv();
+    if (process.env.NODE_ENV !== 'test') {
+        console.warn(
+            '[TaskFlow] ⚠ No Redis env vars found (checked ' +
+            CANDIDATE_ENV_PAIRS.map(([u]) => u).join(', ') +
+            ') — using a local JSON-file store (data/kv-dev.json) for development only. ' +
+            'On Vercel, connect a Redis database from the Marketplace tab before deploying, ' +
+            'or data will not persist.'
+        );
+    }
 }
 
 module.exports = { kv };
