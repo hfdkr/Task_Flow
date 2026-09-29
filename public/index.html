@@ -442,36 +442,43 @@
 <div id="forgot-modal" class="fixed inset-0 modal-bg flex items-center justify-center z-[60] hidden">
     <div style="background:var(--bg-surface);border:1px solid var(--border-subtle);width:100%;max-width:440px;border-radius:24px;overflow:hidden;margin:16px" class="shadow-2xl">
 
-        <!-- Step 1: Email + Security Question -->
+        <!-- Step 1: Email link (security question as fallback) -->
         <div id="forgot-step1" style="padding:36px" class="fp-step">
             <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px">
                 <div>
                     <div style="width:46px;height:46px;border-radius:14px;background:var(--brand-dim);border:1px solid rgba(108,143,255,0.25);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:14px">🔐</div>
                     <h2 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--text-main)">Reset Password</h2>
-                    <p style="font-size:13px;color:var(--text-muted);margin-top:4px">Answer your security question to continue</p>
+                    <p style="font-size:13px;color:var(--text-muted);margin-top:4px">We'll email you a link to choose a new password</p>
                 </div>
                 <button onclick="closeForgotPassword()" style="background:var(--bg-element);border:1px solid var(--border-strong);color:var(--text-muted);border-radius:10px;padding:8px 12px;cursor:pointer;font-size:15px;line-height:1;flex-shrink:0" onmouseover="this.style.borderColor='var(--brand)';this.style.color='var(--brand)'" onmouseout="this.style.borderColor='var(--border-strong)';this.style.color='var(--text-muted)'">✕</button>
             </div>
 
             <div style="margin-bottom:16px">
                 <label style="display:block;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Email Address</label>
-                <div style="display:flex;gap:8px">
-                    <input id="forgot-email" type="email" placeholder="you@example.com" class="tf-input">
-                    <button onclick="loadSecurityQuestion()" id="forgot-find-btn" style="background:var(--bg-element);border:1px solid var(--border-strong);color:var(--text-main);border-radius:12px;padding:11px 18px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all 0.2s;flex-shrink:0" onmouseover="this.style.borderColor='var(--brand)';this.style.color='var(--brand)'" onmouseout="this.style.borderColor='var(--border-strong)';this.style.color='var(--text-main)'">Find →</button>
-                </div>
+                <input id="forgot-email" type="email" placeholder="you@example.com" class="tf-input">
             </div>
 
-            <div id="forgot-question-block" style="display:none">
-                <div style="background:var(--brand-dim);border:1px solid rgba(108,143,255,0.2);border-radius:12px;padding:14px 16px;margin-bottom:16px">
-                    <p style="font-size:11px;font-weight:700;color:var(--brand);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Your Security Question</p>
-                    <p id="forgot-question-text" style="font-size:14px;color:var(--text-main);font-weight:500;line-height:1.5"></p>
+            <button onclick="sendResetEmail()" id="forgot-send-btn" style="background:var(--brand);color:white;border:none;border-radius:12px;padding:13px;width:100%;font-size:15px;font-weight:600;cursor:pointer;transition:opacity 0.2s" onmouseover="this.style.opacity=0.85" onmouseout="this.style.opacity=1">Send reset link ✉</button>
+
+            <p id="forgot-sent" style="font-size:13px;margin-top:14px;display:none;padding:10px 14px;border-radius:10px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);color:var(--status-done)"></p>
+
+            <p id="forgot-sq-toggle" style="text-align:center;font-size:13px;color:var(--text-muted);margin-top:16px">Can't access your email? <span onclick="showSecurityQuestionOption()" style="color:var(--brand);cursor:pointer;font-weight:600">Answer your security question</span></p>
+
+            <div id="forgot-sq-block" style="display:none;margin-top:18px;padding-top:18px;border-top:1px solid var(--border-subtle)">
+                <button onclick="loadSecurityQuestion()" id="forgot-find-btn" style="background:var(--bg-element);border:1px solid var(--border-strong);color:var(--text-main);border-radius:12px;padding:11px 18px;width:100%;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;margin-bottom:16px" onmouseover="this.style.borderColor='var(--brand)';this.style.color='var(--brand)'" onmouseout="this.style.borderColor='var(--border-strong)';this.style.color='var(--text-main)'">Show my security question →</button>
+
+                <div id="forgot-question-block" style="display:none">
+                    <div style="background:var(--brand-dim);border:1px solid rgba(108,143,255,0.2);border-radius:12px;padding:14px 16px;margin-bottom:16px">
+                        <p style="font-size:11px;font-weight:700;color:var(--brand);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Your Security Question</p>
+                        <p id="forgot-question-text" style="font-size:14px;color:var(--text-main);font-weight:500;line-height:1.5"></p>
+                    </div>
+                    <div style="margin-bottom:20px">
+                        <label style="display:block;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Your Answer</label>
+                        <input id="forgot-answer" type="text" placeholder="Type your answer here..." class="tf-input">
+                        <p style="font-size:11px;color:var(--text-muted);margin-top:6px">⚠ Answers are not case-sensitive</p>
+                    </div>
+                    <button onclick="verifySecurityAnswer()" id="forgot-verify-btn" style="background:var(--brand);color:white;border:none;border-radius:12px;padding:13px;width:100%;font-size:15px;font-weight:600;cursor:pointer;transition:opacity 0.2s" onmouseover="this.style.opacity=0.85" onmouseout="this.style.opacity=1">Verify Answer →</button>
                 </div>
-                <div style="margin-bottom:20px">
-                    <label style="display:block;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Your Answer</label>
-                    <input id="forgot-answer" type="text" placeholder="Type your answer here..." class="tf-input">
-                    <p style="font-size:11px;color:var(--text-muted);margin-top:6px">⚠ Answers are not case-sensitive</p>
-                </div>
-                <button onclick="verifySecurityAnswer()" id="forgot-verify-btn" style="background:var(--brand);color:white;border:none;border-radius:12px;padding:13px;width:100%;font-size:15px;font-weight:600;cursor:pointer;transition:opacity 0.2s" onmouseover="this.style.opacity=0.85" onmouseout="this.style.opacity=1">Verify Answer →</button>
             </div>
 
             <p id="forgot-error" style="font-size:13px;margin-top:14px;display:none;padding:10px 14px;border-radius:10px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:var(--status-danger)"></p>
@@ -485,7 +492,7 @@
                 <div>
                     <div style="width:46px;height:46px;border-radius:14px;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.25);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:14px">✅</div>
                     <h2 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--text-main)">Set New Password</h2>
-                    <p style="font-size:13px;color:var(--status-done);margin-top:4px">Identity verified — choose a strong password</p>
+                    <p id="forgot-step2-subtitle" style="font-size:13px;color:var(--status-done);margin-top:4px">Identity verified — choose a strong password</p>
                 </div>
                 <button onclick="closeForgotPassword()" style="background:var(--bg-element);border:1px solid var(--border-strong);color:var(--text-muted);border-radius:10px;padding:8px 12px;cursor:pointer;font-size:15px;line-height:1;flex-shrink:0" onmouseover="this.style.borderColor='var(--brand)'" onmouseout="this.style.borderColor='var(--border-strong)'">✕</button>
             </div>
@@ -510,7 +517,7 @@
             </div>
 
             <p id="forgot-reset-error" style="font-size:13px;margin-bottom:14px;display:none;padding:10px 14px;border-radius:10px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:var(--status-danger)"></p>
-            <button onclick="submitNewPassword()" style="background:var(--brand);color:white;border:none;border-radius:12px;padding:13px;width:100%;font-size:15px;font-weight:600;cursor:pointer;transition:opacity 0.2s" onmouseover="this.style.opacity=0.85" onmouseout="this.style.opacity=1">Reset Password ✓</button>
+            <button onclick="submitNewPassword()" id="forgot-reset-btn" style="background:var(--brand);color:white;border:none;border-radius:12px;padding:13px;width:100%;font-size:15px;font-weight:600;cursor:pointer;transition:opacity 0.2s" onmouseover="this.style.opacity=0.85" onmouseout="this.style.opacity=1">Reset Password ✓</button>
         </div>
 
     </div>

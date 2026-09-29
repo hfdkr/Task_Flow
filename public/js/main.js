@@ -1,2 +1,2 @@
 // ─── Boot ─────────────────────────────────────────────────────────────────────
-checkAuth();
+checkAuth().then(openResetFromLink);
