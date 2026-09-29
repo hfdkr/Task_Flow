@@ -53,6 +53,13 @@ function updateUserUI() {
 
 document.addEventListener('keydown', e => {
     if (e.key !== 'Enter') return;
+    const forgotModal = document.getElementById('forgot-modal');
+    if (forgotModal && !forgotModal.classList.contains('hidden')) {
+        if (e.target.id === 'forgot-email') sendResetEmail();
+        else if (e.target.id === 'forgot-answer') verifySecurityAnswer();
+        else if (e.target.id === 'forgot-newpwd' || e.target.id === 'forgot-confirmpwd') submitNewPassword();
+        return;
+    }
     if (!loginScreen.classList.contains('hidden')) {
         const signinForm = document.getElementById('form-signin');
         if (signinForm && signinForm.style.display !== 'none') handleSignIn();
@@ -115,9 +122,15 @@ let _resetToken = null;
 
 function openForgotPassword() {
     _resetToken = null;
-    document.getElementById('forgot-step1').style.display = 'block';
+    const step1 = document.getElementById('forgot-step1');
+    step1.style.display = 'block';
+    step1.style.opacity = '1';
     document.getElementById('forgot-step2').style.display = 'none';
     document.getElementById('forgot-question-block').style.display = 'none';
+    document.getElementById('forgot-sq-block').style.display = 'none';
+    document.getElementById('forgot-sq-toggle').style.display = 'block';
+    document.getElementById('forgot-sent').style.display = 'none';
+    document.getElementById('forgot-step2-subtitle').textContent = 'Identity verified — choose a strong password';
     document.getElementById('forgot-email').value = '';
     document.getElementById('forgot-answer').value = '';
     document.getElementById('forgot-error').style.display = 'none';
@@ -146,6 +159,11 @@ document.addEventListener('keydown', e => {
     if (e.key === 'Escape') { closeForgotPassword(); closeTaskModal(); closeAccountModal(); }
 });
 
+// Enter-key submits bypass the disabled button, so check it explicitly.
+function isForgotBusy(btnId) {
+    return Boolean(document.getElementById(btnId)?.disabled);
+}
+
 function setForgotLoading(btnId, loading, originalText) {
     const btn = document.getElementById(btnId);
     if (!btn) return;
@@ -156,12 +174,57 @@ function setForgotLoading(btnId, loading, originalText) {
     else if (originalText) btn.textContent = originalText;
 }
 
+async function sendResetEmail() {
+    if (isForgotBusy('forgot-send-btn')) return;
+    const email  = (document.getElementById('forgot-email')?.value || '').trim();
+    const errEl  = document.getElementById('forgot-error');
+    const sentEl = document.getElementById('forgot-sent');
+    errEl.style.display = 'none';
+    sentEl.style.display = 'none';
+    if (!email) { errEl.textContent = 'Please enter your email address.'; errEl.style.display = 'block'; return; }
+    setForgotLoading('forgot-send-btn', true, 'Send reset link ✉');
+    try {
+        const res  = await fetch(`${API}/forgot-password/email`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) });
+        const data = await res.json();
+        if (!data.success) { errEl.textContent = data.message || 'Could not send the reset email.'; errEl.style.display = 'block'; return; }
+        sentEl.textContent = '✓ ' + data.message;
+        sentEl.style.display = 'block';
+    } catch { errEl.textContent = 'Server error. Please try again.'; errEl.style.display = 'block'; }
+    finally { setForgotLoading('forgot-send-btn', false, 'Send reset link ✉'); }
+}
+
+function showSecurityQuestionOption() {
+    document.getElementById('forgot-sq-toggle').style.display = 'none';
+    document.getElementById('forgot-sq-block').style.display = 'block';
+}
+
+// Reset emails link to "/#reset=<token>". The token lives in the URL
+// fragment so it never reaches server logs; it's wiped from the address bar
+// as soon as it's read.
+async function openResetFromLink() {
+    const match = /^#reset=([a-f0-9]{64})$/.exec(window.location.hash);
+    if (!match) return;
+    history.replaceState(null, '', window.location.pathname + window.location.search);
+    // The link may be for a different account than the one signed in here,
+    // and the success message is shown on the sign-in screen.
+    if (currentUser) await logout();
+    openForgotPassword();
+    _resetToken = match[1];
+    document.getElementById('forgot-step1').style.display = 'none';
+    document.getElementById('forgot-step2').style.display = 'block';
+    document.getElementById('forgot-step2-subtitle').textContent = 'Choose a new password for your account';
+    setTimeout(() => document.getElementById('forgot-newpwd')?.focus(), 150);
+}
+
+window.addEventListener('hashchange', openResetFromLink);
+
 async function loadSecurityQuestion() {
+    if (isForgotBusy('forgot-find-btn')) return;
     const email = (document.getElementById('forgot-email')?.value || '').trim();
     const errEl = document.getElementById('forgot-error');
     errEl.style.display = 'none';
     if (!email) { errEl.textContent = 'Please enter your email address.'; errEl.style.display = 'block'; return; }
-    setForgotLoading('forgot-find-btn', true, 'Find →');
+    setForgotLoading('forgot-find-btn', true, 'Show my security question →');
     try {
         const res  = await fetch(`${API}/forgot-password/question?email=${encodeURIComponent(email)}`);
         const data = await res.json();
@@ -173,10 +236,11 @@ async function loadSecurityQuestion() {
         setTimeout(() => { block.style.opacity = '1'; block.style.transform = 'translateY(0)'; }, 20);
         setTimeout(() => document.getElementById('forgot-answer')?.focus(), 150);
     } catch { errEl.textContent = 'Server error. Is the server running?'; errEl.style.display = 'block'; }
-    finally { setForgotLoading('forgot-find-btn', false, 'Find →'); }
+    finally { setForgotLoading('forgot-find-btn', false, 'Show my security question →'); }
 }
 
 async function verifySecurityAnswer() {
+    if (isForgotBusy('forgot-verify-btn')) return;
     const email  = (document.getElementById('forgot-email')?.value || '').trim();
     const answer = (document.getElementById('forgot-answer')?.value || '').trim();
     const errEl  = document.getElementById('forgot-error');
@@ -206,12 +270,14 @@ async function verifySecurityAnswer() {
 }
 
 async function submitNewPassword() {
+    if (isForgotBusy('forgot-reset-btn')) return;
     const newPwd     = document.getElementById('forgot-newpwd')?.value || '';
     const confirmPwd = document.getElementById('forgot-confirmpwd')?.value || '';
     const errEl      = document.getElementById('forgot-reset-error');
     errEl.style.display = 'none';
     if (newPwd.length < 6) { errEl.textContent = 'Password must be at least 6 characters.'; errEl.style.display = 'block'; return; }
     if (newPwd !== confirmPwd) { errEl.textContent = 'Passwords do not match.'; errEl.style.display = 'block'; return; }
+    setForgotLoading('forgot-reset-btn', true, 'Reset Password ✓');
     try {
         const res  = await fetch(`${API}/forgot-password/reset`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: _resetToken, newPassword: newPwd }) });
         const data = await res.json();
@@ -226,4 +292,5 @@ async function submitNewPassword() {
         }
         switchAuthTab('signin'); updateStrength('');
     } catch { errEl.textContent = 'Server error. Please try again.'; errEl.style.display = 'block'; }
+    finally { setForgotLoading('forgot-reset-btn', false, 'Reset Password ✓'); }
 }

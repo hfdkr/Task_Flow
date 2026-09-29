@@ -35,6 +35,7 @@ Nothing about the app's features, routes, or frontend changed — only how data 
    - `SESSION_SECRET` — generate one locally with `openssl rand -hex 32`
    - `NODE_ENV` = `production`
    - optionally `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `ADMIN_NAME` to auto-create an admin on first boot
+   - `SMTP_USER` (your Gmail address) and `SMTP_PASS` (a Gmail **App Password** from https://myaccount.google.com/apppasswords — requires 2-Step Verification) so "Forgot password?" can email reset links. Optionally `MAIL_FROM`, and `APP_URL` if you use a custom domain (it defaults to your Vercel production URL).
 
 5. **Deploy**
    Trigger a deploy (push to your connected branch, or click Deploy in the dashboard). Vercel installs dependencies and deploys `api/index.js` as the function serving the whole app, with `public/` served alongside it.

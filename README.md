@@ -97,6 +97,10 @@ There is no database — `data/data.json` holds `tasks`, `members`, `projects` a
 | `DATA_DIR` | No | Where `data.json` lives. Defaults to `./data`. |
 | `BCRYPT_ROUNDS` | No | Defaults to `12`. |
 | `ADMIN_EMAIL` / `ADMIN_PASSWORD` / `ADMIN_NAME` | No | If set, an admin account is created on first boot if it doesn't already exist. |
+| `SMTP_USER` / `SMTP_PASS` | For email password reset | SMTP login used to send "Forgot password?" links. For Gmail, use a 16-character [App Password](https://myaccount.google.com/apppasswords), not your normal password. Without them, production falls back to the security question; development prints the link to the console. |
+| `SMTP_HOST` / `SMTP_PORT` | No | Default to `smtp.gmail.com` / `465`. |
+| `MAIL_FROM` | No | Sender shown in the email. Defaults to `TaskFlow <SMTP_USER>`. |
+| `APP_URL` | No | Public URL used in reset links. Defaults to Vercel's production URL, else `http://localhost:PORT`. |
 
 ---
 

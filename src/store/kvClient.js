@@ -45,9 +45,25 @@ function createFileKv() {
             return entry.value;
         },
         async set(key, value, opts = {}) {
+            if (opts.nx && (await this.get(key)) !== null) return null;
             const store = load();
             store[key] = { value, expiresAt: opts.ex ? Date.now() + opts.ex * 1000 : null };
             save(store);
+            return 'OK';
+        },
+        async getdel(key) {
+            const value = await this.get(key);
+            if (value !== null) await this.del(key);
+            return value;
+        },
+        async incr(key) {
+            const store = load();
+            const entry = store[key];
+            const live  = entry && !(entry.expiresAt && entry.expiresAt < Date.now());
+            const value = (live ? Number(entry.value) : 0) + 1;
+            store[key]  = { value, expiresAt: live ? entry.expiresAt : null };
+            save(store);
+            return value;
         },
         async del(key) {
             const store = load();
