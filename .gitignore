@@ -1,11 +1,33 @@
 # Node modules
 node_modules/
 
-# Environment variables (SESSION_SECRET, ADMIN_* etc. go here)
+# Environment files — ALL of them, including .env.example.
+# They hold SESSION_SECRET, ADMIN_*, SMTP_* and Redis tokens. Never commit.
+# (Adding a file here does NOT untrack it if it was already committed —
+#  run `git rm --cached <file>` for that.)
 .env
+.env.*
+.env*
 
-# Local JSON-file data store (contains real user accounts/tasks — never commit)
+# Vercel CLI project link and pulled env (contains project/org IDs)
+.vercel/
+
+# Local JSON-file data store (real user accounts, password hashes, tasks)
 data/
+kv-dev.json
+data.json
+
+# Keys and certificates
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+
+# Logs and test output
+*.log
+npm-debug.log*
+coverage/
 
 # OS files
 .DS_Store
@@ -13,5 +35,3 @@ Thumbs.db
 
 # VS Code
 .vscode/
-.vercel
-.env*
