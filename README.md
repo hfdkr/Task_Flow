@@ -1,10 +1,11 @@
 # Task Flow
 
-A full-stack task management app with an interactive Kanban board and analytics dashboard — Node/Express backend, vanilla JS frontend, no database (JSON-file storage).
+A full-stack task management app with an interactive Kanban board and analytics dashboard — Node/Express backend, vanilla JS frontend, Redis (Upstash) storage with a zero-setup local fallback.
 
 ## Features
 
 * 🔐 Session-based authentication (bcrypt, rate-limited login/register)
+* ✉️ Forgot password by email — a one-time reset link sent from your Gmail (security question as a fallback)
 * 📋 Kanban board (To Do, In Progress, Done) with a list/table view
 * 🎯 Task creation, editing, assignment, priorities, due dates
 * 👥 Member & project management
@@ -18,9 +19,10 @@ A full-stack task management app with an interactive Kanban board and analytics 
 
 ## Tech Stack
 
-* **Backend:** Node.js, Express 5, express-session, bcrypt, helmet, express-rate-limit
+* **Backend:** Node.js, Express 5, express-session, bcrypt, helmet, express-rate-limit, nodemailer
 * **Frontend:** HTML, CSS (Tailwind via the browser CDN build), vanilla JavaScript
-* **Data storage:** a single JSON file (no database) — see [Data storage](#data-storage)
+* **Data storage:** Redis via `@upstash/redis` in production; a local JSON file in development — see [Data storage](#data-storage)
+* **Hosting:** Vercel (serverless) — see [DEPLOY_VERCEL.md](DEPLOY_VERCEL.md)
 
 ---
 
@@ -28,32 +30,36 @@ A full-stack task management app with an interactive Kanban board and analytics 
 
 ```
 Task_Flow/
-├── public/                  # everything served to the browser
+├── api/index.js              # Vercel serverless entry — wraps the Express app
+├── public/                   # everything served to the browser
 │   ├── index.html
 │   ├── assets/               # images/icons
 │   └── js/                   # frontend split by concern (loaded as classic scripts, in this order)
 │       ├── ui-core.js         # theme, sidebar, mobile menu, DOM refs, auth-form UI helpers
-│       ├── auth.js            # login/signup/logout/forgot-password
+│       ├── auth.js            # login/signup/logout, forgot password (email link + security question)
 │       ├── api.js             # fetch wrappers for the /api/* endpoints
 │       ├── members-projects.js
 │       ├── tasks.js           # kanban render, drag & drop, filters, pagination
 │       ├── dashboard.js
 │       ├── admin-account.js   # admin settings, user management, account modal
-│       └── main.js            # boots the app
+│       └── main.js            # boots the app (and opens a reset link if the URL has one)
 ├── src/                      # backend
-│   ├── server.js              # entry point — bootstraps admin, starts listening
+│   ├── server.js              # local entry point — bootstraps admin, starts listening
 │   ├── app.js                 # Express app: middleware + route wiring (importable for tests)
 │   ├── config/env.js          # reads & validates environment variables
 │   ├── middleware/auth.js     # requireAuth / requireAdmin
 │   ├── routes/                # one file per resource (auth, tasks, projects, members, account, admin)
-│   ├── store/jsonStore.js     # reads/writes data.json
+│   ├── services/mailer.js     # sends password reset emails over SMTP
+│   ├── store/kvClient.js      # Redis client, or a local JSON-file stand-in when Redis isn't configured
+│   ├── store/jsonStore.js     # tasks/members/projects/users on top of kvClient
+│   ├── store/kvSessionStore.js# express-session store on top of kvClient
 │   ├── bootstrapAdmin.js      # optional first-boot admin creation from env vars
 │   └── utils/sanitize.js
-├── data/                      # JSON data store — gitignored, created automatically
-├── data.example.json          # shape reference for data/data.json
+├── data/                      # local dev data — gitignored, created automatically
+├── data.example.json          # shape reference for the stored data
 ├── tests/                     # node:test + supertest
-├── .env.example
-└── railway.json                # Railway deploy config
+├── vercel.json                # Vercel routing/function config
+└── railway.json               # Railway deploy config (alternative host)
 ```
 
 ---
@@ -62,12 +68,31 @@ Task_Flow/
 
 ```bash
 npm install
-cp .env.example .env   # optional locally; SESSION_SECRET falls back to a random dev-only value if unset
+# create a .env file (see "Environment variables" below) — optional for a first run
 npm run dev             # nodemon, restarts on change
 # or: npm start
 ```
 
 Open `http://localhost:3000`. The first account you sign up becomes an admin automatically; every account after that is a regular member. You can also auto-provision an admin on boot by setting `ADMIN_EMAIL` / `ADMIN_PASSWORD` / `ADMIN_NAME` in `.env`.
+
+A minimal `.env` for local work looks like this — fill in your own values:
+
+```ini
+SESSION_SECRET=        # openssl rand -hex 32
+NODE_ENV=development
+PORT=3000
+
+# Optional: auto-create an admin on first boot
+ADMIN_EMAIL=
+ADMIN_PASSWORD=
+ADMIN_NAME=Admin
+
+# Optional: send real password reset emails (see "Password reset by email")
+SMTP_USER=
+SMTP_PASS=
+```
+
+> ⚠️ **Never commit secrets.** Every `.env*` file — including `.env.example` — is gitignored. Keep real values in your local `.env` and in Vercel → Settings → Environment Variables only.
 
 ### Tests
 
@@ -75,15 +100,35 @@ Open `http://localhost:3000`. The first account you sign up becomes an admin aut
 npm test
 ```
 
-Runs the `node:test` + `supertest` suite (`tests/`) against the Express app in-process, using a throwaway temp data directory — it never touches your local `data/data.json`. Coverage focuses on the security-sensitive paths: auth (register/login/logout/session), and admin-only enforcement on tasks/projects/members.
+Runs the `node:test` + `supertest` suite (`tests/`) against the Express app in-process, using a throwaway temp data directory — it never touches your local `data/` or your Redis database, and never sends real email. Coverage focuses on the security-sensitive paths: auth (register/login/logout/session), password reset (email links, expiry, single use, rate limits, security-question lockout), and admin-only enforcement on tasks/projects/members.
 
 ---
 
 ## Data storage
 
-There is no database — `data/data.json` holds `tasks`, `members`, `projects` and `users` (bcrypt-hashed passwords). Its location is controlled by `DATA_DIR` (defaults to `./data`), so a hosting platform's persistent volume can be swapped in with a single env var.
+All app data (`tasks`, `members`, `projects`, `users` with bcrypt-hashed passwords) is stored as one JSON document in Redis, along with sessions and password reset tokens. Vercel's serverless functions have no persistent disk, so a Redis database is required in production — connect an Upstash Redis database from your Vercel project's **Storage / Marketplace** tab and the connection variables are added for you (see [DEPLOY_VERCEL.md](DEPLOY_VERCEL.md)).
 
-`data/` is gitignored — **never commit your real `data.json`**. `data.example.json` at the repo root documents the expected shape.
+Locally, if no Redis variables are set, `src/store/kvClient.js` falls back to a JSON file at `data/kv-dev.json` (location controlled by `DATA_DIR`), so `npm run dev` and `npm test` need no setup.
+
+`data/` is gitignored — **never commit it**; it contains real user accounts. `data.example.json` at the repo root documents the expected shape.
+
+---
+
+## Password reset by email
+
+1. On the sign-in screen the user clicks **Forgot password?**, enters their email and clicks **Send reset link**.
+2. They receive an email with a **Set a new password** button linking to `APP_URL/#reset=<token>`.
+3. The link opens the app on the "Set New Password" step. After saving, they sign in with the new password.
+
+Reset links expire after **30 minutes**, work **once**, and stop working if the password changes by any other route. Each address gets at most one email per minute and five per day. Users who can't reach their inbox can still answer their security question (locked for 15 minutes after 5 wrong answers).
+
+**Setting up Gmail as the sender:**
+
+1. Turn on 2-Step Verification for the Google account: https://myaccount.google.com/security
+2. Create an App Password: https://myaccount.google.com/apppasswords
+3. Set `SMTP_USER` to the Gmail address and `SMTP_PASS` to the 16-character app password — **not** your normal Gmail password — in `.env` locally and in Vercel's environment variables in production.
+
+Without SMTP settings, development prints the reset link in the server console instead of emailing it, and production shows users the security-question option instead.
 
 ---
 
@@ -93,37 +138,43 @@ There is no database — `data/data.json` holds `tasks`, `members`, `projects` a
 |---|---|---|
 | `SESSION_SECRET` | Yes, in production | Server refuses to start in production without it. Generate with `openssl rand -hex 32`. In development it falls back to a random per-process secret (sessions won't survive a restart). |
 | `NODE_ENV` | No | `production` enables secure cookies and strict startup checks. |
-| `PORT` | No | Defaults to `3000` (Railway sets this automatically). |
-| `DATA_DIR` | No | Where `data.json` lives. Defaults to `./data`. |
+| `PORT` | No | Defaults to `3000`. |
+| `KV_REST_API_URL` / `KV_REST_API_TOKEN` | Yes, in production | Redis connection, added automatically when you connect Upstash Redis on Vercel. `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` also work. Leave unset locally to use the JSON-file fallback. |
+| `DATA_DIR` | No | Folder for the local JSON-file fallback. Defaults to `./data`. |
 | `BCRYPT_ROUNDS` | No | Defaults to `12`. |
 | `ADMIN_EMAIL` / `ADMIN_PASSWORD` / `ADMIN_NAME` | No | If set, an admin account is created on first boot if it doesn't already exist. |
-| `SMTP_USER` / `SMTP_PASS` | For email password reset | SMTP login used to send "Forgot password?" links. For Gmail, use a 16-character [App Password](https://myaccount.google.com/apppasswords), not your normal password. Without them, production falls back to the security question; development prints the link to the console. |
+| `SMTP_USER` / `SMTP_PASS` | For email password reset | SMTP login used to send "Forgot password?" links. For Gmail, use a 16-character [App Password](https://myaccount.google.com/apppasswords), not your normal password. |
 | `SMTP_HOST` / `SMTP_PORT` | No | Default to `smtp.gmail.com` / `465`. |
 | `MAIL_FROM` | No | Sender shown in the email. Defaults to `TaskFlow <SMTP_USER>`. |
-| `APP_URL` | No | Public URL used in reset links. Defaults to Vercel's production URL, else `http://localhost:PORT`. |
+| `APP_URL` | No | Public URL used in reset links. Defaults to Vercel's production URL, else `http://localhost:PORT`. Set it if you use a custom domain. |
 
 ---
 
-## Deploying to Railway
+## Deploying
 
-Railway was chosen because it supports **persistent volumes** — required since this app stores data in a JSON file rather than a database.
+### Vercel (current)
 
-1. Push this repo to GitHub and create a new Railway project from it (branch: `new-version` or `main` once merged).
-2. In the service settings, add a **Volume** mounted at `/data`.
-3. Set environment variables: `SESSION_SECRET` (generate with `openssl rand -hex 32`), `NODE_ENV=production`, `DATA_DIR=/data`, and optionally `ADMIN_EMAIL` / `ADMIN_PASSWORD` / `ADMIN_NAME`.
-4. Deploy. Railway builds with Nixpacks (auto-detected from `package.json`) and uses `railway.json` for the start command and `/api/health` healthcheck.
-5. Railway assigns a public URL and sets `PORT` automatically.
+Full step-by-step guide: [DEPLOY_VERCEL.md](DEPLOY_VERCEL.md). In short: import the repo, connect an Upstash Redis database, set `SESSION_SECRET`, `NODE_ENV=production` and the `SMTP_*` variables, then deploy.
+
+### Railway (alternative)
+
+1. Create a new Railway project from this repo.
+2. Add a Redis connection (`UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN`), or add a **Volume** mounted at `/data` and set `DATA_DIR=/data` to use the JSON-file store.
+3. Set `SESSION_SECRET`, `NODE_ENV=production`, and optionally `ADMIN_*` / `SMTP_*`.
+4. Deploy. Railway builds with Nixpacks and uses `railway.json` for the start command and `/api/health` healthcheck.
 
 ### Known limitation
 
-`helmet`'s Content-Security-Policy is disabled (`contentSecurityPolicy: false`) because the page loads Tailwind, Google Fonts and Flaticon UIcons from third-party CDNs — a correct CSP allowlist for those is a larger follow-up, not part of this pass. Helmet's other protections (frame options, no-sniff, etc.) are still active.
+`helmet`'s Content-Security-Policy is disabled (`contentSecurityPolicy: false`) because the page loads Tailwind, Google Fonts and Flaticon UIcons from third-party CDNs — a correct CSP allowlist for those is a larger follow-up. Helmet's other protections (frame options, no-sniff, referrer policy, etc.) are still active.
 
 ---
 
 ## Security notes
 
-* Passwords are bcrypt-hashed; forgot-password uses a security question/answer (also hashed) and a short-lived reset token.
-* `/api/login`, `/api/register` and `/api/forgot-password/*` are rate-limited.
+* Passwords and security answers are bcrypt-hashed.
+* Password reset tokens are random 256-bit values, stored only as SHA-256 hashes, single-use, and time-limited. Reset links carry the token in the URL fragment (`#reset=…`), so it never reaches server logs.
+* Reset email links are built from `APP_URL`, never from the request's `Host` header, so they can't be pointed at another site.
+* `/api/login`, `/api/register` and `/api/forgot-password/*` are rate-limited; reset emails and security-question attempts are also limited per account in Redis.
 * All task/project/member/user mutations require an authenticated **admin** session; regular members have read-only access.
 * Session cookies are `httpOnly`, `sameSite: lax`, and `secure` in production.
 
